@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project-private xmlns="http://www.netbeans.org/ns/project-private/1">
+    <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="12">
+        <file>
+            <url>admin/lancar_eventos_view.php</url>
+            <bookmark id="1">
+                <name/>
+                <line>425</line>
+                <key/>
+            </bookmark>
+            <bookmark id="7">
+                <name/>
+                <line>528</line>
+                <key/>
+            </bookmark>
+            <bookmark id="6">
+                <name/>
+                <line>692</line>
+                <key/>
+            </bookmark>
+            <bookmark id="5">
+                <name/>
+                <line>789</line>
+                <key/>
+            </bookmark>
+            <bookmark id="9">
+                <name/>
+                <line>884</line>
+                <key/>
+            </bookmark>
+        </file>
+        <file>
+            <url>admin/lancar_eventos_controller.js</url>
+            <bookmark id="12">
+                <name/>
+                <line>445</line>
+                <key/>
+            </bookmark>
+            <bookmark id="4">
+                <name/>
+                <line>605</line>
+                <key/>
+            </bookmark>
+        </file>
+        <file>
+            <url>admin/lancar_eventos_dao.php</url>
+            <bookmark id="3">
+                <name/>
+                <line>404</line>
+                <key/>
+            </bookmark>
+            <bookmark id="11">
+                <name/>
+                <line>880</line>
+                <key/>
+            </bookmark>
+        </file>
+    </editor-bookmarks>
+    <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
+        <group>
+            <file>file:/C:/Users/Isaque/Documents/Projetos/web/drh/admin/controle.js</file>
+            <file>file:/C:/Users/Isaque/Documents/Projetos/web/drh/admin/controle.php</file>
+            <file>file:/C:/Users/Isaque/Documents/Projetos/web/drh/admin/lancar_chprofessores_view.php</file>
+        </group>
+    </open-files>
+</project-private>

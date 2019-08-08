@@ -1,0 +1,150 @@
+    <div class="row">
+        <table id="header" cellpadding="3" cellspacing="0">
+            <tr>
+                <td class="brasao border" rowspan="3">
+                    <img class="brasaoImg" src="#BRASAO-CLI#" height="60" alt="Brasão da Unidade/Órgão"/>
+                </td>
+                <td class="infoTitulo borderTop borderRight rightText">
+                    <span class="italic righAlign block">DEMONSTRATIVO DE PAGAMENTO DE SALÁRIO ( CONTRA-CHEQUE )</span><br>
+                </td>
+            </tr>
+            <tr>
+                <td class="infoTitulo borderRight">
+                    <span class="block bold">#NOME-CLI#</span><br>
+                    <span class="block bold">#ENDER_LOGRAD-CLI#, #ENDER_NUM-CLI#, #ENDER_BAIRRO-CLI#</span><br>
+                    <span class="block bold">#MUNICIPIO_NOME# - CEP: #ENDER_CEP-CLI# - #MUNICIPIO_UF#</span><br>
+                    <span class="bold halfWidht">CNPJ: #CNPJ#</span><br>
+                </td>
+            </tr>
+            <tr>
+                <td class="infoTitulo borderBottom borderRight rightText">
+                    <span class="italic righAlign block">#ANO_MESEXT#</span>
+                </td>
+            </tr>
+        </table>
+        
+        <table class="border" id="servidor" cellpadding="3" cellspacing="0">
+            <tr>
+                <td class="matricula leftAlign"><span class="block">ID</span><br><b>#id_servidor#</b></td>
+                <td class="nomeServidor rightAlign"><span class="block">Nome do Servidor</span><br><b>#nome#</b></td>
+                <td class="admissao leftAlign"><span class="block">Admissão</span><br><b>#dt_admissao#</b></td>
+                <td class="funcao rightAlign"><span class="block">Cargo/Função</span><br><b>#id_cargo_atual# - #desc_cargo_atual#</b></td>
+                <td class="matricula leftAlign"><span class="block">Matrícula</span><br><b>#matricula#</b></td>
+            </tr>
+            <tr>
+                <td class="subUnid" colspan="2"><span class="block">Sub-Unid Orçamentária (Centro de Custos)</span><br><b>#id_sub_unid_orcam# - #descr_sub_unid_orcam#</b></td>
+                <td class="lotacao leftAlign" colspan="3"><span class="block">Unid. de Lotação (Local de Trabalho)</span><br><b>#id_unid_lotacao# - #descr_unid_lotacao#</b></td>
+            </tr>
+            <tr>
+                <td class="matricula leftAlign"><span class="block">CPF</span><br><b>#cpf#</b></td>
+                <td class="nomeServidor leftAlign"><span class="block">Registro</span><br><b>#rg#</b></td>
+                <td class="admissao rightAlign"><span class="block">PIS / PASEP</span><br><b>#pis_pasep#</b></td>
+                <td class="planoCargos" colspan="2"><span class="block">#descr_situac_tcm#</span><br><b>#descr_est_funcional#</b></td>
+            </tr>
+        </table>
+
+        <table cellpadding="3" cellspacing="0" id="valores">
+            <tr>
+                <td width="49%" colspan="4" class="border">
+                    <span class="tituloValores block centerText bold">VENCIMENTOS / PROVENTOS</span>
+                </td>
+                <td class="no-border">&nbsp;</td>
+                <td width="49%" colspan="4" class="border">
+                    <span class="tituloValores block centerText bold">DESCONTOS</span>
+                </td>
+            </tr>
+            <tr>
+                <td class="codigo border centerText">Cód</td>
+                <td class="descricao border">Descrição do Evento</td>
+                <td class="quantidade border rightText">Quant.</td>
+                <td class="valor border rightText">Valor (R$)</td>
+                <td class="no-border">&nbsp;</td>
+                <td class="codigo border centerText">Cód</td>
+                <td class="descricao border">Descrição do Evento</td>
+                <td class="quantidade border rightText">Quant.</td>
+                <td class="valor border rightText">Valor (R$)</td>
+            </tr>
+            #VENCIMENTOS#
+            <!--
+            <tr>
+                <td colspan="4">#VENCIMENTOV#</td>
+                <td class="no-border">&nbsp;</td>
+                <td colspan="4">#VENCIMENTOD#</td>
+            </tr>
+            -->
+            <tr>
+                <td colspan="2" class="totalLeg border rightText vertTop bold">TOTAL > > > </td>
+                <td colspan="2" class="totalVal border rightText vertTop bold">#tot_venctos#</td>
+                <td class="no-border">&nbsp;</td>
+                <td colspan="2" class="totalLeg border rightText vertTop bold">TOTAL > > > </td>
+                <td colspan="2" class="totalVal border rightText vertTop bold">#tot_descontos#</td>
+            </tr>
+            <tr>
+                <td colspan="2" class="totalLeg border rightText vertTop bold">SALÁRIO LÍQUIDO > > > </td>
+                <td colspan="2" class="totalVal border rightText vertTop bold">R$ #sal_liquido#</td>
+                <td class="no-border">&nbsp;</td>
+                <td colspan="4" class="totalLeg border vertTop bold">DEPTO: #descr_depto#</td>
+            </tr>
+        </table>
+        
+        <table class="border" id="imposto" cellpadding="3" cellspacing="0">
+            <tr>
+                <td class="vencto leftAlign">
+                    <p>
+                        <span class="legenda block">Vencto Base</span><br>
+                        #vencto_base_cargo# - #tipo_sal#
+                    </p>
+                </td>
+                <td class="baseCalc rightAlign">
+                    <p>
+                        <span class="block">Base Calc. Previd</span><br>
+                        #bc_previd#
+                    </p>
+                </td>
+                <td class="baseIrrf leftAlign">
+                    <p>
+                        <span class="block">Base Calc. IRRF</span><br>
+                        #bc_irrf#
+                    </p>
+                </td>
+                <td class="dependIrrf leftAlign">
+                    <p>
+                        <span class="block">Depend. IRRF</span><br>
+                        #qtd_depend_irrf#
+                    </p>
+                </td>
+                <td class="deducao rightAlign">
+                    <p>
+                        <span class="block">Deduções (R$)</span><br>
+                        #tot_deduc_depend#
+                    </p>
+                </td>
+            </tr>
+        </table>
+        
+        <table class="border" id="banco" cellpadding="3" cellspacing="0">
+            <tr>
+                <td class="line">
+                    <p>
+                        <span class="font_mine">Pagamento / Quitação:</span><br/>
+                        #pagto_quitacao#
+                    </p>
+                </td>
+            </tr>
+            <tr>
+                <td class="line">
+                    <p>
+                        <span class="font_mine">Mensagem:</span><br/>
+                        #mensagem_cc#
+                    </p>
+                </td>
+            </tr>
+            <tr>
+                <td class="line">
+                    <p>
+                        #felicit_niver#
+                    </p>
+                </td>
+            </tr>
+        </table> 
+    </div>

@@ -1,0 +1,312 @@
+/*
+* Etilo da pagina contracheque.html
+* Author: Hilder Nunes
+* 20/10/2015
+*** RESET *** 
+*/
+@media print {
+    .noPrint {
+        display:none;
+        width:29cm;
+        font-size:7pt;
+    }
+}
+
+html { 
+    margin: 25px
+}
+
+/* { font-family: Times-Roman;font-size: 12px;margin: 0;padding: 0; }
+// body { width:1024px;margin:0 auto; } */
+.row {
+    display:block;
+    margin-bottom: 1%; 
+    font-weight: 40;
+}
+
+/* *** HEADER *** */
+#header { 
+    width:100%;
+    font-size:6.5pt; 
+}
+#header .brasao { 
+    width:15%;
+    text-align: center; 
+}
+#header img.brasaoImg { 
+    height:75px;
+    width:75px; 
+}
+#header .infoTitulo { 
+    width:83%;
+    padding:5px 10px; 
+}
+#header div { 
+    margin-top:10px; 
+}
+#header span { 
+    font-size:1.1em; 
+}
+
+/* *** SERVIDOR *** */
+#servidor { 
+    width:100%;
+    margin-top:2px;
+    font-size:6.5pt; 
+}
+#servidor div { 
+    display:block;
+    margin:1%; 
+}
+
+#servidor .coluna { 
+    width:50%; 
+}
+#servidor .matricula { 
+    width:18%;
+    padding:5px;
+}
+#servidor .nomeServidor { 
+    width:78%;
+    padding:5px;
+}
+#servidor .subUnid { 
+    width:50%;
+    padding:5px;
+}
+#servidor .planoCargos { 
+    width:98%;
+    padding:5px;
+}
+
+#servidor .admissao { 
+    width:18%;
+    padding:5px;
+}
+#servidor .funcao { 
+    width:78%;
+    padding:5px;
+}
+
+#servidor .lotacao { 
+    width:50%;
+    padding:5px;
+}
+
+#servidor .documento {
+    width:32%;
+    padding:5px;
+}
+#servidor .registro { 
+    width:32%;
+    padding:5px;
+}
+#servidor .pis { 
+    width:30%;
+    padding:5px;
+}
+
+/* *** VALORES *** */
+#valores { 
+    width:100%;
+    margin-top:2px;
+    font-size:6pt; 
+}
+#valores table { 
+    width:100%; 
+}
+#valores .coluna { 
+    padding-left: 0.1px;
+    width:47%;
+    float:left;
+    margin:0 0.5% 0; 
+}
+#valores .tituloValores { 
+    /*//background: #E1E1E1;*/
+    padding:5px;
+}
+#valores thead { 
+    line-height: 20px; 
+}
+#valores thead th { 
+    padding:5px; 
+}
+#valores tbody td { 
+    padding:2px 5px;
+    border-right:1px solid #000; 
+}
+#valores .codigo { 
+    background: #E1E1E1;
+    width:3%;
+    padding:2px 0; 
+}
+#valores .descricao { 
+    background: #E1E1E1;
+    width:52%;
+    padding:2px; 
+}
+#valores .quantidade { 
+    background: #E1E1E1;
+    width:6%;
+    padding:2px 0; 
+}
+#valores .valor { 
+    background: #E1E1E1;
+    width:15%;
+    padding:2px; 
+}
+#valores .totalLeg { 
+    padding:5px; 
+}
+#valores .totalVal { 
+    background: #E1E1E1;
+    padding:5px; 
+}
+#valores .salarioLiqLeg { 
+    padding:0.4%; 
+}
+#valores .salarioLiqVal { 
+    padding:0.4%; 
+}
+
+#totalValores { 
+    width:100%;padding:10px;
+    margin-bottom:10px;
+    font-size:6pt; 
+}
+
+/* *** IMPOSTO *** */
+#imposto { 
+    width:100%;
+    margin-top:2px;
+    font-size:6.5pt;
+}
+#imposto div { 
+    display:block;
+    margin:0.4%; 
+}
+#imposto .coluna { 
+    width:50%; 
+}
+
+#imposto .vencto { 
+    width:20%;
+    /*//padding:0.4%;*/ 
+    padding:5px;
+}
+#imposto .baseCalc { 
+    width:20%;
+    /*//padding:0.4%;*/ 
+    padding:5px;
+}
+#imposto .baseIrrf { 
+    width:20%;
+    /*//padding:0.4%;*/ 
+    padding:5px;
+}
+#imposto .dependIrrf { 
+    width:20%;
+    /*//padding:0.4%;*/ 
+    padding:5px;
+}
+#imposto .deducao { 
+    width:20%;
+    /*//padding:0.4%;*/ 
+    padding:5px;
+}
+
+/* *** BANCO *** */
+#banco { 
+    width:100%;
+    margin-top:2px;
+    font-size:6.5pt; 
+}
+#banco div { 
+    display:block; 
+}
+#banco .coluna { 
+    width:auto; 
+}
+#banco .line { 
+    width:100%; 
+    padding:5px;
+}
+#banco .infoBanco { 
+    padding:0.4%;
+    width: 47.5%; 
+}
+
+/* *** CUT *** */
+#cut { display:block;margin:2px 0; }
+#cut .borderCut { font:italic 0.85em Times-Roman;border-bottom: 1px dotted #CCC; }
+
+/*** SIGN ***/ 
+#sign { display:block;margin:2% 0; }
+#sign .dataPagto { width:38%;padding:1%;float:left; }
+#sign .signServ { width:58%;padding:1%;float:right; }
+
+
+/*** ELEMENTOS ***/ 
+.no-border { 
+    border:0px solid #000; 
+}
+.border { 
+    border:1px solid #000; 
+}
+.borderRight { 
+    border-right:1px solid #000; 
+}
+.borderLeft { 
+    border-left:1px solid #000; 
+}
+.bold { 
+    font-weight: bold; 
+}
+.rightText { 
+    text-align: right; 
+}
+.centerText { 
+    text-align: center; 
+}
+.italic { 
+    font-style:italic; 
+}
+.vertTop { 
+    vertical-align:top; 
+}
+.rightAlign { 
+    float: right; 
+}
+.leftAlign { 
+    float: left; 
+}
+
+.paddingLR { padding:0 5px; }
+.padLeft5 { padding-left:5px; }
+.padRight5 { padding-right:5px; }
+.arredendar_borda{
+    -moz-border-radius: 5px;
+    -khtml-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    -opera-border-radius: 5px;
+}
+.radio5{
+    border-radius: 5px;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    -o-border-radius: 5px;
+    -ms-border-radius: 5px;
+}
+.radio10{
+    border-radius: 10px;
+    -moz-border-radius: 10px;
+    -webkit-border-radius: 10px;
+    -o-border-radius: 10px;
+    -ms-border-radius: 10px;
+}
+.block { 
+    display:block; 
+}
+.font_mine { 
+    font-size:5pt;  
+}
