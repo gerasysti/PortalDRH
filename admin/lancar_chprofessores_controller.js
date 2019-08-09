@@ -14,7 +14,7 @@ function zero_esquerda(str, qtde) {
     return (foo + str).slice(qte);
 } 
 
-function configurarTabelaEventosLancados(){
+function configurarTabelaCHLancadas(){
     // Configurando Tabela
     // https://datatables.net/manual/styling/classes#nowrap
     var table = $('#datatable-responsive').DataTable({
@@ -28,25 +28,24 @@ function configurarTabelaEventosLancados(){
         "processing": true,
         "columns": [
             { "width": "10px" },   // 0. #
-            null,                  // 1. Unidade Gestora
-            null,                  // 2. Unidade de Lotação
-            { "width": "10px" },   // 3. Rubrica
-            null,                  // 4. Evento
-            { "width": "10px" },   // 5. Tipo
-            { "width": "10px" },   // 6. Serviores
-            { "width": "10px" },   // 7. Valores
-            { "width": "10px" },   // 8. Importado
-            { "width": "120px" }    // 9. Controles
+            null,                  // 1. Unidade de Lotação
+            { "width": "10px" },   // 2. Professores
+            { "width": "10px" },   // 3. CH Normal
+            { "width": "10px" },   // 4. CH Subst.
+            { "width": "10px" },   // 5. CH Outras
+            { "width": "10px" },   // 6. Faltas
+            { "width": "10px" },   // 7. Importado
+            { "width": "120px" }   // 8. Controles
         ],
         "columnDefs": [
             {"orderable": false, "targets": 0}, // #
-            {"orderable": false, "targets": 3}, // Rubrica
-            {"orderable": true,  "targets": 4, "className": 'nowrap'}, // Evento
-            {"orderable": false, "targets": 5}, // Tipo
-            {"orderable": false, "targets": 6}, // Servidores
-            {"orderable": false, "targets": 7}, // Total
-            {"orderable": false, "targets": 8}, // Importado
-            {"orderable": false, "targets": 9}  // Controles
+            {"orderable": false, "targets": 2}, // Professores
+            {"orderable": false, "targets": 3}, // CH Normal
+            {"orderable": false, "targets": 4}, // CH Subst.
+            {"orderable": false, "targets": 5}, // CH Outras
+            {"orderable": false, "targets": 6}, // Faltas
+            {"orderable": false, "targets": 7}, // Importado
+            {"orderable": false, "targets": 8}  // Controles
         ],
         "order": [], // <-- Ordenação 
         "language": {
@@ -74,10 +73,10 @@ function configurarTabelaEventosLancados(){
     $('.dataTables_filter input').attr("placeholder", "Localizar...");
 }
 
-function configurarTabelaServidoresLancados(){
+function configurarTabelaProfessoresLancados(){
     // Configurando Tabela
     // https://datatables.net/manual/styling/classes#nowrap
-    var table = $('#datatable-responsive_serv').DataTable({
+    var table = $('#datatable-responsive_prof').DataTable({
         "paging": true,
         "pageLength": 25, // Quantidade de registros na paginação
         "lengthChange": false,
@@ -91,18 +90,22 @@ function configurarTabelaServidoresLancados(){
             null,                  // 1. ID
             null,                  // 2. Nome
             null,                  // 3. Cargo*Função
-            { "width": "140px" },  // 4. Quantidade
-            { "width": "140px" },  // 5. Valor
-            { "width": "10px" }    // 6. Controles
+            { "width": "140px" },  // 4. Normal
+            { "width": "140px" },  // 5. Subst.
+            { "width": "140px" },  // 6. Outras
+            { "width": "140px" },  // 7. Faltas
+            { "width": "10px" }    // 8. Controles
         ],
         "columnDefs": [
             {"orderable": false, "targets": 0}, // #
             {"orderable": false, "targets": 1}, // ID
             {"orderable": false, "targets": 2, "className": 'nowrap'}, // Nome
             {"orderable": false, "targets": 3, "className": 'nowrap'}, // Cargo/Função
-            {"orderable": false, "targets": 4}, // Quantidade
-            {"orderable": false, "targets": 5}, // Valor
-            {"orderable": false, "targets": 6}  // Controles
+            {"orderable": false, "targets": 4}, // Normal
+            {"orderable": false, "targets": 5}, // Subst.
+            {"orderable": false, "targets": 6}, // Outras
+            {"orderable": false, "targets": 7}, // Faltas
+            {"orderable": false, "targets": 8}  // Controles
         ],
         "order": [], // <-- Ordenação 
         "language": {
@@ -127,18 +130,17 @@ function configurarTabelaServidoresLancados(){
         }
     });
     
-    $('#datatable-responsive_serv_filter input').attr("placeholder", "Localizar...");
+    $('.dataTables_filter input').attr("placeholder", "Localizar...");
 }
 
-function consultarEventosLancados(id, us) {
+function consultar_chprof_lancadas(id, us) {
     var hash  = id.split("_");
     var email = us.split("_");
     var params = {
-        'ac' : 'consultar_eventos_lancados',
+        'ac' : 'consultar_chs_lancadas',
         'id' : hash[1],
         'us' : email[1],
         'to' : $('#cliente').val(),
-        'ug' : $('#id_unidade').val(),
         'lo' : $('#id_lotacao').val(),
         'cp' : $('#ano_mes_pesquisa').val()
     };
@@ -149,7 +151,7 @@ function consultarEventosLancados(id, us) {
         // Iniciamos o Ajax 
         $.ajax({
             // Definimos a url
-            url : './lancar_eventos_dao.php',
+            url : './lancar_chprofessores_dao.php',
             // Definimos o tipo de requisição
             type: 'post',
             // Definimos o tipo de retorno
@@ -170,7 +172,7 @@ function consultarEventosLancados(id, us) {
                 $('#tabela-lancamentos').html(data);
 
                 $('#btn_consultar').attr('disabled', false);
-                configurarTabelaEventosLancados();
+                configurarTabelaCHLancadas();
             },
             error: function (request, status, error) {
                 $('#page-wait').html("");
@@ -183,22 +185,23 @@ function consultarEventosLancados(id, us) {
     }
 }
 
-function carregarServidoresLancamento() {
+function carregar_lancamento_professores() {
     var id   = $('#id_sessao').val();
     var hash = id.split("_");
     var params = {
-        'ac' : 'carregar_servidores_lancamento',
+        'ac' : 'carregar_lancamento_professores',
         'id' : hash[1],
         'us' : $('#us').val(),
         'to' : $('#cliente').val(),
         'id_cliente': $('#id_cliente').val(),
+        'id_lancto' : $('#id_lancto').val(),
         'controle'  : $('#controle').val()
     };
 
     // Iniciamos o Ajax 
     $.ajax({
         // Definimos a url
-        url : './lancar_eventos_dao.php',
+        url : './lancar_chprofessores_dao.php',
         // Definimos o tipo de requisição
         type: 'post',
         // Definimos o tipo de retorno
@@ -207,16 +210,16 @@ function carregarServidoresLancamento() {
         data: params,
         // Antes de enviar ele alerta para esperar
         beforeSend : function(){
-            $('#tabela-lancamento_servidores').html("<p style='margin: 10px; padding: 10px;'>Carregando servidores/lançamentos, <strong>aguarde</strong>!</p>");
+            $('#tabela-lancamento_professores').html("<p style='margin: 10px; padding: 10px;'>Carregando professores/lançamentos, <strong>aguarde</strong>!</p>");
         },
         // Colocamos o retorno na tela
         success : function(data){
-            $('#tabela-lancamento_servidores').html(data);
+            $('#tabela-lancamento_professores').html(data);
             $('.excluir_servidor').blur();
-            configurarTabelaServidoresLancados();
+            configurarTabelaProfessoresLancados();
         },
         error: function (request, status, error) {
-            $('#tabela-lancamento_servidores').html("Erro na execução da pesquisa!<br> (" + status + ")" + request.responseText + "<br><strong>Error : </strong>" + error.toString());
+            $('#tabela-lancamento_professores').html("Erro na execução da pesquisa!<br> (" + status + ")" + request.responseText + "<br><strong>Error : </strong>" + error.toString());
         }
     });  
     // Finalizamos o Ajax
@@ -333,30 +336,25 @@ function salvarServidorLancamento(sequencia, id_servidor, quant, valor, obs, cal
     // Finalizamos o Ajax
 }
 
-function editarLancamentoEvento(id) {
-    var controle = id.replace("editar_evento_lancamento_", "");
+function editarLancamentoCH(id) {
+    var referencia = id.replace("editar_lancamento_ch_", "");
     
     $('#op').val("editar_lancamento");
     
-    $('#controle').val( $('#controle_' + controle).val() );
-    $('#id_cliente').val( $('#id_cliente_' + controle).val() );
-    $('#ano_mes').val( $('#ano_mes_' + controle).val() );
-    $('#id_unid_gestora').val( $('#id_unid_gestora_' + controle).val() );
-    $('#id_unid_lotacao').val( $('#id_unid_lotacao_' + controle).val() );
-    $('#id_evento').val( $('#id_evento_' + controle).val() );
-    $('#data').val( $('#data_' + controle).val() );
-    $('#situacao').val( $('#situacao_' + controle).val() );
-    $('#importado').prop('checked', ($('#importado_' + controle).val() === '1')); 
+    $('#controle').val( $('#controle_' + referencia).val() );
+    $('#id_lancto').val( $('#id_lancto_' + referencia).val() );
+    $('#id_cliente').val( $('#id_cliente_' + referencia).val() );
+    $('#ano_mes').val( $('#ano_mes_' + referencia).val() );
+    $('#id_unid_lotacao').val( $('#id_unid_lotacao_' + referencia).val() );
+    $('#data').val( $('#data_' + referencia).val() );
+    $('#situacao').val( $('#situacao_' + referencia).val() );
+    $('#importado').prop('checked', ($('#importado_' + referencia).val() === '1')); 
     
     $('#ano_mes').prop('disabled', true); 
-    $('#id_unid_gestora').prop('disabled', true); 
     $('#id_unid_lotacao').prop('disabled', true); 
-    $('#id_evento').prop('disabled', true); 
     
     $('#ano_mes').trigger('chosen:updated');
-    $('#id_unid_gestora').trigger('chosen:updated');
     $('#id_unid_lotacao').trigger('chosen:updated');
-    $('#id_evento').trigger('chosen:updated');
     $('#situacao').trigger('chosen:updated');
     
     $('input[type="checkbox"].custom-checkbox').uniform();
@@ -367,21 +365,19 @@ function editarLancamentoEvento(id) {
     $('#panel_cadastro').fadeIn( 400, "linear" );
     $('#panel_lancamentos').fadeIn( 400, "linear" );
 
-    var id_sessao = $('#id_sessao').val();
-    var lg_sessao = $('#lg_sessao').val();
-    carregarServidoresLancamento(id_sessao, lg_sessao);
+    carregar_lancamento_professores();
 }
 
-function excluirLancamentoEvento(id) {
-    var controle = id.replace("excluir_evento_lancamento_", "");
-    var i_linha = document.getElementById("linha_" + controle);
+function excluirLancamentoCH(id) {
+    var referencia = id.replace("excluir_lancamento_ch_", "");
+    var i_linha = document.getElementById("linha_" + referencia);
     var colunas = i_linha.getElementsByTagName('td');
-    if ( parseInt($('#importado_' + controle).val()) === 1 ) {
+    if ( parseInt($('#importado_' + referencia).val()) === 1 ) {
         mensagem_alerta("Este lançamento já foi <strong>importado</strong> para o sistema de folha Remuneratus$ na central e não poderá ser excluído.<br>Entre em contato com a direção.");
     } else
-    if ( parseInt($('#situacao_' + controle).val()) !== 0 ) {
+    if ( parseInt($('#situacao_' + referencia).val()) !== 0 ) {
         var situacao = "";
-        if ( parseInt($('#situacao_' + controle).val()) === 1 ) {
+        if ( parseInt($('#situacao_' + referencia).val()) === 1 ) {
             situacao = "finalizado";
         } else {
             situacao = "cancelado";
@@ -392,20 +388,18 @@ function excluirLancamentoEvento(id) {
             var link = document.getElementById("btnC_confirma_msg");
             link.onclick = function() {
                 var params = {
-                    'ac' : 'excluir_lancamento_evento',
+                    'ac' : 'excluir_lancamento_ch',
                     'hs' : $('#hs').val(),
-                    'to' : $('#id_cliente_' + controle).val(),
-                    'ug' : $('#id_unid_gestora_' + controle).val(),
-                    'lo' : $('#id_unid_lotacao_' + controle).val(),
-                    'ev' : $('#id_evento_' + controle).val(),
-                    'cp' : $('#ano_mes_' + controle).val(),
-                    'id' : controle
+                    'to' : $('#id_cliente_' + referencia).val(),
+                    'lo' : $('#id_unid_lotacao_' + referencia).val(),
+                    'cp' : $('#ano_mes_' + referencia).val(),
+                    'id' : referencia
                 };
 
                 // Iniciamos o Ajax 
                 $.ajax({
                     // Definimos a url
-                    url : './lancar_eventos_dao.php',
+                    url : './lancar_chprofessores_dao.php',
                     // Definimos o tipo de requisição
                     type: 'post',
                     // Definimos o tipo de retorno
@@ -484,9 +478,9 @@ function verificar_lancamento_servidor(servidor, callback) {
     // Finalizamos o Ajax
 }
 
-function excluirLancamentoServidor(id) {
-    var referencia = id.replace("excluir_servidor_lancamento_", "");
-    var i_linha = document.getElementById("linha_servidor_" + referencia);
+function excluirLancamentoProfessor(id) {
+    var referencia = id.replace("excluir_professor_lancamento_", "");
+    var i_linha = document.getElementById("linha_professor_" + referencia);
     var colunas = i_linha.getElementsByTagName('td');
     if ( $('#importado').is(":checked") ) {
         mensagem_alerta("Este lançamento já foi <strong>importado</strong> para o sistema de folha Remuneratus$ na central e não poderá ser excluído.<br>Entre em contato com a direção.");
@@ -504,15 +498,15 @@ function excluirLancamentoServidor(id) {
             var link = document.getElementById("btnC_confirma_msg");
             link.onclick = function() {
                 var params = {
-                    'ac' : 'excluir_lancamento_servidor',
+                    'ac' : 'excluir_lancamento_professor',
                     'hs' : $('#hs').val(),
                     'to' : $('#id_cliente').val(),
-                    'ug' : $('#id_unid_gestora').val(),
                     'lo' : $('#id_unid_lotacao').val(),
-                    'ev' : $('#id_evento').val(),
                     'cp' : $('#ano_mes').val(),
                     'id' : $('#controle').val(),
-                    'sv' : $('#id_servidor_' + referencia).val()
+                    'lc' : $('#id_lancto').val(),
+                    'sv' : $('#id_servidor_' + referencia).val(),
+                    'gd' : $('#id_lancto_prof_' + referencia).val()
                 };
 
                 // Iniciamos o Ajax 
@@ -611,9 +605,7 @@ function situacao_lancamento_evento(situacao) {
                             $('#id_unid_lotacao').prop('disabled', (parseInt(situacao) === 1)); 
                             $('#id_evento').prop('disabled', (parseInt(situacao) === 1)); 
                             
-                            var id_sessao = $('#id_sessao').val();
-                            var lg_sessao = $('#lg_sessao').val();
-                            carregarServidoresLancamento(id_sessao, lg_sessao);
+                            carregar_lancamento_professores();
                         } else {
                             $('#btnF_confirma_msg').trigger("click");
                             mensagem_erro( "<p><strong>Erro ao tentar excluir o lançamento do servidor selecionado:</strong> <br><br>" + retorno + "</p>" );
@@ -685,7 +677,7 @@ function lancarEventos(id, us) {
         $('#panel_cadastro').fadeIn( 400, "linear" );
         $('#panel_lancamentos').fadeIn( 400, "linear" );
 
-        carregarServidoresLancamento(id, us);
+        carregar_lancamento_professores();
     }
 }
 
@@ -779,7 +771,7 @@ function salvarControleEventoMensal(id, us) {
                             $('#btn_form_salvar').attr('disabled', false);
                             if (typeof($('#loader-overlay')) !== 'undefined') $('#loader-overlay').fadeOut('fast');
 
-                            carregarServidoresLancamento(id, us);
+                            carregar_lancamento_professores();
                         });
                     } else {
                         $('#btn_form_fechar').attr('disabled', false);

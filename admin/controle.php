@@ -442,6 +442,7 @@
         <script type="text/javascript" src="./evento_controller.js"></script>
         <script type="text/javascript" src="./servidor_controller.js"></script>
         <script type="text/javascript" src="./lancar_eventos_controller.js"></script>
+        <script type="text/javascript" src="./lancar_chprofessores_controller.js"></script>
         
         <script type="text/javascript">
             body_sizer_controle();

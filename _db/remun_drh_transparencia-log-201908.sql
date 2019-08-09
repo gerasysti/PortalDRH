@@ -550,3 +550,16 @@ ALTER TABLE REMUN_LANCTO_CH_PROF
 ADD CONSTRAINT UNQ_REMUN_LANCTO_CH_PROF
 UNIQUE (ID_CLIENTE,ID_SERVIDOR,ID_UNID_LOTACAO,ANO_MES);
 
+
+
+/*------ GERASYS.TI 09/08/2019 17:00:15 --------*/
+
+/*!!! Error occured !!!
+Column does not belong to referenced table.
+Dynamic SQL Error.
+SQL error code = -206.
+Column unknown.
+EV.DESCRICAO.
+At line 41, column 8.
+
+*/

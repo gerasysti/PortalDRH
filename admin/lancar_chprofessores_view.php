@@ -6,14 +6,20 @@
  * and open the template in the editor.
  * 
  * 
-    Select
-        e.id_cliente
-      , e.id_evento
-      , e.codigo
-      , e.descricao
-      , e.sem_uso
-    from REMUN_EVENTO e
-    where (e.id_cliente = 15019) // PREFEITURA MINUCIPAL DE DOM ELISEU
+Select
+    s.id_cliente
+  , s.id_servidor
+  , s.matricula
+  , s.nome
+  , s.dt_admissao
+  , s.id_cargo_atual
+  , c.descricao as ds_cargo_atual
+  , s.situacao
+from REMUN_SERVIDOR s
+  inner join REMUN_CARGO_FUNCAO c on (c.id_cliente = s.id_cliente and c.id_cargo = s.id_cargo_atual)
+where (s.id_cliente = 15019)
+  and (c.tipo_sal   = '2')
+  and (s.situacao   = 1)
  * 
  */
     require_once '../lib/classes/configuracao.php';
@@ -44,12 +50,12 @@
     
     // Montar listas
     $lista_clientes = "";
-    $lista_unidades = "";
+    //$lista_unidades = "";
     $lista_lotacoes = "";
     $lista_anomes   = "";
     $lista_eventos  = "";
 
-    $lista_unidades_lancar = "";
+    //$lista_unidades_lancar = "";
     $lista_lotacoes_lancar = "";
     
     $cnf = Configuracao::getInstancia();
@@ -87,26 +93,6 @@
     $res = $pdo->query($sql);
     while (($obj = $res->fetch(PDO::FETCH_OBJ)) !== false) {
         $lista_clientes .= "<option value='{$obj->id}' class='optionChild'>{$obj->titulo_portal}</option>";
-    }
-    
-    $sql = 
-         "Select "
-       . "    u.id_cliente       "
-       . "  , u.id as id_unidade "
-       . "  , u.descricao   "
-       . "  , u.cnpj        "
-       . "  , coalesce(g.acesso, 0) as acesso "
-       . "  , coalesce(g.lancar_ch_professores, 0) as lancar "
-       . "from REMUN_UNID_GESTORA u "
-       . "  left join ADM_USUARIO_UNID_GESTORA g on (g.id_cliente = u.id_cliente and g.id_unid_gestora = u.id and g.id_usuario = {$usuario['id']}) "
-       . "where (u.id_cliente = {$usuario['cliente']}) "
-       . "order by "
-       . "    u.descricao ";
-
-    $res = $pdo->query($sql);
-    while (($obj = $res->fetch(PDO::FETCH_OBJ)) !== false) {
-        if ((int)$obj->acesso === 1) $lista_unidades .= "<option value='{$obj->id_unidade}' class='optionChild'>{$obj->descricao}</option>";
-        if (((int)$obj->acesso === 1) && ((int)$obj->lancar === 1)) $lista_unidades_lancar .= "<option value='{$obj->id_unidade}' class='optionChild'>{$obj->descricao}</option>";
     }
     
     $sql = 
@@ -237,15 +223,6 @@
                                                     <?php echo $lista_anomes;?>
                                                 </select>
                                             </div>
-                                            
-                                            <label for="id_unidade" class="col-sm-1 control-label padding-label">UG</label>
-                                            <div class="col-sm-3 padding-field">
-                                                <select class="form-control chosen-select" id="id_unidade">
-                                                    <option value="0" class="optionChild">Todas as Unidades Gestoras</option>
-                                                    <?php echo $lista_unidades;?>
-                                                </select>
-                                            </div>
-                                            
                                             <label for="id_lotacao" class="col-sm-1 control-label padding-label">Lotação</label>
                                             <div class="col-sm-4 padding-field">
                                                 <div class="input-group">
@@ -255,7 +232,7 @@
                                                     </select>
                                                     <div class="input-group-addon" style="padding: 0px; padding-left : 4px;">
                                                         <input type="hidden" id="pesquisa" value=""/>
-                                                        <button id="btn_consultar" class="btn ra-round btn-primary lg-text" onclick="consultarEventosLancadosxxx('<?php echo 'id_' . $_SESSION['acesso']['id'];?>', '<?php echo 'lg_' . $_SESSION['acesso']['us']?>')" title="Executar Consulta"><i class="glyph-icon icon-search"></i></button>
+                                                        <button id="btn_consultar" class="btn ra-round btn-primary lg-text" onclick="consultar_chprof_lancadas('<?php echo 'id_' . $_SESSION['acesso']['id'];?>', '<?php echo 'lg_' . $_SESSION['acesso']['us']?>')" title="Executar Consulta"><i class="glyph-icon icon-search"></i></button>
                                                     </div>
                                                 </div>
                                             </div>
@@ -316,6 +293,7 @@
                                                 <label for="controle" class="col-sm-2 control-label padding-label">Controle</label>
                                                 <div class="col-sm-1 padding-field">
                                                     <input type="hidden" id="id_cliente" value="0">
+                                                    <input type="hidden" id="id_lancto"  value="">
                                                     <input type="text" class="form-control text lg-text" maxlength="10" id="controle" readonly>
                                                 </div>
                                                 <label for="data" class="col-sm-1 control-label padding-label">Data</label>
@@ -340,17 +318,6 @@
                                                     </a>
                                                 </label>
                                             </div>
-                                            
-                                            <div class="form-group" style="margin: 2px;">
-                                                <label for="id_unid_gestora" class="col-sm-2 control-label padding-label">Unidade Gestora</label>
-                                                <div class="col-sm-10 padding-field">
-                                                    <select class="form-control chosen-select" id="id_unid_gestora" style="width: 100%;">
-                                                        <option value="0" class="optionChild">Selecione a Unidade Gestora</option>
-                                                        <?php echo $lista_unidades_lancar;?>
-                                                    </select>
-                                                </div>
-                                            </div>
-                                            
                                             <div class="form-group" style="margin: 2px;">
                                                 <label for="id_unid_lotacao" class="col-sm-2 control-label padding-label">Unidade de Lotação</label>
                                                 <div class="col-sm-10 padding-field">
@@ -397,99 +364,6 @@
                             </div>
                         </div>
 
-                        <!--
-                        <div class="panel">
-                            <div class="panel-body">
-                                <h2 class="title-hero">
-                                    <strong>Lancamento de Eventos Mensais</strong>
-                                    <input type="hidden" id="op" value="novo_lancamento">
-                                    <input type="hidden" id="hs" value="<?php // echo $_SESSION['acesso']['id'];?>">
-                                    <input type="hidden" id="hoje" value="<?php // echo date('d/m/Y');?>">
-                                    <input type="hidden" id="cliente" value="<?php // echo $_SESSION['acesso']['id_cliente'];?>">
-                                    <input type="hidden" id="competencia_atual" value="<?php // echo $competencia_atual;?>">
-                                </h2>
-                                
-                                <div class="box-wrapper">
-                                    
-                                    <div class="form-horizontal bordered-row">
-                                        <div class="row">
-                                            <div class="col-md-10">
-                                                <div class="form-group" style="margin: 2px;">
-                                                    <label for="controle" class="col-sm-3 control-label padding-label">Controle</label>
-                                                    <div class="col-sm-1 padding-field">
-                                                        <input type="text" class="form-control text lg-text" maxlength="10" id="controle" readonly>
-                                                    </div>
-                                                    <label for="data_lancamento" class="col-sm-1 control-label padding-label">Data</label>
-                                                    <div class="col-sm-1 padding-field">
-                                                        <input type="text" class="form-control text lg-text" maxlength="11" id="data_lancamento" readonly>
-                                                    </div>
-                                                    <label for="ano_mes" class="col-sm-1 control-label padding-label">Competência</label>
-                                                    <div class="col-sm-2 padding-field">
-                                                        <select class="form-control chosen-select" id="ano_mes">
-                                                            <option value="0" class="optionChild">Selecione a Competência</option>
-                                                            <?php echo $lista_anomes;?>
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                                <div class="form-group" style="margin: 2px;">
-                                                    <label for="id_unid_gestora" class="col-sm-3 control-label padding-label">Unidade Gestora</label>
-                                                    <div class="col-sm-9 padding-field">
-                                                        <select class="form-control chosen-select" id="id_unid_gestora" style="width: 100%;">
-                                                            <option value="0" class="optionChild">Selecione a Unidade Gestora</option>
-                                                            <?php echo $lista_unidades_lancar;?>
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                                <div class="form-group" style="margin: 2px;">
-                                                    <label for="id_unid_lotacao" class="col-sm-3 control-label padding-label">Unidade de Lotação</label>
-                                                    <div class="col-sm-9 padding-field">
-                                                        <select class="form-control chosen-select" id="id_unid_lotacao" style="width: 100%;">
-                                                            <option value="0" class="optionChild">Selecione a Unidade de Lotação</option>
-                                                            <?php echo $lista_lotacoes_lancar;?>
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                                <div class="form-group" style="margin: 2px;">
-                                                    <label for="id_evento" class="col-sm-3 control-label padding-label">Evento de Lançamento</label>
-                                                    <div class="col-sm-9 padding-field">
-                                                        <select class="form-control chosen-select" id="id_evento" style="width: 100%;">
-                                                            <option value="0" class="optionChild">Selecione o Evento</option>
-                                                            <?php echo $lista_eventos;?>
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                                <div class="form-group" style="margin: 2px;">
-                                                    <div class="col-sm-3 padding-field">&nbsp;</div>
-                                                    <div class="col-sm-5 padding-field">
-                                                        <div class="checkbox checkbox-primary">
-                                                            <label>
-                                                                <input class="custom-checkbox" type="checkbox" name="importado" id="importado" value="1" disabled>
-                                                                Lançamentos importados pelo <strong>Remuneratu$</strong>
-                                                            </label>
-                                                        </div>
-                                                    </div>
-                                                    <label for="situacao" class="col-sm-1 control-label padding-label">Situação</label>
-                                                    <div class="col-sm-3 padding-field">
-                                                        <select class="form-control chosen-select" id="situacao" style="width: 100%;" disabled>
-                                                            <option value="0" class="optionChild">Aberto</option>
-                                                            <option value="1" class="optionChild">Finalizado</option>
-                                                            <option value="2" class="optionChild">Cancelado</option>
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                            </div> 
-                                        </div>
-
-                                        <div class="bg-default">
-                                            <button class="btn btn-primary" onclick="fechar_cadastro()" id="btn_form_fechar">Fechar</button>
-                                            <button class="btn btn-primary pull-right" onclick="salvarUsuarioXXX()" id="btn_form_salvar" disabled>Salvar</button>
-                                        </div>
-                                    </div>
-                                    
-                                </div>
-                            </div>
-                        </div>
-                        -->
                         <button class="btn btn-default" data-toggle="modal" data-target=".box_servidor" id="box_servidor"></button>
                         <button class="btn btn-default" data-toggle="modal" data-target=".box_confirme" id="box_confirme"></button>
                         <button class="btn btn-default" data-toggle="modal" data-target=".box_informe"  id="box_informe"></button>
@@ -506,7 +380,7 @@
                                     <a href="javascript:void(0);" class="icon-separator" title="Ajuda">
                                         <i class="glyph-icon icon-question"></i>
                                     </a>
-                                    <a href="javascript:void(0);" class="icon-separator refresh-button" data-style="dark" data-theme="bg-white" data-opacity="40" title="Atualizar" onclick="carregarServidoresLancamento()">
+                                    <a href="javascript:void(0);" class="icon-separator refresh-button" data-style="dark" data-theme="bg-white" data-opacity="40" title="Atualizar" onclick="carregar_lancamento_professores()">
                                         <i class="glyph-icon icon-refresh"></i>
                                     </a>
                                     <a href="javascript:void(0);" class="icon-separator remove-button" data-animation="flipOutX" title="Inserir Servidores" onclick="adicionar_servidor()">
@@ -519,9 +393,8 @@
                                     -->
                                 </span>
                             </h3>
-                            <div class="content-box-wrapper" id="tabela-lancamento_servidores" style="margin: 0px; padding: 0px;">
-                                
-                                
+                            <div class="content-box-wrapper" id="tabela-lancamento_professores" style="margin: 0px; padding: 0px;">
+                                &nbsp;
                             </div>
                         </div>
                     </div>
@@ -599,7 +472,7 @@
                     
                     <script type="text/javascript">
                         /* Ao pressionar uma tecla em um campo que seja de class="proximo_campo" */ 
-                        $('#tabela-lancamento_servidores, .box_servidor').on('keyup', '.proximo_campo', function(e) {
+                        $('#tabela-lancamento_professores, .box_servidor').on('keyup', '.proximo_campo', function(e) {
                             /* 
                              * Verifica se o evento é Keycode (para IE e outros browsers)
                              * se não for pega o evento Which (Firefox)
@@ -658,7 +531,7 @@
                         try {
                             fechar_lancamentos();
                             //formatar_checkbox();
-                            consultarEventosLancadosxxx('<?php echo 'id_' . $_SESSION['acesso']['id'];?>', '<?php echo 'lg_' . $_SESSION['acesso']['us']?>');
+                            consultar_chprof_lancadas('<?php echo 'id_' . $_SESSION['acesso']['id'];?>', '<?php echo 'lg_' . $_SESSION['acesso']['us']?>');
                         } catch (e) {
                             ;
                         }
@@ -736,10 +609,7 @@
                                 if (tipo_lancamento === 1) {
                                     if ((ids_servidores !== '#') && (qts_servidores !== '#')) {
                                         salvarServidoresLancamentoxxx(ids_servidores, null, vls_servidores, function(){
-                                            var id_sessao = $('#id_sessao').val();
-                                            var lg_sessao = $('#lg_sessao').val();
-                                            carregarServidoresLancamento(id_sessao, lg_sessao);
-
+                                            carregar_lancamento_professores();
                                             mensagem_informe("Valores gravados com sucesso.");
                                         });
                                     } else {
@@ -868,7 +738,7 @@
                                                         $('#qtde_servidores').val( qtde_servidores );
 
                                                         if (qtde_servidores === 1) {
-                                                            carregarServidoresLancamento();
+                                                            carregar_lancamento_professores();
                                                         } else {
                                                             var file_json = "../downloads/lanc_srv_" + $('#hs').val() + ".json";
                                                             $.getJSON(file_json, function(data){
