@@ -4,6 +4,9 @@
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
+ * 
+ * BASE DE BRASÕES
+ * https://www.mbi.com.br/mbi/biblioteca/simbolo/
  */
     require_once '../lib/classes/configuracao.php';
     require_once '../lib/Constantes.php';
@@ -528,7 +531,7 @@
                         $('input[type="checkbox"].custom-checkbox').uniform();
                         
                         fechar_cadastro();
-                        //formatar_checkbox();
+                        formatar_checkbox();
 /*
     $('input[type="checkbox"].custom-checkbox').uniform();
     $('input[type="radio"].custom-radio').uniform();

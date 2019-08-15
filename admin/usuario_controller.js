@@ -237,9 +237,9 @@ function editarUsuario(id) {
     $('#ultimo_acesso').val( $('#ultimo_acesso_' + id_usuario).val() );
     $('#situacao').val( $('#situacao_' + id_usuario).val() );
     
-    $('#administrar_portal').prop('checked', ($('#administrar_portal_' + id_usuario).val() === '1')); 
-    $('#lancar_eventos').prop('checked', ($('#lancar_eventos_' + id_usuario).val() === '1')); 
-    $('#lancar_ch_professores').prop('checked', ($('#lancar_ch_professores_' + id_usuario).val() === '1')); 
+    $('#administrar_portal').prop('checked', ($('#administrar_portal_' + id_usuario).val() === '1')).uniform();
+    $('#lancar_eventos').prop('checked', ($('#lancar_eventos_' + id_usuario).val() === '1')).uniform();
+    $('#lancar_ch_professores').prop('checked', ($('#lancar_ch_professores_' + id_usuario).val() === '1')).uniform();
     
     $('#senha').val("");
     $('#senha_confirme').val("");

@@ -64,6 +64,8 @@
         header('location: ./index.php');
         exit;
     }
+    
+    $titulo_pagina = removerAcentos($des_unidade);
 ?>
 <html ng-app="monarchApp" lang="en">
     <head>
@@ -143,7 +145,7 @@
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
         
         <!--[if IE]><meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'><![endif]-->
-        <title>Remuneratu$ | DRH Transparência | Unidade </title>
+        <title>Remuneratu$ | DRH Transparência | <?php echo $titulo_pagina;?></title>
 
         <?php
             include './page_head_links.php';

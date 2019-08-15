@@ -44,6 +44,7 @@
             . "  , u.e_mail     "
             . "  , coalesce(u.senha, '...') as senha "
             . "  , current_timestamp        as ultimo_acesso "
+            . "  , coalesce(u.administrar_portal, 0) as administrar_portal "
             . "  , coalesce(u.exe_ano, extract(year from current_date))  as exe_ano "
             . "from ADM_USUARIO u "
             . "where u.situacao = 1 "
@@ -74,6 +75,7 @@
                 $_SESSION['acesso']['pw'] = $obj->senha;
                 $_SESSION['acesso']['id_usuario'] = $obj->id;
                 $_SESSION['acesso']['id_cliente'] = $obj->id_cliente;
+                $_SESSION['acesso']['admin']      = $obj->administrar_portal;
             }
         }
         

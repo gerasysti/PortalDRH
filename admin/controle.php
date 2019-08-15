@@ -38,6 +38,7 @@
     $sql = 
           "Select "
         . "    u.* "
+        . "  , coalesce(u.id_cliente, 0) as cliente "
         . "  , coalesce(nullif(trim(c.titulo_portal), ''), c.nome, 'Administração do Sistema') as nome_cliente "
         . "from ADM_USUARIO u "
         . "  left join ADM_CLIENTE c on (c.id = u.id_cliente) "
@@ -205,8 +206,9 @@
         <div id="page-wrapper">
             <div id="page-header" class="bg-gradient-9">
                 <div id="mobile-navigation">
-                    <input type="hidden" id="id_sessao" value="<?php echo 'id_' . $_SESSION['acesso']['id'];?>">
-                    <input type="hidden" id="lg_sessao" value="<?php echo 'lg_' . $_SESSION['acesso']['us']?>">
+                    <input type="hidden" id="id_sessao"   value="<?php echo 'id_' . $_SESSION['acesso']['id'];?>">
+                    <input type="hidden" id="lg_sessao"   value="<?php echo 'lg_' . $_SESSION['acesso']['us']?>">
+                    <input type="hidden" id="administrar" value="<?php echo ((int)$usuario['cliente'] === 0?"1":"0");?>">
                     <button id="nav-toggle" class="collapsed" data-toggle="collapse" data-target="#page-sidebar"><span></span></button>
                     <a href="controle.php?id=<?php echo $id;?>" class="logo-content-small" title="Administração"></a>
                     <!--<a href="#" class="logo-content-small" title="Controle de Remunerações" onclick="home()"></a>-->

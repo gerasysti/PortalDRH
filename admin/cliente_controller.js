@@ -166,10 +166,10 @@ function editarCliente(id) {
     $('#logo_img').prop('title', $('#brasao_nome_' + id_cliente).val());
     $('#logo_upload').val("");
     
-    $('#exibe_lista').prop("checked",        ($('#exibe_lista_' + id_cliente).val() === "1"));
-    $('#enviar_senha_email').prop("checked", ($('#enviar_senha_email_' + id_cliente).val() === "1"));
-    $('#contra_cheque').prop("checked",      ($('#contra_cheque_' + id_cliente).val() === "S"));
-    $('#margem_consignavel').prop("checked", ($('#margem_consignavel_' + id_cliente).val() === "1"));
+    $('#exibe_lista').prop("checked",        ($('#exibe_lista_' + id_cliente).val() === "1")).uniform();
+    $('#enviar_senha_email').prop("checked", ($('#enviar_senha_email_' + id_cliente).val() === "1")).uniform();
+    $('#contra_cheque').prop("checked",      ($('#contra_cheque_' + id_cliente).val() === "S")).uniform();
+    $('#margem_consignavel').prop("checked", ($('#margem_consignavel_' + id_cliente).val() === "1")).uniform();
     
     $('#atualizacao').val( $('#atualizacao_' + id_cliente).val() );
     $('#situacao').val( $('#situacao_' + id_cliente).val() );
@@ -198,117 +198,125 @@ function editarCliente(id) {
 }
 
 function inserirCliente(id, us) {
-    var hash  = id.split("_");
-    var email = us.split("_");
-    var params = {
-        'ac' : 'inserir_cliente',
-        'id' : hash[1]
-    };
-    
-    $('#op').val("inserir_cliente");
-    $('#id').val( "00000" );
-    $('#tipo_orgao').val("0");
-    $('#nome').val("");
-    $('#cnpj').val("");
-    $('#telefones').val("");
-    $('#e_mail').val("");
-    $('#ender_lograd').val("");
-    $('#ender_num').val("");
-    $('#ender_bairro').val("");
-    $('#ender_cep').val("");
-    $('#municipio_cod_ibge').val("");
-    $('#municipio_nome').val("");
-    $('#municipio_uf').val("XX");
-    $('#dominio').val("");
-    $('#titulo_portal').val("");
-    $('#sub_titulo_portal').val("");
-    $('#logo').val("");
-    $('#brasao_nome').val("");
+    if (parseInt($('#administrar').val()) === 0) {
+        mensagem_alerta("Usuário <strong>sem permissão</strong> para esta tarefa");
+    } else {
+        var hash  = id.split("_");
+        var email = us.split("_");
+        var params = {
+            'ac' : 'inserir_cliente',
+            'id' : hash[1]
+        };
 
-    $('#logo_img').prop('src', ""); // '../dist/img/brasoe/sssbv.png'
-    $('#logo_img').prop('title', "");
-    $('#logo_upload').val("");
-    
-    $('#exibe_lista').prop("checked", false);
-    $('#enviar_senha_email').prop("checked", false);
-    $('#contra_cheque').prop("checked", false);
-    $('#margem_consignavel').prop("checked", false);
-    
-    $('#atualizacao').val("");
-    $('#situacao').val("0");
-    
-    $('#tipo_orgao').trigger('chosen:updated');
-    $('#situacao').trigger('chosen:updated');
-    $('#municipio_uf').trigger('chosen:updated');
-            
-    if ($('#tab_1').hasClass('active')) $('#tab_1').removeClass('active');
-    if ($('#tab_2').hasClass('active')) $('#tab_2').removeClass('active');
-    if ($('#tab_3').hasClass('active')) $('#tab_3').removeClass('active');
-    
-    if ($('#step-1').hasClass('active')) $('#step-1').removeClass('active');
-    if ($('#step-2').hasClass('active')) $('#step-2').removeClass('active');
-    if ($('#step-3').hasClass('active')) $('#step-3').removeClass('active');
-    
-    $('#tab_1').addClass('active');
-    $('#step-1').addClass('active');
-    
-    $('input[type="checkbox"].custom-checkbox').uniform();
-    
-    //document.getElementById("panel_titulo").style.display    = 'none';
-    document.getElementById("panel_pesquisa").style.display  = 'none';
-    document.getElementById("panel_resultado").style.display = 'none';
-    $('#panel_cadastro').fadeIn( 400, "linear" );
+        $('#op').val("inserir_cliente");
+        $('#id').val( "00000" );
+        $('#tipo_orgao').val("0");
+        $('#nome').val("");
+        $('#cnpj').val("");
+        $('#telefones').val("");
+        $('#e_mail').val("");
+        $('#ender_lograd').val("");
+        $('#ender_num').val("");
+        $('#ender_bairro').val("");
+        $('#ender_cep').val("");
+        $('#municipio_cod_ibge').val("");
+        $('#municipio_nome').val("");
+        $('#municipio_uf').val("XX");
+        $('#dominio').val("");
+        $('#titulo_portal').val("");
+        $('#sub_titulo_portal').val("");
+        $('#logo').val("");
+        $('#brasao_nome').val("");
+
+        $('#logo_img').prop('src', ""); // '../dist/img/brasoe/sssbv.png'
+        $('#logo_img').prop('title', "");
+        $('#logo_upload').val("");
+
+        $('#exibe_lista').prop("checked", false);
+        $('#enviar_senha_email').prop("checked", false);
+        $('#contra_cheque').prop("checked", false);
+        $('#margem_consignavel').prop("checked", false);
+        
+        $('input[type="checkbox"].custom-checkbox').uniform();
+
+        $('#atualizacao').val("");
+        $('#situacao').val("0");
+
+        $('#tipo_orgao').trigger('chosen:updated');
+        $('#situacao').trigger('chosen:updated');
+        $('#municipio_uf').trigger('chosen:updated');
+
+        if ($('#tab_1').hasClass('active')) $('#tab_1').removeClass('active');
+        if ($('#tab_2').hasClass('active')) $('#tab_2').removeClass('active');
+        if ($('#tab_3').hasClass('active')) $('#tab_3').removeClass('active');
+
+        if ($('#step-1').hasClass('active')) $('#step-1').removeClass('active');
+        if ($('#step-2').hasClass('active')) $('#step-2').removeClass('active');
+        if ($('#step-3').hasClass('active')) $('#step-3').removeClass('active');
+
+        $('#tab_1').addClass('active');
+        $('#step-1').addClass('active');
+
+        //document.getElementById("panel_titulo").style.display    = 'none';
+        document.getElementById("panel_pesquisa").style.display  = 'none';
+        document.getElementById("panel_resultado").style.display = 'none';
+        $('#panel_cadastro').fadeIn( 400, "linear" );
+    }    
 }
 
 function excluirCliente(id) {
-    var id_cliente = id.replace("excluir_cliente_", "");
-    var i_linha = document.getElementById("linha_" + id_cliente);
-    var colunas = i_linha.getElementsByTagName('td');
-    mensagem_confirmar("Confirma a exclusão do cliente <strong>'" + $('#nome_' + id_cliente).val() + " (" + colunas[2].firstChild.nodeValue + ")'</strong>?", function(){
-        var link = document.getElementById("btnC_confirma_msg");
-        link.onclick = function() {
-            var params = {
-                'ac' : 'excluir_cliente',
-                'hs' : $('#hs').val(),
-                'id' : $('#id_' + id_cliente).val(),
-                'fn' : $('#funcoes_' + id_cliente).val(),
-                'sv' : $('#servidores_' + id_cliente).val(),
-                'id_cliente' : $('#id_cliente_' + id_cliente).val()
-            };
-            
-            // Iniciamos o Ajax 
-            $.ajax({
-                // Definimos a url
-                url : './cliente_dao.php',
-                // Definimos o tipo de requisição
-                type: 'post',
-                // Definimos o tipo de retorno
-                dataType : 'html',
-                // Dolocamos os valores a serem enviados
-                data: params,
-                // Antes de enviar ele alerta para esperar
-                beforeSend : function(){
+    if (parseInt($('#administrar').val()) === 0) {
+        mensagem_alerta("Usuário <strong>sem permissão</strong> para esta tarefa");
+    } else {
+        var id_cliente = id.replace("excluir_cliente_", "");
+        var i_linha = document.getElementById("linha_" + id_cliente);
+        var colunas = i_linha.getElementsByTagName('td');
+        mensagem_confirmar("Confirma a exclusão do cliente <strong>'" + $('#nome_' + id_cliente).val() + " (" + colunas[2].firstChild.nodeValue + ")'</strong>?", function(){
+            var link = document.getElementById("btnC_confirma_msg");
+            link.onclick = function() {
+                var params = {
+                    'ac' : 'excluir_cliente',
+                    'hs' : $('#hs').val(),
+                    'id' : $('#id_' + id_cliente).val(),
+                    'fn' : $('#funcoes_' + id_cliente).val(),
+                    'sv' : $('#servidores_' + id_cliente).val(),
+                    'id_cliente' : $('#id_cliente_' + id_cliente).val()
+                };
 
-                },
-                // Colocamos o retorno na tela
-                success : function(data){
-                    var retorno = data;
-                    if (retorno === "OK") {
+                // Iniciamos o Ajax 
+                $.ajax({
+                    // Definimos a url
+                    url : './cliente_dao.php',
+                    // Definimos o tipo de requisição
+                    type: 'post',
+                    // Definimos o tipo de retorno
+                    dataType : 'html',
+                    // Dolocamos os valores a serem enviados
+                    data: params,
+                    // Antes de enviar ele alerta para esperar
+                    beforeSend : function(){
+
+                    },
+                    // Colocamos o retorno na tela
+                    success : function(data){
+                        var retorno = data;
+                        if (retorno === "OK") {
+                            $('#btnF_confirma_msg').trigger("click");
+                            RemoveTableRow(i_linha);
+                        } else {
+                            $('#btnF_confirma_msg').trigger("click");
+                            mensagem_erro( "<p><strong>Erro ao tentar excluir o cliente selecionado:</strong> <br><br>" + retorno + "</p>" );
+                        }
+                    },
+                    error: function (request, status, error) {
                         $('#btnF_confirma_msg').trigger("click");
-                        RemoveTableRow(i_linha);
-                    } else {
-                        $('#btnF_confirma_msg').trigger("click");
-                        mensagem_erro( "<p><strong>Erro ao tentar excluir o cliente selecionado:</strong> <br><br>" + retorno + "</p>" );
+                        mensagem_erro( "<p><strong>Erro ao tentar executar script!</strong> <br><br>(" + status + ")" + request.responseText + "<br><strong>Error : </strong>" + error.toString());
                     }
-                },
-                error: function (request, status, error) {
-                    $('#btnF_confirma_msg').trigger("click");
-                    mensagem_erro( "<p><strong>Erro ao tentar executar script!</strong> <br><br>(" + status + ")" + request.responseText + "<br><strong>Error : </strong>" + error.toString());
-                }
-            });  
-            // Finalizamos o Ajax
-        }
-    });
+                });  
+                // Finalizamos o Ajax
+            }
+        });
+    }
 }
 
 function salvarCliente() {

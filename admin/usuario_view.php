@@ -422,7 +422,7 @@
                         $('input[type="checkbox"].custom-checkbox').uniform();
                         
                         fechar_cadastro();
-                        //formatar_checkbox();
+                        formatar_checkbox();
 /*
     $('input[type="checkbox"].custom-checkbox').uniform();
     $('input[type="radio"].custom-radio').uniform();
