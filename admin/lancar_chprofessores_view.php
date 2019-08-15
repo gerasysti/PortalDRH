@@ -5,6 +5,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  * 
+ * Simple Tour (Ajuda Interativa) :
+ * https://alvaroveliz.github.io/aSimpleTour/index.html
+ * view-source:https://alvaroveliz.github.io/aSimpleTour/demos/demo-1/
  * 
 Select
     s.id_cliente
@@ -53,7 +56,6 @@ where (s.id_cliente = 15019)
     //$lista_unidades = "";
     $lista_lotacoes = "";
     $lista_anomes   = "";
-    $lista_eventos  = "";
 
     //$lista_unidades_lancar = "";
     $lista_lotacoes_lancar = "";
@@ -112,23 +114,6 @@ where (s.id_cliente = 15019)
     while (($obj = $res->fetch(PDO::FETCH_OBJ)) !== false) {
         if ((int)$obj->acesso === 1) $lista_lotacoes .= "<option value='{$obj->id_lotacao}' class='optionChild'>{$obj->descricao}</option>";
         if (((int)$obj->acesso === 1) && ((int)$obj->lancar === 1)) $lista_lotacoes_lancar .= "<option value='{$obj->id_lotacao}' class='optionChild'>{$obj->descricao}</option>";
-    }
-    
-    $sql = 
-         "Select "
-       . "    e.id_cliente "
-       . "  , e.id_evento  "
-       . "  , e.descricao  "
-       . "  , e.codigo     "
-       . "from REMUN_EVENTO e "
-       . "where (e.sem_uso    = 'N') "
-       . "  and (e.id_cliente = {$usuario['cliente']}) "
-       . "order by "
-       . "    e.descricao ";
-
-    $res = $pdo->query($sql);
-    while (($obj = $res->fetch(PDO::FETCH_OBJ)) !== false) {
-        $lista_eventos .= "<option value='{$obj->id_evento}' class='optionChild'>{$obj->descricao} ({$obj->codigo})</option>";
     }
     
     // Fechar conexão PDO
@@ -261,7 +246,7 @@ where (s.id_cliente = 15019)
                                 </div>
                                 
                                 <button id="btn_home" class="btn btn-round btn-primary lg-button botao-orbit-top" onclick="home_controle()" title="Fechar"><i class="glyph-icon icon-close"></i></button>
-                                <button id="btn_inserir" class="btn btn-round btn-primary lg-button botao-orbit-bottom" onclick="lancarEventosxxx('<?php echo 'id_' . $_SESSION['acesso']['id'];?>', '<?php echo 'lg_' . $_SESSION['acesso']['us']?>')" title="Lançar Eventos"><i class="glyph-icon icon-plus"></i></button>
+                                <button id="btn_inserir" class="btn btn-round btn-primary lg-button botao-orbit-bottom" onclick="abrir_lancamento_chprofessores('<?php echo 'id_' . $_SESSION['acesso']['id'];?>', '<?php echo 'lg_' . $_SESSION['acesso']['us']?>')" title="Abrir Lançamento de Carga Horária"><i class="glyph-icon icon-plus"></i></button>
                             </div>
                         </div>
                     </div>
@@ -277,10 +262,10 @@ where (s.id_cliente = 15019)
                         
                         <div class="content-box">
                             <h3 class="content-box-header bg-default">
-                                <i class="glyph-icon icon-money"></i>
-                                <strong>Controle do Evento Mensal</strong>
+                                <i class="glyph-icon icon-dashboard"></i>
+                                <strong>Lançamento da Carga Horária</strong>
                                 <span class="header-buttons-separator">
-                                    <button class="btn btn-primary btn-lg btn-round botao-orbit-top" onclick="salvarControleEventoMensalxxx('<?php echo 'id_' . $_SESSION['acesso']['id'];?>', '<?php echo 'lg_' . $_SESSION['acesso']['us']?>')" id="btn_form_salvar" style="margin: 0px; padding: 0px; right: 90px;" title="Salvar dados de Controle"><i class="glyph-icon icon-save"></i></button>
+                                    <button class="btn btn-primary btn-lg btn-round botao-orbit-top" onclick="salvar_lancamentos_chprofessores('<?php echo 'id_' . $_SESSION['acesso']['id'];?>', '<?php echo 'lg_' . $_SESSION['acesso']['us']?>')" id="btn_form_salvar" style="margin: 0px; padding: 0px; right: 90px;" title="Salvar dados de Controle"><i class="glyph-icon icon-save"></i></button>
                                     <button class="btn btn-primary btn-lg btn-round botao-orbit-top" onclick="fechar_lancamentos()"  id="btn_form_fechar" style="margin: 0px; padding: 0px;" title="Voltar à Pesquisa"><i class="glyph-icon icon-arrow-left"></i></button>
                                 </span>
                             </h3>
@@ -309,11 +294,11 @@ where (s.id_cliente = 15019)
                                                     </select>
                                                 </div>
                                                 <label class="col-sm-4 control-label padding-label">
-                                                    <a href="javascript:void(0);" title="Finalizar Lançamento" onclick="finalizar_lancamento()">
+                                                    <a href="javascript:void(0);" title="Finalizar Lançamento" onclick="finalizar_lancamento_chprof()">
                                                         <span class="bs-badge badge-primary"><i class="glyph-icon icon-check-circle-o"></i> Finalizar Lançamento</span>
                                                     </a>
                                                     &nbsp;
-                                                    <a href="javascript:void(0);" title="Finalizar Lançamento" onclick="reabrir_lancamento()">
+                                                    <a href="javascript:void(0);" title="Finalizar Lançamento" onclick="reabrir_lancamento_chprof()">
                                                         <span class="bs-badge badge-warning"><i class="glyph-icon icon-circle-o"></i> Reabrir Lançamento</span>
                                                     </a>
                                                 </label>
@@ -324,16 +309,6 @@ where (s.id_cliente = 15019)
                                                     <select class="form-control chosen-select" id="id_unid_lotacao" style="width: 100%;">
                                                         <option value="0" class="optionChild">Selecione a Unidade de Lotação</option>
                                                         <?php echo $lista_lotacoes_lancar;?>
-                                                    </select>
-                                                </div>
-                                            </div>
-                                            
-                                            <div class="form-group" style="margin: 2px;">
-                                                <label for="id_evento" class="col-sm-2 control-label padding-label">Evento de Lançamento</label>
-                                                <div class="col-sm-10 padding-field">
-                                                    <select class="form-control chosen-select" id="id_evento" style="width: 100%;">
-                                                        <option value="0" class="optionChild">Selecione o Evento</option>
-                                                        <?php echo $lista_eventos;?>
                                                     </select>
                                                 </div>
                                             </div>
@@ -375,7 +350,7 @@ where (s.id_cliente = 15019)
                         <div class="content-box">
                             <h3 class="content-box-header bg-default">
                                 <i class="glyph-icon icon-users"></i>
-                                Servidores
+                                Professores
                                 <span class="header-buttons-separator">
                                     <a href="javascript:void(0);" class="icon-separator" title="Ajuda">
                                         <i class="glyph-icon icon-question"></i>
@@ -563,9 +538,9 @@ where (s.id_cliente = 15019)
                             document.getElementById("panel_lancamentos").style.display  = 'none';
                             var i_linha = document.getElementById("linha_" + parseInt($('#controle').val()));
                             if (i_linha !== null) {
-                                var qtde_servidores = parseInt($('#qtde_servidores').val());
+                                var qtde_professores = parseInt($('#qtde_professores').val());
                                 var colunas = i_linha.getElementsByTagName('td');
-                                colunas[6].firstChild.nodeValue = qtde_servidores;
+                                colunas[2].firstChild.nodeValue = qtde_professores;
                             }
                         }
                         
@@ -668,7 +643,7 @@ where (s.id_cliente = 15019)
                             if (situacao === 0) {
                                 var controle = parseFloat("0" + $('#controle').val());
                                 if (controle === 0.0) {
-                                    mensagem_alerta("Salve, primeiramente, os dados de controle do Evento Mensal.");
+                                    mensagem_alerta("Salve, primeiramente, os dados inciais do Lançamento da Carga Horária.");
                                 } else {
                                     //var qtde_servidores = parseInt($('#qtde_servidores').val());
                                     var tipo_lancamento = parseInt($('#tipo_lancamento_' + parseFloat("0" + $('#controle').val()) ).val());
@@ -698,7 +673,7 @@ where (s.id_cliente = 15019)
                             if (situacao === 0) {
                                 var controle = parseFloat("0" + $('#controle').val());
                                 if (controle === 0.0) {
-                                    mensagem_alerta("Salve, primeiramente, os dados de controle do Evento Mensal.");
+                                    mensagem_alerta("Salve, primeiramente, os dados inciais do Lançamento da Carga Horária.");
                                 } else {
                                     var qtde_servidores = parseInt($('#qtde_servidores').val());
                                     var tipo_lancamento = parseInt($('#tipo_lancamento_' + parseFloat("0" + $('#controle').val()) ).val());

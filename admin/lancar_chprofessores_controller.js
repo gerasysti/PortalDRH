@@ -35,7 +35,7 @@ function configurarTabelaCHLancadas(){
             { "width": "10px" },   // 5. CH Outras
             { "width": "10px" },   // 6. Faltas
             { "width": "10px" },   // 7. Importado
-            { "width": "120px" }   // 8. Controles
+            { "width": "130px" }   // 8. Controles
         ],
         "columnDefs": [
             {"orderable": false, "targets": 0}, // #
@@ -384,7 +384,7 @@ function excluirLancamentoCH(id) {
         }
         mensagem_alerta("Este lançamento está <strong>" + situacao + "</strong> e não poderá ser excluído.<br>Entre em contato com a direção.");
     } else {
-        mensagem_confirmar("Confirma a exclusão do lançamento <strong><code>" + colunas[0].firstChild.nodeValue + " (" + colunas[1].firstChild.nodeValue + " - " + colunas[2].firstChild.nodeValue + ")</code></strong>?", function(){
+        mensagem_confirmar("Confirma a exclusão do lançamento de Carga Horária <strong><code>" + colunas[0].firstChild.nodeValue + " (" + colunas[1].firstChild.nodeValue + " - " + colunas[2].firstChild.nodeValue + ")</code></strong>?", function(){
             var link = document.getElementById("btnC_confirma_msg");
             link.onclick = function() {
                 var params = {
@@ -393,6 +393,7 @@ function excluirLancamentoCH(id) {
                     'to' : $('#id_cliente_' + referencia).val(),
                     'lo' : $('#id_unid_lotacao_' + referencia).val(),
                     'cp' : $('#ano_mes_' + referencia).val(),
+                    'ct' : $('#controle_' + referencia).val(),
                     'id' : referencia
                 };
 
@@ -417,9 +418,9 @@ function excluirLancamentoCH(id) {
                             $('#btnF_confirma_msg').trigger("click");
                             RemoveTableRow(i_linha);
                             
-                            if (typeof($('#qtde_servidores')) !== "undefined") {
-                                var qtde_servidores = (parseInt($('#qtde_servidores').val()) - 1);
-                                $('#qtde_servidores').val( qtde_servidores );
+                            if (typeof($('#qtde_professores')) !== "undefined") {
+                                var qtde_professores = (parseInt($('#qtde_professores').val()) - 1);
+                                $('#qtde_professores').val( qtde_servidores );
                             }
                         } else {
                             $('#btnF_confirma_msg').trigger("click");
@@ -622,19 +623,29 @@ function situacao_lancamento_evento(situacao) {
     }
 }
 
-function finalizar_lancamento() {
-    if ($('#situacao').val() === "0") {
-        situacao_lancamento_evento("1");
+function finalizar_lancamento_chprof() {
+    var controle = parseFloat("0" + $('#controle').val());
+    if (controle === 0.0) {
+        mensagem_alerta("Salve, primeiramente, os dados inciais do Lançamento da Carga Horária.");
+    } else {
+        if ($('#situacao').val() === "0") {
+            situacao_lancamento_evento("1");
+        }
     }
 }
 
-function reabrir_lancamento() {
-    if ($('#situacao').val() === "1") {
-        situacao_lancamento_evento("0");
+function reabrir_lancamento_chprof() {
+    var controle = parseFloat("0" + $('#controle').val());
+    if (controle === 0.0) {
+        mensagem_alerta("O Lançamento da Carga Horária não está pronto para esta operação.");
+    } else {
+        if ($('#situacao').val() === "1") {
+            situacao_lancamento_evento("0");
+        }
     }
 }
 
-function lancarEventos(id, us) {
+function abrir_lancamento_chprofessores(id, us) {
     var hash  = id.split("_");
     var email = us.split("_");
     var params = {
@@ -647,23 +658,20 @@ function lancarEventos(id, us) {
     } else {
         $('#op').val("novo_lancamento");
         $('#controle').val( "00000" );
+        $('#id_lancto').val("");
         $('#id_cliente').val( $('#cliente').val() );
         $('#data').val( $('#hoje').val() );
         $('#ano_mes').val( $('#competencia_atual').val());
-        $('#id_unid_gestora').val("0");
         $('#id_unid_lotacao').val("0");
-        $('#id_evento').val("0");
         $('#situacao').val("0");
 
         $('#importado').prop('checked', false); 
 
         $('#ano_mes').prop('disabled', false); 
-        $('#id_unid_gestora').prop('disabled', false); 
         $('#id_unid_lotacao').prop('disabled', false); 
         $('#id_evento').prop('disabled', false); 
 
         $('#ano_mes').trigger('chosen:updated');
-        $('#id_unid_gestora').trigger('chosen:updated');
         $('#id_unid_lotacao').trigger('chosen:updated');
         $('#id_evento').trigger('chosen:updated');
         $('#situacao').trigger('chosen:updated');
@@ -681,7 +689,7 @@ function lancarEventos(id, us) {
     }
 }
 
-function salvarControleEventoMensal(id, us) {
+function salvar_lancamentos_chprofessores(id, us) {
     var retorno = false;
     try {
         var agora = new Date();
@@ -689,16 +697,15 @@ function salvarControleEventoMensal(id, us) {
         $('#hora').val(zero_esquerda(agora.getHours(), 2) + ":" + zero_esquerda(agora.getMinutes(), 2) + ":" + zero_esquerda(agora.getSeconds(), 2));
         
         var params = {
-            'ac' : 'gravar_lancamento_evento',
+            'ac' : 'gravar_lancamento_cabecalho',
             'op' : $('#op').val(),
             'hs' : $('#hs').val(),
             'id' : $('#id').val(),
             'id_cliente' : $('#id_cliente').val(),
-            'controle' : parseFloat("0" + $('#controle').val()),
-            'ano_mes'  : $('#ano_mes').val(),
-            'id_unid_gestora' : $('#id_unid_gestora').val(),
+            'id_lancto'  : $('#id_lancto').val(),
+            'controle'   : parseFloat("0" + $('#controle').val()),
+            'ano_mes'    : $('#ano_mes').val(),
             'id_unid_lotacao' : $('#id_unid_lotacao').val(),
-            'id_evento'       : $('#id_evento').val(),
             'data'     : $('#data').val(),
             'hora'     : $('#hora').val(),
             'situacao' : $('#situacao').val()
@@ -709,9 +716,7 @@ function salvarControleEventoMensal(id, us) {
         
         if (parseInt("0" + params.id_cliente)       === 0) msg += mrc + "Cliente<br>";
         if (parseInt("0" + params.ano_mes)          === 0) msg += mrc + "Competência<br>";
-        if (parseInt("0" + params.id_unid_gestora)  === 0) msg += mrc + "Unidade Gestora<br>";
         if (parseInt("0" + params.id_unid_lotacao)  === 0) msg += mrc + "Unidade de Lotação<br>";
-        if (parseInt("0" + params.id_evento)        === 0) msg += mrc + "Evento de Lançamento<br>";
         
         if (msg.trim() !== "") {
             mensagem_alerta( "<p><strong>Os campos listados têm seu preenchimento obrigatório:</strong> <br><br>" + msg + "</p>" );
@@ -719,7 +724,7 @@ function salvarControleEventoMensal(id, us) {
             // Iniciamos o Ajax 
             $.ajax({
                 // Definimos a url
-                url : './lancar_eventos_dao.php',
+                url : './lancar_chprofessores_dao.php',
                 // Definimos o tipo de requisição
                 type: 'post',
                 // Definimos o tipo de retorno
@@ -735,21 +740,21 @@ function salvarControleEventoMensal(id, us) {
                 },
                 // Colocamos o retorno na tela
                 success : function(data){
-                    var file_json = "../downloads/lanc_evento_" + params.hs + ".json"; 
+                    var file_json = "../downloads/lanc_chs_" + params.hs + ".json"; 
                     var retorno   = data;
                     if (retorno === "OK") {
                         $.getJSON(file_json, function(data){
                             this.qtd = data.form.length;
                             if (params.op === "novo_lancamento") {
                                 $('#controle').val(data.form[0].controle);
-                                AddTableRowLancamentoEvento(data.form[0].table_tr);
+                                //AddTableRowLancamentoEvento(data.form[0].table_tr);
                             } else 
                             if (params.op === "editar_lancamento") {
                                 //var referencia = params.id_unid_gestora + "_" + params.id_unid_lotcao + "_" + params.id_evento + "_" + params.ano_mes;
                                 var referencia = params.controle;
                                 var i_linha = document.getElementById("linha_" + referencia);
                                 var colunas = i_linha.getElementsByTagName('td');
-
+                                /*
                                 colunas[1].firstChild.nodeValue = $('#id_unid_gestora option:selected').text();
                                 colunas[2].firstChild.nodeValue = $('#id_unid_lotacao option:selected').text();
                                 colunas[3].firstChild.nodeValue = data.form[0].rubrica;
@@ -757,12 +762,10 @@ function salvarControleEventoMensal(id, us) {
                                 colunas[5].firstChild.nodeValue = data.form[0].tipo;
                                 colunas[6].firstChild.nodeValue = data.form[0].servidores;
                                 colunas[7].firstChild.nodeValue = "...";
-
+                                */
                                 $('#controle_' + referencia).val( params.controle );
                                 $('#id_cliente_' + referencia).val( params.id_cliente );
-                                $('#id_unid_gestora_' + referencia).val( params.id_unid_gestora );
                                 $('#id_unid_lotacao_' + referencia).val( params.id_unid_lotacao );
-                                $('#id_evento_' + referencia).val( params.id_evento );
                                 $('#data_' + referencia).val( params.data );
                                 $('#situacao_' + referencia).val( params.situacao );
                             }

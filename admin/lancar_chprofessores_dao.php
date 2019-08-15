@@ -77,6 +77,7 @@
     
     function getRegistro($id_cliente, $ano_mes, $controle) {
         $retorno = false;
+        $user_id = (!isset($_SESSION['acesso']['id_usuario'])?-1:intval($_SESSION['acesso']['id_usuario']));
 
         $cnf = Configuracao::getInstancia();
         $pdo = $cnf->db('', '');
@@ -84,54 +85,39 @@
 
         $sql = 
               "Select "
-            . "    mv.controle   "
+            . "    mv.id_lancto "
+            . "  , mv.controle "
             . "  , mv.id_cliente "
-            . "  , mv.id_unid_gestora "
             . "  , mv.id_unid_lotacao "
-            . "  , mv.id_evento "
             . "  , mv.ano_mes "
             . "  , mv.data "
             . "  , mv.situacao "
             . "  , mv.importado "
-            . "  , mv.id_evento as id "
-            . "  , ev.codigo    as rubrica "
-            . "  , ev.descricao as evento "
-            . "  , ev.tipo "
-            . "  , ev.tipo_lancamento "
-            . "  , ug.razao_social as unidade_gestora "
             . "  , lo.descricao    as unidade_lotacao "
-            . "  , coalesce(lc.servidores,  0) as servidores "
-            . "  , coalesce(lc.total_quant, 0) as total_quant "
-            . "  , coalesce(lc.total_valor, 0) as total_valor "
-            . "from REMUN_EVENTO_AVULSO mv "
-            . "  left join REMUN_UNID_GESTORA ug on (ug.id_cliente = mv.id_cliente and ug.id = mv.id_unid_gestora) "
+            . "  , coalesce(lc.servidores,  0)     as servidores "
+            . "  , coalesce(lc.total_ch_normal, 0) as total_ch_normal "
+            . "  , coalesce(lc.total_ch_subst, 0)  as total_ch_subst "
+            . "  , coalesce(lc.total_ch_outra, 0)  as total_ch_outra "
+            . "  , coalesce(lc.total_faltas, 0)    as total_faltas "
+            . "from REMUN_LANCTO_CH mv "
+            . "  inner join ADM_USUARIO_UNID_LOTACAO y on (y.id_cliente = mv.id_cliente and y.id_unid_lotacao = mv.id_unid_lotacao and y.id_usuario = {$user_id} and y.acesso = 1) "
             . "  left join REMUN_UNID_LOTACAO lo on (lo.id_cliente = mv.id_cliente and lo.id_lotacao = mv.id_unid_lotacao) "
-            . "  left join REMUN_EVENTO ev on (ev.id_cliente = mv.id_cliente and ev.id_evento = mv.id_evento) "
             . "  left join ( "
             . "    Select "
-            . "        i.id_cliente "
-            . "      , i.id_unid_gestora "
-            . "      , i.id_unid_lotacao "
-            . "      , i.id_evento "
-            . "      , i.ano_mes "
-            . "      , count(i.id_servidor) as servidores "
-            . "      , sum(i.quant) as total_quant "
-            . "      , sum(i.valor) as total_valor "
-            . "    from REMUN_EVENTO_AVULSO_ITEM i "
+            . "        i.id_lancto  "
+            . "      , i.id_cliente "
+            . "      , count(i.id_servidor)           as servidores "
+            . "      , sum(i.qtd_h_aula_normal)       as total_ch_normal "
+            . "      , sum(i.qtd_h_aula_substituicao) as total_ch_subst "
+            . "      , sum(i.qtd_h_aula_outra) as total_ch_outra "
+            . "      , sum(i.qtd_falta)        as total_faltas "
+            . "    from REMUN_LANCTO_CH_PROF i          "
             . "    where (i.id_cliente = {$id_cliente}) "
             . "      and (i.ano_mes    = '{$ano_mes}')  "
-            . "    group by "
-            . "        i.id_cliente "
-            . "      , i.id_unid_gestora "
-            . "      , i.id_unid_lotacao "
-            . "      , i.id_evento "
-            . "      , i.ano_mes "
-            . "  ) lc on (lc.id_cliente      = mv.id_cliente "
-            . "       and lc.id_unid_gestora = mv.id_unid_gestora "
-            . "       and lc.id_unid_lotacao = mv.id_unid_lotacao "
-            . "       and lc.id_evento       = mv.id_evento "
-            . "       and lc.ano_mes         = mv.ano_mes "
-            . "  ) "
+            . "    group by         "
+            . "        i.id_lancto  "
+            . "      , i.id_cliente "
+            . "  ) lc on (lc.id_lancto = mv.id_lancto and lc.id_cliente = mv.id_cliente) "
             . "where (mv.id_cliente = {$id_cliente}) "
             . "  and (mv.ano_mes    = '{$ano_mes}')  "
             . "  and (mv.controle   = '{$controle}') ";
@@ -430,21 +416,20 @@
                     }
                 } break;
                 
-                case 'gravar_lancamento_evento' : {
+                case 'gravar_lancamento_cabecalho' : {
                     try {
                         $op = trim(filter_input(INPUT_POST, 'op'));
                         $hs = trim(filter_input(INPUT_POST, 'hs'));
                         $id = trim(filter_input(INPUT_POST, 'id'));
                         $controle   = floatval( preg_replace("/[^0-9]/", "", "0" . trim(filter_input(INPUT_POST, 'controle'))) );
+                        $id_lancto  = strip_tags( trim(filter_input(INPUT_POST, 'id_lancto')) );
                         $id_cliente = intval( preg_replace("/[^0-9]/", "", "0" . trim(filter_input(INPUT_POST, 'id_cliente'))) );
                         $ano_mes    = strip_tags( trim(filter_input(INPUT_POST, 'ano_mes')) );
-                        $id_unid_gestora = intval( preg_replace("/[^0-9]/", "", "0" . trim(filter_input(INPUT_POST, 'id_unid_gestora'))) );
                         $id_unid_lotacao = intval( preg_replace("/[^0-9]/", "", "0" . trim(filter_input(INPUT_POST, 'id_unid_lotacao'))) );
-                        $id_evento       = intval( preg_replace("/[^0-9]/", "", "0" . trim(filter_input(INPUT_POST, 'id_evento'))) );
                         $data = strip_tags( trim(filter_input(INPUT_POST, 'data')) );
                         $hora = strip_tags( trim(filter_input(INPUT_POST, 'hora')) );
                         
-                        $file = '../downloads/lanc_evento_' . $hs . '.json';
+                        $file = '../downloads/lanc_chs_' . $hs . '.json';
                         if (file_exists($file)) {
                             unlink($file);
                         }
@@ -452,22 +437,21 @@
                         if ($hs !== $hash) {
                             echo "Acesso Inválido";
                         } else {
-                            // Verificar se já existe lançamento mensal do evento para o Cliente/Unidade/Lotação/Competência
+                            // Verificar se já existe lançamento de Carga Horária para o cliente no Ano/Mês/Lotação
                             $sql = 
                                   "Select "
-                                . "    mv.controle "
-                                . "  , mv.data     "
-                                . "  , mv.usuario  "
-                                . "  , us.nome     "
-                                . "from REMUN_EVENTO_AVULSO mv "
+                                . "    mv.controle  "
+                                . "  , mv.id_lancto "
+                                . "  , mv.data      "
+                                . "  , mv.usuario   "
+                                . "  , us.nome      "
+                                . "from REMUN_LANCTO_CH mv "
                                 . "  left join ADM_USUARIO us on (us.id = mv.usuario) "
-                                . "where (mv.id_cliente = {$id_cliente}) "
-                                . "  and (mv.ano_mes    = '{$ano_mes}')  "
-                                . "  and (mv.id_unid_gestora = {$id_unid_gestora}) "
+                                . "where (mv.id_lancto <> '{$id_lancto}') "
+                                . "  and (mv.id_cliente = {$id_cliente})  "
+                                . "  and (mv.ano_mes    = '{$ano_mes}')   "
                                 . "  and (mv.id_unid_lotacao = {$id_unid_lotacao}) "
-                                . "  and (mv.id_evento       = {$id_evento}) "
-                                . "  and (mv.controle       <> {$controle})  "
-                                . "  and (mv.situacao       <> 2) ";
+                                . "  and (mv.situacao       <> 2) "; // 2 - Cancelado
                             
                             $cnf = Configuracao::getInstancia();
                             $pdo = $cnf->db('', '');
@@ -481,15 +465,16 @@
                             } else {
                                 if ($op === "novo_lancamento") {
                                     $dao = Dao::getInstancia();
-                                    $controle = $dao->getGeneratorID("GEN_EVENTO_AVULSO");
+                                    $controle  = $dao->getGeneratorID("GEN_LANCTO_CH");
+                                    $id_lancto = $dao->getGuidIDFormat();
+                                    
                                     // Inserir Lançamento
                                     $stm = $pdo->prepare(
-                                          "Insert Into REMUN_EVENTO_AVULSO ("
+                                          "Insert Into REMUN_LANCTO_CH ("
                                         . "    controle         "
+                                        . "  , id_lancto        "
                                         . "  , id_cliente       "
-                                        . "  , id_unid_gestora  "
                                         . "  , id_unid_lotacao  "
-                                        . "  , id_evento        "
                                         . "  , ano_mes          "
                                         . "  , data             "
                                         . "  , hora             "
@@ -498,10 +483,9 @@
                                         . "  , importado        "
                                         . ") values ("
                                         . "    :controle         "
+                                        . "  , :id_lancto        "
                                         . "  , :id_cliente       "
-                                        . "  , :id_unid_gestora  "
                                         . "  , :id_unid_lotacao  "
-                                        . "  , :id_evento        "
                                         . "  , :ano_mes          "
                                         . "  , current_date      "
                                         . "  , current_time      "
@@ -511,49 +495,25 @@
                                         . ")");
                                     $stm->execute(array(
                                         ':controle'         => $controle,
+                                        ':id_lancto'        => $id_lancto,
                                         ':id_cliente'       => $id_cliente,
-                                        ':id_unid_gestora'  => $id_unid_gestora,
                                         ':id_unid_lotacao'  => $id_unid_lotacao,
-                                        ':id_evento'        => $id_evento,
                                         ':ano_mes'          => $ano_mes,
                                         ':usuario'          => $user_id
                                     ));
                                     $pdo->commit();
-                                    /*
-                                    // Gerar Itens do Lançamento
-                                    $stm = $pdo->prepare(
-                                          "Execute procedure SET_REMUN_EVENTO_AVULSO_ITEM ( "
-                                        . "    :id_cliente      "
-                                        . "  , :id_unid_gestora "
-                                        . "  , :id_unid_lotacao "
-                                        . "  , :id_evento       "
-                                        . "  , :ano_mes         "
-                                        . ")");
-                                    $stm->execute(array(
-                                        ':id_cliente'       => $id_cliente,
-                                        ':id_unid_gestora'  => $id_unid_gestora,
-                                        ':id_unid_lotacao'  => $id_unid_lotacao,
-                                        ':id_evento'        => $id_evento,
-                                        ':ano_mes'          => $ano_mes
-                                    ));
-                                    $pdo->commit();
-                                    */
                                 } else
                                 if ($op === "editar_lancamento") {
                                     $stm = $pdo->prepare(
-                                          "Update REMUN_EVENTO_AVULSO mv Set            "
-                                        . "    mv.id_unid_gestora  = :id_unid_gestora   "
-                                        . "  , mv.id_unid_lotacao  = :id_unid_lotacao   "
-                                        . "  , mv.id_evento        = :id_evento         "
+                                          "Update REMUN_LANCTO_CH mv Set            "
+                                        . "    mv.id_unid_lotacao  = :id_unid_lotacao   "
                                         . "  , mv.ano_mes          = :ano_mes           "
-                                        . "where (mv.situacao  = 0)  "
-                                        . "  and (mv.importado = 0)  "
-                                        . "  and (mv.controle  = :controle)");
+                                        . "where (mv.id_lancto = :id_lancto) "
+                                        . "  and (mv.situacao  = 0)  "
+                                        . "  and (mv.importado = 0)  ");
                                     $stm->execute(array(
-                                        ':controle'         => $controle,
-                                        ':id_unid_gestora'  => $id_unid_gestora,
+                                        ':id_lancto'        => $id_lancto,
                                         ':id_unid_lotacao'  => $id_unid_lotacao,
-                                        ':id_evento'        => $id_evento,
                                         ':ano_mes'          => $ano_mes
                                     ));
                                     $pdo->commit();
@@ -562,13 +522,12 @@
                                 $obj = getRegistro($id_cliente, $ano_mes, $controle);
                                 
                                 $registros = array('form' => array());
-                                $registros['form'][0]['referencia'] = $controle;
+                                $registros['form'][0]['referencia'] = substr($id_lancto, 1, strlen($id_lancto) - 2); // GUID sem as chaves "{}"
+                                $registros['form'][0]['id_lancto']  = $id_lancto;
                                 $registros['form'][0]['controle']   = str_pad($controle, 5, "0", STR_PAD_LEFT);
                                 $registros['form'][0]['ano_mes']    = $ano_mes;
                                 $registros['form'][0]['data']       = $data;
                                 $registros['form'][0]['hora']       = $hora;
-                                $registros['form'][0]['rubrica']    = $obj->rubrica;
-                                $registros['form'][0]['tipo']       = $obj->tipo;
                                 $registros['form'][0]['servidores'] = $obj->servidores;
                                 $registros['form'][0]['table_tr']   = table_tr($controle, $obj);
 
@@ -956,17 +915,16 @@
                     }
                 } break;
                 
-                case 'excluir_lancamento_evento' : {
+                case 'excluir_lancamento_ch' : {
                     try {
                         $to = strip_tags( preg_replace("/[^0-9]/", "", trim(filter_input(INPUT_POST, 'to'))) );
-                        $ug = strip_tags( preg_replace("/[^0-9]/", "", trim(filter_input(INPUT_POST, 'ug'))) );
                         $lo = strip_tags( preg_replace("/[^0-9]/", "", trim(filter_input(INPUT_POST, 'lo'))) );
-                        $ev = strip_tags( preg_replace("/[^0-9]/", "", trim(filter_input(INPUT_POST, 'ev'))) );
                         $cp = strip_tags( preg_replace("/[^0-9]/", "", trim(filter_input(INPUT_POST, 'cp'))) );
-                        $id = strip_tags( preg_replace("/[^0-9]/", "", trim(filter_input(INPUT_POST, 'id'))) );
+                        $ct = strip_tags( preg_replace("/[^0-9]/", "", trim(filter_input(INPUT_POST, 'ct'))) );
+                        $id = "{" . strip_tags( trim(filter_input(INPUT_POST, 'id')) ) . "}";
                         $hs = trim(filter_input(INPUT_POST, 'hs'));
                         
-                        $obj = getRegistro($to, $cp, $id);
+                        $obj = getRegistro($to, $cp, $ct);
                         if ((int)$obj->importado === 1) {
                             echo "Este lançamento já foi <strong>importado</strong> para o sistema de folha Remuneratus$ na central e não poderá ser excluído.<br>Entre em contato com a direção.";
                         } else 
@@ -981,18 +939,12 @@
                                 $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
                                 $stm = $pdo->prepare(
-                                      "Delete from REMUN_EVENTO_AVULSO "
-                                    . "where (id_cliente      = :id_cliente)"
-                                    . "  and (id_unid_gestora = :id_unid_gestora)"
-                                    . "  and (id_unid_lotacao = :id_unid_lotacao)"
-                                    . "  and (id_evento       = :id_evento)"
-                                    . "  and (ano_mes         = :ano_mes) ");
+                                      "Delete from REMUN_LANCTO_CH "
+                                    . "where (id_cliente = :id_cliente)"
+                                    . "  and (id_lancto  = :id_lancto) ");
                                 $stm->execute(array(
-                                      ':id_cliente'       => $to
-                                    , ':id_unid_gestora'  => $ug
-                                    , ':id_unid_lotacao'  => $lo
-                                    , ':id_evento'        => $ev
-                                    , ':ano_mes'          => $cp
+                                      ':id_cliente' => $to
+                                    , ':id_lancto'  => $id
                                 ));
 
                                 $pdo->commit();

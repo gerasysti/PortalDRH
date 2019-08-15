@@ -4,6 +4,13 @@
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
+ * 
+ * Simple Tour (Ajuda Interativa) :
+ * 
+ * https://alvaroveliz.github.io/aSimpleTour/index.html
+ * http://codesells.com/TourTip
+ * http://bootstraptour.com/
+ * 
  */
     require_once '../lib/classes/configuracao.php';
     require_once '../lib/Constantes.php';

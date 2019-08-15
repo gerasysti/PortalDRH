@@ -631,14 +631,24 @@ function situacao_lancamento_evento(situacao) {
 }
 
 function finalizar_lancamento() {
-    if ($('#situacao').val() === "0") {
-        situacao_lancamento_evento("1");
+    var controle = parseFloat("0" + $('#controle').val());
+    if (controle === 0.0) {
+        mensagem_alerta("Salve, primeiramente, os dados de controle do Evento Mensal.");
+    } else {
+        if ($('#situacao').val() === "0") {
+            situacao_lancamento_evento("1");
+        }
     }
 }
 
 function reabrir_lancamento() {
-    if ($('#situacao').val() === "1") {
-        situacao_lancamento_evento("0");
+    var controle = parseFloat("0" + $('#controle').val());
+    if (controle === 0.0) {
+        mensagem_alerta("O Conrole de Evento Mensal não está pronto para esta operação.");
+    } else {
+        if ($('#situacao').val() === "1") {
+            situacao_lancamento_evento("0");
+        }
     }
 }
 
