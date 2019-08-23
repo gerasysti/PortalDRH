@@ -173,6 +173,7 @@
                                 . "  , coalesce(g.descricao, '* UG NÃO INFORMADA')           as unidade_gestora "
                                 . "  , coalesce(l.descricao, '* LOTAÇÃO NÃO INFORMADA')      as unidade_lotacao "
                                 . "  , coalesce(f.descricao, '* CARGO/FUNÇÃO NÃO INFORMADO') as cargo_funcao   "
+                                . "  , coalesce(f.tipo_sal,  '1') as tipo_salario "
                                 . "from REMUN_SERVIDOR s "
                                 . "  left join REMUN_UNID_GESTORA g on (g.id_cliente = s.id_cliente and g.id = s.id_unid_gestora)         "
                                 . "  left join REMUN_UNID_LOTACAO l on (l.id_cliente = s.id_cliente and l.id_lotacao = s.id_unid_lotacao) "
@@ -199,8 +200,8 @@
                                 $dt_nascimento = (!empty($obj->dt_nascimento)?date('d/m/Y', strtotime($obj->dt_nascimento) ):"");
                                 $unid_gest  = (!empty($obj->id_unid_gestora)?$obj->id_unid_gestora:"0");
                                 $unid_lota  = (!empty($obj->id_unid_lotacao)?$obj->id_unid_lotacao:"0");
-                                $cargo_atual = (!empty($obj->id_cargo_atual)?$obj->id_cargo_atual:"0");
-                                $situacao    = intval("0" . $obj->situacao);
+                                $cargo_atual  = (!empty($obj->id_cargo_atual)?$obj->id_cargo_atual:"0");
+                                $situacao     = intval("0" . $obj->situacao);
 
                                 // formatarTexto('###.###.###-##', $cpf)
                                 $registros = array('form' => array());
@@ -211,16 +212,17 @@
                                 $registros['form'][0]['nome']        = $nome;
                                 $registros['form'][0]['cpf']         = $cpf;
                                 $registros['form'][0]['rg']          = $rg;
-                                $registros['form'][0]['cpf_formatado'] = formatarTexto('###.###.###-##', $cpf);
-                                $registros['form'][0]['dt_admissao']   = $dt_admissao;
-                                $registros['form'][0]['dt_nascimento'] = $dt_nascimento;
-                                $registros['form'][0]['unid_gest']     = $unid_gest;
-                                $registros['form'][0]['unid_lota']     = $unid_lota;
-                                $registros['form'][0]['cargo_atual']   = $cargo_atual;
-                                $registros['form'][0]['situacao']      = $situacao;
+                                $registros['form'][0]['cpf_formatado']   = formatarTexto('###.###.###-##', $cpf);
+                                $registros['form'][0]['dt_admissao']     = $dt_admissao;
+                                $registros['form'][0]['dt_nascimento']   = $dt_nascimento;
+                                $registros['form'][0]['unid_gest']       = $unid_gest;
+                                $registros['form'][0]['unid_lota']       = $unid_lota;
+                                $registros['form'][0]['cargo_atual']     = $cargo_atual;
+                                $registros['form'][0]['situacao']        = $situacao;
                                 $registros['form'][0]['unidade_gestora'] = $obj->unidade_gestora;
                                 $registros['form'][0]['unidade_lotacao'] = $obj->unidade_lotacao;
                                 $registros['form'][0]['cargo_funcao']    = $obj->cargo_funcao;
+                                $registros['form'][0]['tipo_salario']    = $obj->tipo_salario; // 1 - Normal, 2 - Hora/aula
                                 
                                 $json = json_encode($registros);
                                 file_put_contents($file, $json);

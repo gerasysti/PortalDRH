@@ -438,16 +438,14 @@ function excluirLancamentoCH(id) {
     }
 }
 
-function verificar_lancamento_servidor(servidor, callback) {
+function verificar_lancamento_ch_professor(ano_mes, escola, servidor, callback) {
     var params = {
         'ac' : 'lancamento_servidor',
         'hs' : $('#hs').val(),
         'to' : $('#id_cliente').val(),
-        'ug' : $('#id_unid_gestora').val(),
-        'lo' : $('#id_unid_lotacao').val(),
-        'ev' : $('#id_evento').val(),
-        'cp' : $('#ano_mes').val(),
         'id' : $('#controle').val(),
+        'cp' : ano_mes,
+        'lo' : escola,
         'sv' : servidor
     };
 

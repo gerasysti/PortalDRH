@@ -379,13 +379,28 @@ where (s.id_cliente = 15019)
                             <div class="modal-content">
                                 <div class="modal-header bg-primary">
                                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                                    <h4 class="modal-title"> Inserir Servidor</h4>
+                                    <h4 class="modal-title"> Novo Lançamento de Carga Horária</h4>
                                 </div>
                                 <div class="modal-body">
                                     
                                     <div class="form-horizontal bordered-row">
                                         <div class="row">
                                             <div class="col-md-12">
+                                                <div class="form-group" style="margin: 2px;">
+                                                    <label for="id_escola" class="col-sm-2 control-label padding-label">Escola</label>
+                                                    <div class="col-sm-2 padding-field">
+                                                        <div class="input-group">
+                                                            <input type="text" class="form-control text lg-text proximo_campo" maxlength="8" id="id_escola" onkeypress="return somente_numero(event);" readonly>
+                                                            <div class="input-group-addon" style="padding: 0px; padding-left : 4px;">
+                                                                <button id="btn_consultar_escola" class="btn ra-round btn-primary lg-text proximo_campo" onclick="buscar_registro_escola()" title="Buscar Escola" disabled><i class="glyph-icon icon-search"></i></button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-8 padding-field">
+                                                        <input type="text" class="form-control text lg-text proximo_campo" maxlength="8" id="nm_escola" readonly>
+                                                    </div>
+                                                </div>
+                                                
                                                 <div class="form-group" style="margin: 2px;">
                                                     <label for="id_servidor" class="col-sm-2 control-label padding-label">Servidor</label>
                                                     <div class="col-sm-2 padding-field">
@@ -413,25 +428,67 @@ where (s.id_cliente = 15019)
                                                 </div>
                                                 
                                                 <div class="form-group" style="margin: 2px;">
-                                                    <label for="quant" class="col-sm-2 control-label padding-label">Quantidade</label>
+                                                    <label for="qtde_hora_aula_normal" class="col-sm-2 control-label padding-label">Horas Normais</label>
                                                     <div class="col-sm-2 padding-field">
-                                                        <input type="text" class="form-control text lg-text text-right proximo_campo" maxlength="10" id="quant" onkeypress="return somente_numero(event);">
+                                                        <input type="text" class="form-control text lg-text text-right proximo_campo" maxlength="10" id="qtde_hora_aula_normal" onkeypress="return somente_numero(event);">
+                                                    </div>
+                                                    <label for="qtde_hora_aula_subst" class="col-sm-2 control-label padding-label">Substituição</label>
+                                                    <div class="col-sm-2 padding-field">
+                                                        <input type="text" class="form-control text lg-text text-right proximo_campo" maxlength="10" id="qtde_hora_aula_subst" onkeypress="return somente_numero(event);">
+                                                    </div>
+                                                    <label for="qtde_falta" class="col-sm-2 control-label padding-label">Faltas</label>
+                                                    <div class="col-sm-2 padding-field">
+                                                        <input type="text" class="form-control text lg-text text-right proximo_campo" maxlength="10" id="qtde_falta" onkeypress="return somente_numero(event);">
                                                     </div>
                                                 </div>
                                                 
                                                 <div class="form-group" style="margin: 2px;">
-                                                    <label for="valor" class="col-sm-2 control-label padding-label">Valor (R$)</label>
-                                                    <div class="col-sm-2 padding-field">
-                                                        <input type="text" class="form-control text lg-text text-right proximo_campo" maxlength="10" id="valor" onkeypress="return somente_numero_decimal(event);">
-                                                    </div>
-                                                </div>
-                                                
-                                                <div class="form-group" style="margin: 2px;">
-                                                    <label for="obs" class="col-sm-2 control-label padding-label">Observações</label>
+                                                    <label for="observacao" class="col-sm-2 control-label padding-label">Observações</label>
                                                     <div class="col-sm-10 padding-field">
-                                                        <input type="text" class="form-control text lg-text proximo_campo" maxlength="40" id="obs" >
+                                                        <input type="text" class="form-control text lg-text proximo_campo" maxlength="40" id="observacao" >
                                                     </div>
                                                 </div>
+
+                                                <div class="form-group" style="margin: 2px;">
+                                                    <div class="col-sm-2 padding-field">&nbsp;</div>
+                                                    <div class="col-sm-5 padding-field">
+                                                        <div class="checkbox checkbox-primary">
+                                                            <label>
+                                                                <input type="checkbox" class="custom-checkbox" name="calc_grat_series_iniciais" id="calc_grat_series_iniciais" value="1">
+                                                                Calcular Gratificação de Séries Iniciais
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-5 padding-field">
+                                                        <div class="checkbox checkbox-primary">
+                                                            <label>
+                                                                <input type="checkbox" class="custom-checkbox" name="calc_grat_ensino_esp" id="calc_grat_ensino_esp" value="1">
+                                                                Calcular Gratificação de Ensino Especial
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="form-group" style="margin: 2px;">
+                                                    <div class="col-sm-2 padding-field">&nbsp;</div>
+                                                    <div class="col-sm-5 padding-field">
+                                                        <div class="checkbox checkbox-primary">
+                                                            <label>
+                                                                <input type="checkbox" class="custom-checkbox" name="calc_grat_dificio_acesso" id="calc_grat_dificio_acesso" value="1">
+                                                                Calcular Gratificação de Difícil Acesso
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-5 padding-field">
+                                                        <div class="checkbox checkbox-primary">
+                                                            <label>
+                                                                <input type="checkbox" class="custom-checkbox" name="calc_grat_multi_serie" id="calc_grat_multi_serie" value="1">
+                                                                Calcular Gratificação Multi-Série
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
                                             </div>
                                         </div>
                                     </div>
@@ -480,8 +537,6 @@ where (s.id_cliente = 15019)
                         
                         $(function () {
                             $('#id_cliente').val(<?php echo $_SESSION['acesso']['id_cliente']?>);
-                            //$('#id_cliente').trigger('chosen:updated');
-                            //$('#pesquisa').focus();
                             $('#ano_mes_pesquisa').val(<?php echo $competencia_atual;?>);
                             $('#ano_mes_pesquisa').trigger('chosen:updated');
                             $('#ano_mes').val(<?php echo $competencia_atual;?>);
@@ -505,7 +560,7 @@ where (s.id_cliente = 15019)
                         
                         try {
                             fechar_lancamentos();
-                            //formatar_checkbox();
+                            formatar_checkbox();
                             consultar_chprof_lancadas('<?php echo 'id_' . $_SESSION['acesso']['id'];?>', '<?php echo 'lg_' . $_SESSION['acesso']['us']?>');
                         } catch (e) {
                             ;
@@ -544,58 +599,58 @@ where (s.id_cliente = 15019)
                             }
                         }
                         
-                        function salvar_lancamentos() {
-                            var situacao = parseInt($('#situacao').val());
-                            if (situacao === 0) {
-                                var controle = parseFloat("0" + $('#controle').val());
-                                var qtde_servidores = parseInt($('#qtde_servidores').val());
-                                var tipo_lancamento = parseInt($('#tipo_lancamento_' + parseFloat("0" + $('#controle').val()) ).val());
-
-                                var ids_servidores  = "#";
-                                var qts_servidores  = "#";
-                                var vls_servidores  = "#";
-                                var referencia      = 0;
-
-                                for (var i = 1; i < qtde_servidores; i++) {
-                                    referencia = controle + "_" + i;
-                                    if (typeof($('#id_servidor_' + referencia)) !== "undefined") {
-                                    //if ( document.getElementById("id_servidor_" + referencia) !== null ) {
-                                        ids_servidores += "||" + $('#id_servidor_' + referencia).val();
-                                        qts_servidores += "||" + $('#quant_' + referencia).val();
-                                        vls_servidores += "||" + $('#valor_' + referencia).val();
-                                    }
-                                }
-
-                                ids_servidores = ids_servidores.replace("#||", "");
-                                qts_servidores = qts_servidores.replace("#||", "");
-                                vls_servidores = vls_servidores.replace("#||", "");
-                                
-                                // Salvar quantidades
-                                if (tipo_lancamento === 0) {
-                                    if ((ids_servidores !== '#') && (qts_servidores !== '#')) {
-                                        salvarServidoresLancamento(ids_servidores, qts_servidores, null, function(){
-                                            mensagem_informe("Valores gravados com sucesso.");
-                                        });
-                                    } else {
-                                        mensagem_alerta("Favor informe as quantidades do evento para cada servidor");
-                                    }
-                                } else
-                                // Salvar valores
-                                if (tipo_lancamento === 1) {
-                                    if ((ids_servidores !== '#') && (qts_servidores !== '#')) {
-                                        salvarServidoresLancamentoxxx(ids_servidores, null, vls_servidores, function(){
-                                            carregar_lancamento_professores();
-                                            mensagem_informe("Valores gravados com sucesso.");
-                                        });
-                                    } else {
-                                        mensagem_alerta("Favor informe as quantidades do evento para cada servidor");
-                                    }
-                                }
-                            } else {
-                                var texto = $('#situacao option:selected').text();
-                                mensagem_alerta("Este lançamento está <strong>" + texto + "</strong> e não poderá ser alterado.<br>Entre em contato com a direção.");
-                            }
-                        }
+//                        function salvar_lancamentos() {
+//                            var situacao = parseInt($('#situacao').val());
+//                            if (situacao === 0) {
+//                                var controle = parseFloat("0" + $('#controle').val());
+//                                var qtde_servidores = parseInt($('#qtde_servidores').val());
+//                                var tipo_lancamento = parseInt($('#tipo_lancamento_' + parseFloat("0" + $('#controle').val()) ).val());
+//
+//                                var ids_servidores  = "#";
+//                                var qts_servidores  = "#";
+//                                var vls_servidores  = "#";
+//                                var referencia      = 0;
+//
+//                                for (var i = 1; i < qtde_servidores; i++) {
+//                                    referencia = controle + "_" + i;
+//                                    if (typeof($('#id_servidor_' + referencia)) !== "undefined") {
+//                                    //if ( document.getElementById("id_servidor_" + referencia) !== null ) {
+//                                        ids_servidores += "||" + $('#id_servidor_' + referencia).val();
+//                                        qts_servidores += "||" + $('#quant_' + referencia).val();
+//                                        vls_servidores += "||" + $('#valor_' + referencia).val();
+//                                    }
+//                                }
+//
+//                                ids_servidores = ids_servidores.replace("#||", "");
+//                                qts_servidores = qts_servidores.replace("#||", "");
+//                                vls_servidores = vls_servidores.replace("#||", "");
+//                                
+//                                // Salvar quantidades
+//                                if (tipo_lancamento === 0) {
+//                                    if ((ids_servidores !== '#') && (qts_servidores !== '#')) {
+//                                        salvarServidoresLancamento(ids_servidores, qts_servidores, null, function(){
+//                                            mensagem_informe("Valores gravados com sucesso.");
+//                                        });
+//                                    } else {
+//                                        mensagem_alerta("Favor informe as quantidades do evento para cada servidor");
+//                                    }
+//                                } else
+//                                // Salvar valores
+//                                if (tipo_lancamento === 1) {
+//                                    if ((ids_servidores !== '#') && (qts_servidores !== '#')) {
+//                                        salvarServidoresLancamentoxxx(ids_servidores, null, vls_servidores, function(){
+//                                            carregar_lancamento_professores();
+//                                            mensagem_informe("Valores gravados com sucesso.");
+//                                        });
+//                                    } else {
+//                                        mensagem_alerta("Favor informe as quantidades do evento para cada servidor");
+//                                    }
+//                                }
+//                            } else {
+//                                var texto = $('#situacao option:selected').text();
+//                                mensagem_alerta("Este lançamento está <strong>" + texto + "</strong> e não poderá ser alterado.<br>Entre em contato com a direção.");
+//                            }
+//                        }
                         
                         function buscar_registro_servidor() {
                             var situacao = parseInt($('#situacao').val());
@@ -621,12 +676,18 @@ where (s.id_cliente = 15019)
                                             $('#dt_admissao').val("");
                                             $('#cargo_funcao').val("");
                                             mensagem_alerta("Servidor(a) <strong>" + data.form[0].nome + "</strong> não está ativo(a)");
+                                        } else
+                                        if ( parseInt("0" + data.form[0].tipo_salario) !== 2 ) {
+                                            $('#nm_servidor').val("");
+                                            $('#dt_admissao').val("");
+                                            $('#cargo_funcao').val("");
+                                            mensagem_alerta("O Tipo de Salário do(a) Servidor(a) <strong>" + data.form[0].nome + "</strong> não permite esse tipo de lançamento.");
                                         } else {
                                             $('#id_servidor').val(data.form[0].id_servidor);
                                             $('#nm_servidor').val(data.form[0].nome + " (CPF : " + data.form[0].cpf_formatado + ")");
                                             $('#dt_admissao').val(data.form[0].dt_admissao);
                                             $('#cargo_funcao').val(data.form[0].cargo_funcao);
-                                            $('#quant').focus();
+                                            $('#qtde_hora_aula_normal').focus();
                                         }
                                     });
                                 } else {
@@ -638,6 +699,10 @@ where (s.id_cliente = 15019)
                             }
                         }
                         
+                        function buscar_registro_escola() {
+                            return false;
+                        }
+                        
                         function adicionar_servidor() {
                             var situacao = parseInt($('#situacao').val());
                             if (situacao === 0) {
@@ -645,20 +710,21 @@ where (s.id_cliente = 15019)
                                 if (controle === 0.0) {
                                     mensagem_alerta("Salve, primeiramente, os dados inciais do Lançamento da Carga Horária.");
                                 } else {
-                                    //var qtde_servidores = parseInt($('#qtde_servidores').val());
-                                    var tipo_lancamento = parseInt($('#tipo_lancamento_' + parseFloat("0" + $('#controle').val()) ).val());
-
                                     $('#sequencia').val("0");
+                                    $('#id_escola').val( zero_esquerda($('#id_unid_lotacao').val(), 5) );
+                                    $('#nm_escola').val( $('#id_unid_lotacao option:selected').text() );
                                     $('#id_servidor').val("");
                                     $('#nm_servidor').val("");
                                     $('#dt_admissao').val("");
                                     $('#cargo_funcao').val("");
-                                    $('#quant').val("");
-                                    $('#valor').val("");
-                                    $('#obs').val("");
-                                    
-                                    $('#quant').prop('readonly', (tipo_lancamento !== 0));
-                                    $('#valor').prop('readonly', (tipo_lancamento !== 1));
+                                    $('#qtde_hora_aula_normal').val("");
+                                    $('#qtde_hora_aula_subst').val("");
+                                    $('#qtde_falta').val("");
+                                    $('#observacao').val("");
+                                    $('#calc_grat_series_iniciais').prop('checked', false).uniform();
+                                    $('#calc_grat_ensino_esp').prop('checked', false).uniform();
+                                    $('#calc_grat_dificio_acesso').prop('checked', false).uniform();
+                                    $('#calc_grat_multi_serie').prop('checked', false).uniform();
                                     
                                     $('#box_servidor').trigger("click");
                                 }
@@ -676,61 +742,54 @@ where (s.id_cliente = 15019)
                                     mensagem_alerta("Salve, primeiramente, os dados inciais do Lançamento da Carga Horária.");
                                 } else {
                                     var qtde_servidores = parseInt($('#qtde_servidores').val());
-                                    var tipo_lancamento = parseInt($('#tipo_lancamento_' + parseFloat("0" + $('#controle').val()) ).val());
                                     var msg = "";
                                     var mrc = "<i class='glyph-icon icon-edit'></i>&nbsp;";
 
                                     if ($('#nm_servidor').val()  === "") msg += mrc + "Servidor<br>";
-                                    if ((tipo_lancamento === 0) && ($('#quant').val() === "")) msg += mrc + "Quantidade<br>";
-                                    if ((tipo_lancamento === 1) && ($('#valor').val() === "")) msg += mrc + "Valor (R$)<br>";
+                                    if ($('#qtde_hora_aula_normal').val()  === "") msg += mrc + "Horas Normais<br>";
+                                    if ($('#qtde_hora_aula_subst').val()  === "") msg += mrc + "Substituição<br>";
+                                    if ($('#qtde_falta').val()  === "") msg += mrc + "Faltas<br>";
 
                                     if (msg.trim() !== "") {
-                                        mensagem_alerta( "<p><strong>Os campos listados têm seu preenchimento obrigatório:</strong> <br><br>" + msg + "</p>" );
+                                        mensagem_alerta( "<p><strong>Os campos listados têm seu preenchimento obrigatório para o lançamento de Carga Horária:</strong> <br><br>" + msg + "</p>" );
                                     } else {
                                         var sequencia   = $('#sequencia').val();
+                                        var ano_mes     = $('#ano_mes').val();
+                                        var id_escola   = $('#id_escola').val();
                                         var id_servidor = $('#id_servidor').val();
-                                        var obs   = $('#obs').val();
-                                        var quant = null;
-                                        var valor = null;
+                                        var observacao  = $('#observacao').val();
 
-                                        verificar_lancamento_servidor(id_servidor, function(verifica) {
+                                        verificar_lancamento_ch_professor(ano_mes, id_escola, id_servidor, function(verifica) {
                                             if (verifica === "OK") {
-                                                mensagem_alerta("Lançamento já realizado para este servidor!");
+                                                mensagem_alerta("Lançamento de Carga Horária já realizado para este servidor!");
                                             } else {
-                                                if (tipo_lancamento === 0) { // Lançamento pela Quantidade
-                                                    quant = parseFloat("0" + $('#quant').val());
-                                                } else
-                                                if (tipo_lancamento === 1) { // Lançamento pela Valor (R$)
-                                                    valor = parseFloat("0" + $('#valor').val());
-                                                }
-
                                                 sequencia = (qtde_servidores + 1);
-                                                salvarServidorLancamento(sequencia, id_servidor, quant, valor, obs, function(retorno){
-                                                    if (retorno !== "OK") {
-                                                        $('#quant').focus();
-                                                    } else {
-                                                        qtde_servidores += 1;
-                                                        $('#qtde_servidores').val( qtde_servidores );
-
-                                                        if (qtde_servidores === 1) {
-                                                            carregar_lancamento_professores();
-                                                        } else {
-                                                            var file_json = "../downloads/lanc_srv_" + $('#hs').val() + ".json";
-                                                            $.getJSON(file_json, function(data){
-                                                                $("#datatable-responsive_serv").append(data.form[0].table_tr);
-                                                            });
-                                                        }
-
-                                                        $('#sequencia').val("0");
-                                                        $('#id_servidor').val("");
-                                                        $('#nm_servidor').val("");
-                                                        $('#quant').val("");
-                                                        $('#valor').val("");
-                                                        $('#obs').val("");
-
-                                                        $('#id_servidor').focus();
-                                                    }
-                                                });
+//                                                salvarServidorLancamentoXXX(sequencia, id_servidor, quant, valor, obs, function(retorno){
+//                                                    if (retorno !== "OK") {
+//                                                        $('#quant').focus();
+//                                                    } else {
+//                                                        qtde_servidores += 1;
+//                                                        $('#qtde_servidores').val( qtde_servidores );
+//
+//                                                        if (qtde_servidores === 1) {
+//                                                            carregar_lancamento_professores();
+//                                                        } else {
+//                                                            var file_json = "../downloads/lanc_srv_" + $('#hs').val() + ".json";
+//                                                            $.getJSON(file_json, function(data){
+//                                                                $("#datatable-responsive_serv").append(data.form[0].table_tr);
+//                                                            });
+//                                                        }
+//
+//                                                        $('#sequencia').val("0");
+//                                                        $('#id_servidor').val("");
+//                                                        $('#nm_servidor').val("");
+//                                                        $('#quant').val("");
+//                                                        $('#valor').val("");
+//                                                        $('#obs').val("");
+//
+//                                                        $('#id_servidor').focus();
+//                                                    }
+//                                                });
                                             }
                                         });
                                     }
