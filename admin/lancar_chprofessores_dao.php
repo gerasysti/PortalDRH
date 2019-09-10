@@ -546,212 +546,73 @@
                     }
                 } break;
 
-                case 'gravar_lancamentos_servidores' : {
-                    try {
-                        $op = trim(filter_input(INPUT_POST, 'op'));
-                        $hs = trim(filter_input(INPUT_POST, 'hs'));
-                        $id = trim(filter_input(INPUT_POST, 'id'));
-                        $controle   = floatval( preg_replace("/[^0-9]/", "", "0" . trim(filter_input(INPUT_POST, 'controle'))) );
-                        $id_cliente = intval( preg_replace("/[^0-9]/", "", "0" . trim(filter_input(INPUT_POST, 'id_cliente'))) );
-                        $ano_mes    = strip_tags( trim(filter_input(INPUT_POST, 'ano_mes')) );
-                        $id_unid_gestora = intval( preg_replace("/[^0-9]/", "", "0" . trim(filter_input(INPUT_POST, 'id_unid_gestora'))) );
-                        $id_unid_lotacao = intval( preg_replace("/[^0-9]/", "", "0" . trim(filter_input(INPUT_POST, 'id_unid_lotacao'))) );
-                        $id_evento       = intval( preg_replace("/[^0-9]/", "", "0" . trim(filter_input(INPUT_POST, 'id_evento'))) );
-                        
-                        $servidores  = strip_tags( trim(filter_input(INPUT_POST, 'servidores')) );
-                        $quantidades = strip_tags( trim(filter_input(INPUT_POST, 'quantidades')) );
-                        $valores     = strip_tags( trim(filter_input(INPUT_POST, 'valores')) );
-                        
-                        if ($hs !== $hash) {
-                            echo "Acesso Inválido";
-                        } else 
-                        if ((trim($servidores) !== '') && (trim($servidores) !== '#')) {    
-                            $cnf = Configuracao::getInstancia();
-                            $pdo = $cnf->db('', '');
-                            $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-                            
-                            // Gravar quantidades
-                            if ((trim($quantidades) !== '') && (trim($quantidades) !== '#')) {
-                                $ids = explode("||", $servidores);
-                                $qts = explode("||", $quantidades);
-                                
-                                $pdo->beginTransaction();
-                                for ($i = 0; $i < count($ids); $i++) {
-                                    $quant = str_replace(",", ".", str_replace(".", "", $qts[$i]));
-                                    $quant = floatval('0' . $quant);
-                                    
-                                    $stm = $pdo->prepare(
-                                          "Execute procedure SET_REMUN_EVENTO_SERVIDOR ( "
-                                        . "    :ano_mes         "
-                                        . "  , :id_cliente      "
-                                        . "  , :id_unid_gestora "
-                                        . "  , :id_unid_lotacao "
-                                        . "  , :id_evento       "
-                                        . "  , :id_servidor     "
-                                        . "  , :tipo_lanc       "
-                                        . "  , :quant           "
-                                        . "  , :valor           "
-                                        . "  , :obs             "
-                                        . ")");
-                                    $stm->execute(array(
-                                          ':ano_mes'          => $ano_mes
-                                        , ':id_cliente'       => $id_cliente
-                                        , ':id_unid_gestora'  => $id_unid_gestora
-                                        , ':id_unid_lotacao'  => $id_unid_lotacao
-                                        , ':id_evento'        => $id_evento
-                                        , ':id_servidor'      => $ids[$i]
-                                        , ':tipo_lanc'        => 0
-                                        , ':quant'            => $quant
-                                        , ':valor'            => null
-                                        , ':obs'              => null
-                                    ));
-                                }
-                                $pdo->commit();
-                            } else
-                            // Gravar valores
-                            if ((trim($valores) !== '') && (trim($valores) !== '#')) {
-                                $ids = explode("||", $servidores);
-                                $vls = explode("||", $valores);
-                                
-                                $pdo->beginTransaction();
-                                for ($i = 0; $i < count($ids); $i++) {
-                                    $valor = str_replace(",", ".", str_replace(".", "", $vls[$i]));
-                                    $valor = floatval('0' . $valor);
-                                    
-                                    $stm = $pdo->prepare(
-                                          "Execute procedure SET_REMUN_EVENTO_SERVIDOR ( "
-                                        . "    :ano_mes         "
-                                        . "  , :id_cliente      "
-                                        . "  , :id_unid_gestora "
-                                        . "  , :id_unid_lotacao "
-                                        . "  , :id_evento       "
-                                        . "  , :id_servidor     "
-                                        . "  , :tipo_lanc       "
-                                        . "  , :quant           "
-                                        . "  , :valor           "
-                                        . "  , :obs             "
-                                        . ")");
-                                    $stm->execute(array(
-                                          ':ano_mes'          => $ano_mes
-                                        , ':id_cliente'       => $id_cliente
-                                        , ':id_unid_gestora'  => $id_unid_gestora
-                                        , ':id_unid_lotacao'  => $id_unid_lotacao
-                                        , ':id_evento'        => $id_evento
-                                        , ':id_servidor'      => $ids[$i]
-                                        , ':tipo_lanc'        => 1
-                                        , ':quant'            => null
-                                        , ':valor'            => $valor
-                                        , ':obs'              => null
-                                    ));
-                                }
-                                $pdo->commit();
-                            }
-                            
-                            // Fechar conexão PDO
-                            unset($pdo);
-                            
-                            echo "OK";
-                        }
-                    } catch (Exception $ex) {
-                        echo $ex . "<br><br>" . $ex->getMessage();
-                    }
-                } break;
-
-                case 'grava_lancamento_servidor' : {
+                case 'grava_lancamento_ch_servidor' : {
                     try {
                         $hs = trim(filter_input(INPUT_POST, 'hs'));
                         $id = trim(filter_input(INPUT_POST, 'id'));
-                        $controle   = floatval( preg_replace("/[^0-9]/", "", "0" . trim(filter_input(INPUT_POST, 'controle'))) );
-                        $id_cliente = intval( preg_replace("/[^0-9]/", "", "0" . trim(filter_input(INPUT_POST, 'id_cliente'))) );
-                        $id_unid_gestora = intval( preg_replace("/[^0-9]/", "", "0" . trim(filter_input(INPUT_POST, 'id_unid_gestora'))) );
-                        $id_unid_lotacao = intval( preg_replace("/[^0-9]/", "", "0" . trim(filter_input(INPUT_POST, 'id_unid_lotacao'))) );
-                        $id_evento   = intval( preg_replace("/[^0-9]/", "", "0" . trim(filter_input(INPUT_POST, 'id_evento'))) );
+                        
+                        $id_lancto   = strip_tags( trim(filter_input(INPUT_POST, 'id_lancto')) );
+                        $controle    = floatval( preg_replace("/[^0-9]/", "", "0" . trim(filter_input(INPUT_POST, 'controle'))) );
+                        $id_cliente  = intval( preg_replace("/[^0-9]/", "", "0" . trim(filter_input(INPUT_POST, 'id_cliente'))) );
+                        $id_servidor = floatval( preg_replace("/[^0-9]/", "", "0" . trim(filter_input(INPUT_POST, 'id_servidor'))) );
+                        $id_escola   = intval( preg_replace("/[^0-9]/", "", "0" . trim(filter_input(INPUT_POST, 'id_escola'))) );
                         $ano_mes     = strip_tags( trim(filter_input(INPUT_POST, 'ano_mes')) );
                         $sequencia   = intval( preg_replace("/[^0-9]/", "", "0" . trim(filter_input(INPUT_POST, 'sequencia'))) );
-                        $id_servidor = floatval( preg_replace("/[^0-9]/", "", "0" . trim(filter_input(INPUT_POST, 'id_servidor'))) );
-                        $quant = preg_replace("/[^0-9]/", "", trim(filter_input(INPUT_POST, 'quant')) );
-                        $valor = preg_replace("/[^0-9]/", "", trim(filter_input(INPUT_POST, 'valor')) );
-                        $obs   = strip_tags( trim(filter_input(INPUT_POST, 'obs')) );
+                        $qtde_hora_aula_normal     = preg_replace("/[^0-9]/", "", trim(filter_input(INPUT_POST, 'qtde_hora_aula_normal')) );
+                        $qtde_hora_aula_subst      = preg_replace("/[^0-9]/", "", trim(filter_input(INPUT_POST, 'qtde_hora_aula_subst')) );
+                        $qtde_hora_aula_outras     = preg_replace("/[^0-9]/", "", trim(filter_input(INPUT_POST, 'qtde_hora_aula_outras')) );
+                        $qtde_falta                = preg_replace("/[^0-9]/", "", trim(filter_input(INPUT_POST, 'qtde_falta')) );
+                        $calc_grat_series_iniciais = intval( preg_replace("/[^0-9]/", "", "0" . trim(filter_input(INPUT_POST, 'calc_grat_series_iniciais')) ));
+                        $calc_grat_ensino_esp      = intval( preg_replace("/[^0-9]/", "", "0" . trim(filter_input(INPUT_POST, 'calc_grat_ensino_esp')) ));
+                        $calc_grat_dificio_acesso  = intval( preg_replace("/[^0-9]/", "", "0" . trim(filter_input(INPUT_POST, 'calc_grat_dificio_acesso')) ));
+                        $calc_grat_multi_serie     = intval( preg_replace("/[^0-9]/", "", "0" . trim(filter_input(INPUT_POST, 'calc_grat_multi_serie')) ));
+                        $observacao  = strip_tags( trim(filter_input(INPUT_POST, 'observacao')) );
                         
-                        $file = '../downloads/lanc_srv_' . $hs . '.json';
+                        if ($observacao === "") { $observacao = null; }
+                        
+                        $file = '../downloads/lanc_ch_srv_' . $hs . '.json';
                         if (file_exists($file)) {
                             unlink($file);
                         }
 
-                        $tipo_lancamento = 0;
-                        
                         $cnf = Configuracao::getInstancia();
                         $pdo = $cnf->db('', '');
                         $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
                         
                         if ($hs !== $hash) {
                             echo "Acesso Inválido";
-                        } else 
-                        if ($quant !== '') {
-                            $tipo_lancamento = 0;
-                            
-                            $quant = str_replace(",", ".", str_replace(".", "", $quant));
-                            $quant = floatval('0' . $quant);
-                            if ($obs === "") { $obs = null; }
-
+                        } else {
                             $stm = $pdo->prepare(
-                                  "Execute procedure SET_REMUN_EVENTO_SERVIDOR ( "
-                                . "    :ano_mes         "
-                                . "  , :id_cliente      "
-                                . "  , :id_unid_gestora "
-                                . "  , :id_unid_lotacao "
-                                . "  , :id_evento       "
-                                . "  , :id_servidor     "
-                                . "  , :tipo_lanc       "
-                                . "  , :quant           "
-                                . "  , :valor           "
-                                . "  , :obs             "
+                                  "Execute procedure SET_CARGA_HORARIA_PROFESSOR ( "
+                                . "    :id_lancto   "
+                                . "  , :id_cliente  "
+                                . "  , :id_servidor "
+                                . "  , :id_escola   "
+                                . "  , :ano_mes     "
+                                . "  , :qtde_ch_normal       "
+                                . "  , :qtde_ch_substituicao "
+                                . "  , :qtde_ch_outras "
+                                . "  , :qtde_faltas    "
+                                . "  , :observacao     "
+                                . "  , :calc_grat_series_iniciais "
+                                . "  , :calc_grat_dificil_acesso  "
+                                . "  , :calc_grat_ensino_espec    "
+                                . "  , :calc_grat_multi_serie     "
                                 . ")");
                             $stm->execute(array(
-                                  ':ano_mes'          => $ano_mes
-                                , ':id_cliente'       => $id_cliente
-                                , ':id_unid_gestora'  => $id_unid_gestora
-                                , ':id_unid_lotacao'  => $id_unid_lotacao
-                                , ':id_evento'        => $id_evento
-                                , ':id_servidor'      => $id_servidor
-                                , ':tipo_lanc'        => $tipo_lancamento
-                                , ':quant'            => $quant
-                                , ':valor'            => null
-                                , ':obs'              => $obs
-                            ));
-                            $pdo->commit();
-                        } else 
-                        if ($valor !== '') {
-                            $tipo_lancamento = 1;
-                            
-                            $valor = str_replace(",", ".", str_replace(".", "", $valor));
-                            $valor = floatval('0' . $valor);
-                            if ($obs === "") { $obs = null; }
-
-                            $stm = $pdo->prepare(
-                                  "Execute procedure SET_REMUN_EVENTO_SERVIDOR ( "
-                                . "    :ano_mes         "
-                                . "  , :id_cliente      "
-                                . "  , :id_unid_gestora "
-                                . "  , :id_unid_lotacao "
-                                . "  , :id_evento       "
-                                . "  , :id_servidor     "
-                                . "  , :tipo_lanc       "
-                                . "  , :quant           "
-                                . "  , :valor           "
-                                . "  , :obs             "
-                                . ")");
-                            $stm->execute(array(
-                                  ':ano_mes'          => $ano_mes
-                                , ':id_cliente'       => $id_cliente
-                                , ':id_unid_gestora'  => $id_unid_gestora
-                                , ':id_unid_lotacao'  => $id_unid_lotacao
-                                , ':id_evento'        => $id_evento
-                                , ':id_servidor'      => $id_servidor
-                                , ':tipo_lanc'        => $tipo_lancamento
-                                , ':quant'            => null
-                                , ':valor'            => $valor
-                                , ':obs'              => $obs
+                                  ':id_lancto'   => $id_lancto
+                                , ':id_cliente'  => $id_cliente
+                                , ':id_servidor' => $id_servidor
+                                , ':id_escola'   => $id_escola
+                                , ':ano_mes'     => $ano_mes
+                                , ':qtde_ch_normal'       => $qtde_hora_aula_normal
+                                , ':qtde_ch_substituicao' => $qtde_hora_aula_subst
+                                , ':qtde_faltas'          => $qtde_falta
+                                , ':observacao'           => $observacao
+                                , ':calc_grat_series_iniciais' => $calc_grat_series_iniciais
+                                , ':calc_grat_dificil_acesso'  => $calc_grat_dificil_acesso
+                                , ':calc_grat_ensino_espec'    => $calc_grat_ensino_espec
+                                , ':calc_grat_multi_serie'     => $calc_grat_multi_serie
                             ));
                             $pdo->commit();
                         }
@@ -815,16 +676,14 @@
                     }
                 } break;
 
-                case 'lancamento_servidor' : {
+                case 'lancamento_ch_servidor' : {
                     try {
-                        $to = strip_tags( preg_replace("/[^0-9]/", "", trim(filter_input(INPUT_POST, 'to'))) ); // Cliente
-                        $ug = strip_tags( preg_replace("/[^0-9]/", "", trim(filter_input(INPUT_POST, 'ug'))) );
-                        $lo = strip_tags( preg_replace("/[^0-9]/", "", trim(filter_input(INPUT_POST, 'lo'))) );
-                        $ev = strip_tags( preg_replace("/[^0-9]/", "", trim(filter_input(INPUT_POST, 'ev'))) ); // Competência - ano/mês
-                        $cp = strip_tags( preg_replace("/[^0-9]/", "", trim(filter_input(INPUT_POST, 'cp'))) );
-                        $id = strip_tags( preg_replace("/[^0-9]/", "", trim(filter_input(INPUT_POST, 'id'))) ); // Controle
-                        $sv = strip_tags( preg_replace("/[^0-9]/", "", trim(filter_input(INPUT_POST, 'sv'))) ); // Servidor
                         $hs = trim(filter_input(INPUT_POST, 'hs'));
+                        $to = strip_tags( preg_replace("/[^0-9]/", "", trim(filter_input(INPUT_POST, 'to'))) ); // Cliente
+                        $sv = strip_tags( preg_replace("/[^0-9]/", "", trim(filter_input(INPUT_POST, 'sv'))) ); // Servidor
+                        $lo = strip_tags( preg_replace("/[^0-9]/", "", trim(filter_input(INPUT_POST, 'lo'))) ); // Escola
+                        $cp = strip_tags( preg_replace("/[^0-9]/", "", trim(filter_input(INPUT_POST, 'cp'))) ); // Competência - ano/mês
+                        $id = strip_tags( preg_replace("/[^0-9]/", "", trim(filter_input(INPUT_POST, 'id'))) ); // Controle
 
                         $cnf = Configuracao::getInstancia();
                         $pdo = $cnf->db('', '');
@@ -832,14 +691,12 @@
 
                         $sql =
                               "Select "
-                            . "  count(lanc.sequencia) as lancamentos "
-                            . "from REMUN_EVENTO_AVULSO_ITEM lanc "
+                            . "  count(lanc.id_lancto_prof) as lancamentos "
+                            . "from REMUN_LANCTO_CH_PROF lanc "
                             . "where (id_cliente      = {$to})    "
-                            . "  and (id_unid_gestora = {$ug})    "
+                            . "  and (id_servidor     = {$sv})    " 
                             . "  and (id_unid_lotacao = {$lo})    "
-                            . "  and (id_evento       = {$ev})    "
-                            . "  and (ano_mes         = '{$cp}')  "
-                            . "  and (id_servidor     = {$sv})    "; 
+                            . "  and (ano_mes         = '{$cp}')  ";
                             
                         $qry = $pdo->query($sql);
                         if (($obj = $qry->fetch(PDO::FETCH_OBJ)) !== false) {

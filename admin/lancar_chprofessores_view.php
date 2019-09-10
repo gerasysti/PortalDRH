@@ -361,11 +361,6 @@ where (s.id_cliente = 15019)
                                     <a href="javascript:void(0);" class="icon-separator remove-button" data-animation="flipOutX" title="Inserir Servidores" onclick="adicionar_servidor()">
                                         <i class="glyph-icon icon-plus"></i>
                                     </a>
-                                    <!--
-                                    <a href="javascript:void(0);" class="icon-separator remove-button" data-animation="flipOutX" title="Salvar Lançamentos" onclick="salvar_lancamentos()">
-                                        <i class="glyph-icon icon-save"></i>
-                                    </a>
-                                    -->
                                 </span>
                             </h3>
                             <div class="content-box-wrapper" id="tabela-lancamento_professores" style="margin: 0px; padding: 0px;">
@@ -599,59 +594,6 @@ where (s.id_cliente = 15019)
                             }
                         }
                         
-//                        function salvar_lancamentos() {
-//                            var situacao = parseInt($('#situacao').val());
-//                            if (situacao === 0) {
-//                                var controle = parseFloat("0" + $('#controle').val());
-//                                var qtde_servidores = parseInt($('#qtde_servidores').val());
-//                                var tipo_lancamento = parseInt($('#tipo_lancamento_' + parseFloat("0" + $('#controle').val()) ).val());
-//
-//                                var ids_servidores  = "#";
-//                                var qts_servidores  = "#";
-//                                var vls_servidores  = "#";
-//                                var referencia      = 0;
-//
-//                                for (var i = 1; i < qtde_servidores; i++) {
-//                                    referencia = controle + "_" + i;
-//                                    if (typeof($('#id_servidor_' + referencia)) !== "undefined") {
-//                                    //if ( document.getElementById("id_servidor_" + referencia) !== null ) {
-//                                        ids_servidores += "||" + $('#id_servidor_' + referencia).val();
-//                                        qts_servidores += "||" + $('#quant_' + referencia).val();
-//                                        vls_servidores += "||" + $('#valor_' + referencia).val();
-//                                    }
-//                                }
-//
-//                                ids_servidores = ids_servidores.replace("#||", "");
-//                                qts_servidores = qts_servidores.replace("#||", "");
-//                                vls_servidores = vls_servidores.replace("#||", "");
-//                                
-//                                // Salvar quantidades
-//                                if (tipo_lancamento === 0) {
-//                                    if ((ids_servidores !== '#') && (qts_servidores !== '#')) {
-//                                        salvarServidoresLancamento(ids_servidores, qts_servidores, null, function(){
-//                                            mensagem_informe("Valores gravados com sucesso.");
-//                                        });
-//                                    } else {
-//                                        mensagem_alerta("Favor informe as quantidades do evento para cada servidor");
-//                                    }
-//                                } else
-//                                // Salvar valores
-//                                if (tipo_lancamento === 1) {
-//                                    if ((ids_servidores !== '#') && (qts_servidores !== '#')) {
-//                                        salvarServidoresLancamentoxxx(ids_servidores, null, vls_servidores, function(){
-//                                            carregar_lancamento_professores();
-//                                            mensagem_informe("Valores gravados com sucesso.");
-//                                        });
-//                                    } else {
-//                                        mensagem_alerta("Favor informe as quantidades do evento para cada servidor");
-//                                    }
-//                                }
-//                            } else {
-//                                var texto = $('#situacao option:selected').text();
-//                                mensagem_alerta("Este lançamento está <strong>" + texto + "</strong> e não poderá ser alterado.<br>Entre em contato com a direção.");
-//                            }
-//                        }
-                        
                         function buscar_registro_servidor() {
                             var situacao = parseInt($('#situacao').val());
                             if (situacao === 0) {
@@ -741,7 +683,7 @@ where (s.id_cliente = 15019)
                                 if (controle === 0.0) {
                                     mensagem_alerta("Salve, primeiramente, os dados inciais do Lançamento da Carga Horária.");
                                 } else {
-                                    var qtde_servidores = parseInt($('#qtde_servidores').val());
+                                    var qtde_professores = parseInt($('#qtde_professores').val());
                                     var msg = "";
                                     var mrc = "<i class='glyph-icon icon-edit'></i>&nbsp;";
 
@@ -757,28 +699,27 @@ where (s.id_cliente = 15019)
                                         var ano_mes     = $('#ano_mes').val();
                                         var id_escola   = $('#id_escola').val();
                                         var id_servidor = $('#id_servidor').val();
-                                        var observacao  = $('#observacao').val();
 
                                         verificar_lancamento_ch_professor(ano_mes, id_escola, id_servidor, function(verifica) {
                                             if (verifica === "OK") {
                                                 mensagem_alerta("Lançamento de Carga Horária já realizado para este servidor!");
                                             } else {
-                                                sequencia = (qtde_servidores + 1);
-//                                                salvarServidorLancamentoXXX(sequencia, id_servidor, quant, valor, obs, function(retorno){
-//                                                    if (retorno !== "OK") {
-//                                                        $('#quant').focus();
-//                                                    } else {
-//                                                        qtde_servidores += 1;
-//                                                        $('#qtde_servidores').val( qtde_servidores );
-//
-//                                                        if (qtde_servidores === 1) {
-//                                                            carregar_lancamento_professores();
-//                                                        } else {
-//                                                            var file_json = "../downloads/lanc_srv_" + $('#hs').val() + ".json";
+                                                sequencia = (qtde_professores + 1);
+                                                salvar_servidor_lancamento_ch(sequencia, function(retorno){
+                                                    if (retorno !== "OK") {
+                                                        $('#quant').focus();
+                                                    } else {
+                                                        qtde_professores += 1;
+                                                        $('#qtde_professores').val( qtde_professores );
+
+                                                        if (qtde_professores === 1) {
+                                                            carregar_lancamento_professores();
+                                                        } else {
+//                                                            var file_json = "../downloads/lanc_ch_srv_" + $('#hs').val() + ".json";
 //                                                            $.getJSON(file_json, function(data){
 //                                                                $("#datatable-responsive_serv").append(data.form[0].table_tr);
 //                                                            });
-//                                                        }
+                                                        }
 //
 //                                                        $('#sequencia').val("0");
 //                                                        $('#id_servidor').val("");
@@ -788,8 +729,8 @@ where (s.id_cliente = 15019)
 //                                                        $('#obs').val("");
 //
 //                                                        $('#id_servidor').focus();
-//                                                    }
-//                                                });
+                                                    }
+                                                });
                                             }
                                         });
                                     }

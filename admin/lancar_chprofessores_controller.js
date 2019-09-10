@@ -225,84 +225,36 @@ function carregar_lancamento_professores() {
     // Finalizamos o Ajax
 }
 
-function salvarServidoresLancamento(ids, qts, vls, callback) {
+function salvar_servidor_lancamento_ch(sequencia, callback) {
     var id   = $('#id_sessao').val();
     var hash = id.split("_");
     var params = {
-        'ac' : 'gravar_lancamentos_servidores',
+        'ac' : 'grava_lancamento_ch_servidor',
         'id' : hash[1],
         'hs' : $('#hs').val(),
         'to' : $('#cliente').val(),
-        'controle'   : parseFloat("0" + $('#controle').val()),
+        'id_lancto'  : $('#id_lancto').val(),
+        'controle'   : $('#controle').val(),
         'id_cliente' : $('#id_cliente').val(),
-        'ano_mes'    : $('#ano_mes').val(),
-        'id_unid_gestora' : $('#id_unid_gestora').val(),
-        'id_unid_lotacao' : $('#id_unid_lotacao').val(),
-        'id_evento'       : $('#id_evento').val(),
-        'servidores'  : '',
-        'quantidades' : '',
-        'valores'     : ''
-    };
-
-    if (ids !== null) params.servidores  = ids;
-    if (qts !== null) params.quantidades = qts;
-    if (vls !== null) params.valores     = vls;
-    
-    // Iniciamos o Ajax 
-    $.ajax({
-        // Definimos a url
-        url : './lancar_eventos_dao.php',
-        // Definimos o tipo de requisição
-        type: 'post',
-        // Definimos o tipo de retorno
-        dataType : 'html',
-        // Dolocamos os valores a serem enviados
-        data: params,
-        // Antes de enviar ele alerta para esperar
-        beforeSend : function(){
-            ;
-        },
-        // Colocamos o retorno na tela
-        success : function(data){
-            var retorno = data;
-            if (retorno === "OK") {
-                if(callback && typeof(callback) === "function") {
-                    callback();
-                }
-            } else {
-                mensagem_erro(retorno);
-            }
-        },
-        error: function (request, status, error) {
-            mensagem_erro("Erro na execução da pesquisa!<br> (" + status + ")" + request.responseText + "<br><strong>Error : </strong>" + error.toString());
-        }
-    });  
-    // Finalizamos o Ajax
-}
-
-function salvarServidorLancamento(sequencia, id_servidor, quant, valor, obs, callback) {
-    var id   = $('#id_sessao').val();
-    var hash = id.split("_");
-    var params = {
-        'ac' : 'grava_lancamento_servidor',
-        'id' : hash[1],
-        'hs' : $('#hs').val(),
-        'to' : $('#cliente').val(),
-        'controle'   : parseFloat("0" + $('#controle').val()),
-        'id_cliente' : $('#id_cliente').val(),
-        'id_unid_gestora' : $('#id_unid_gestora').val(),
-        'id_unid_lotacao' : $('#id_unid_lotacao').val(),
-        'id_evento'       : $('#id_evento').val(),
+        'id_escola'  : $('#id_escola').val(),
         'ano_mes'    : $('#ano_mes').val(),
         'sequencia'  : sequencia,
-        'id_servidor': id_servidor,
-        'quant'      : '',
-        'valor'      : '',
-        'obs'        : obs
+        'id_servidor': $('#id_servidor').val(),
+        'qtde_hora_aula_normal' : $('#qtde_hora_aula_normal').val(),
+        'qtde_hora_aula_subst'  : $('#qtde_hora_aula_subst').val(),
+        'qtde_hora_aula_outras' : '0',
+        'qtde_falta'            : $('#qtde_falta').val(),
+        'calc_grat_series_iniciais' : '0',
+        'calc_grat_ensino_esp'      : '0',
+        'calc_grat_dificio_acesso'  : '0',
+        'calc_grat_multi_serie'     : '0',
+        'observacao' : $('#observacao').val()
     };
 
-    if (quant !== null) params.quant = quant;
-    if (valor !== null) params.valor = valor;
+    if ( $('#calc_grat_series_iniciais').is(":checked") ) params.calc_grat_series_iniciais = $('#calc_grat_series_iniciais').val();
+    if ( $('#calc_grat_ensino_esp').is(":checked") )      params.calc_grat_ensino_esp = $('#calc_grat_ensino_esp').val();
+    if ( $('#calc_grat_dificio_acesso').is(":checked") )  params.calc_grat_dificio_acesso = $('#calc_grat_dificio_acesso').val();
+    if ( $('#calc_grat_multi_serie').is(":checked") )     params.calc_grat_multi_serie = $('#calc_grat_multi_serie').val();
     
     // Iniciamos o Ajax 
     $.ajax({
@@ -440,7 +392,7 @@ function excluirLancamentoCH(id) {
 
 function verificar_lancamento_ch_professor(ano_mes, escola, servidor, callback) {
     var params = {
-        'ac' : 'lancamento_servidor',
+        'ac' : 'lancamento_ch_servidor',
         'hs' : $('#hs').val(),
         'to' : $('#id_cliente').val(),
         'id' : $('#controle').val(),
@@ -452,7 +404,7 @@ function verificar_lancamento_ch_professor(ano_mes, escola, servidor, callback) 
     // Iniciamos o Ajax 
     $.ajax({
         // Definimos a url
-        url : './lancar_eventos_dao.php',
+        url : './lancar_chprofessores_dao.php',
         // Definimos o tipo de requisição
         type: 'post',
         // Definimos o tipo de retorno
