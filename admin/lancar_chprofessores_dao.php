@@ -134,7 +134,7 @@
         return $retorno;
     }
     
-    function getRegistroServidor($id_cliente, $id_servidor) {
+    function getRegistroProfessor($id_cliente, $id_servidor, $controle) {
         $retorno = false;
 
         $cnf = Configuracao::getInstancia();
@@ -142,17 +142,33 @@
         $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
         $sql = 
-              "Select "
-            . "    s.* "
-            . "  , coalesce(g.descricao, '* UG NÃO INFORMADA')           as unidade_gestora "
-            . "  , coalesce(l.descricao, '* LOTAÇÃO NÃO INFORMADA')      as unidade_lotacao "
-            . "  , coalesce(f.descricao, '* CARGO/FUNÇÃO NÃO INFORMADO') as cargo_funcao   "
-            . "from REMUN_SERVIDOR s "
-            . "  left join REMUN_UNID_GESTORA g on (g.id_cliente = s.id_cliente and g.id = s.id_unid_gestora)         "
-            . "  left join REMUN_UNID_LOTACAO l on (l.id_cliente = s.id_cliente and l.id_lotacao = s.id_unid_lotacao) "
-            . "  left join REMUN_CARGO_FUNCAO f on (f.id_cliente = s.id_cliente and f.id_cargo = s.id_cargo_atual)    "
-            . "where (s.id_cliente  = {$id_cliente})  "
-            . "  and (s.id_servidor = {$id_servidor}) ";
+              "Select \n"
+            . "    lc.id_lancto_prof \n"
+            . "  , lc.id_lancto      \n"
+            . "  , mv.situacao       \n"
+            . "  , lc.id_cliente     \n"
+            . "  , lc.id_servidor    \n"
+            . "  , sv.nome           \n"
+            . "  , coalesce(cf.descricao, '* CARGO/FUNÇÃO NÃO INFORMADO') as cargo_funcao \n"
+            . "  , lc.id_unid_lotacao   \n"
+            . "  , lc.ano_mes           \n"
+            . "  , lc.qtd_h_aula_normal \n"
+            . "  , lc.qtd_h_aula_substituicao   \n"
+            . "  , lc.qtd_h_aula_outra          \n"
+            . "  , lc.qtd_falta     \n"
+            . "  , lc.observacao    \n"
+            . "  , lc.calc_grat_series_iniciais \n"
+            . "  , lc.calc_grat_dificil_acesso  \n"
+            . "  , lc.calc_grat_ensino_espec    \n"
+            . "  , lc.calc_grat_multi_serie     \n"
+            . "from REMUN_LANCTO_CH mv          \n"
+            . "  inner join REMUN_LANCTO_CH_PROF lc on (lc.id_lancto = mv.id_lancto and lc.id_cliente = mv.id_cliente)  \n"
+            . "  inner join REMUN_SERVIDOR sv on (sv.id_cliente = lc.id_cliente and sv.id_servidor = lc.id_servidor)    \n"
+            . "  left join REMUN_CARGO_FUNCAO cf on (cf.id_cliente = sv.id_cliente and cf.id_cargo = sv.id_cargo_atual) \n"
+            . " \n"
+            . "where (mv.id_cliente  = {$id_cliente})  \n"
+            . "  and (mv.controle    = {$controle})    \n"
+            . "  and (lc.id_servidor = {$id_servidor}) \n";
 
         $res = $pdo->query($sql);
         if (($obj = $res->fetch(PDO::FETCH_OBJ)) !== false) {
@@ -371,10 +387,11 @@
                                   "<input type='text' class='form-control text lg-text {$proximo}' maxlength='10' id='qtd_falta_{$referencia}' onchange='salvar_lancamento_professor(this.id, 0)' "
                                 . "value='" . number_format($obj->qtd_falta, 0, ',' , '.') . "' "
                                 . "style='text-align: right; margin: 0px; border: 0; background-color:transparent; width: 100%; height: 50px; {$readonly}'>";
-                            $icon_ex = "<button id='excluir_professor_lancamento_{$referencia}' class='btn btn-sm btn-round btn-primary excluir_professor' title='Excluir Registro' onclick='excluirLancamentoProfessor(this.id)' style='{$style}'><i class='glyph-icon icon-trash'></i></button>";
                             */
+                            $icon_ex = "<button id='excluir_professor_lancamento_{$referencia}' class='btn btn-sm btn-round btn-primary excluir_professor' title='Excluir Registro' onclick='excluir_professor_lancamento(this.id)' style='{$style}'><i class='glyph-icon icon-trash'></i></button>";
+                            
                             $tabela .= "    <tr class='custom-font-size-10' id='linha_professor_{$referencia}'>";
-                            $tabela .= "        <td style='text-align: center;'>{$qtde_servidores}</td>";
+                            $tabela .= "        <td style='text-align: center;'>{$qtde_professores}</td>";
                             $tabela .= "        <td style='text-align: center;'>" . str_pad($obj->id_servidor, 7, "0", STR_PAD_LEFT) . "</td>";
                             $tabela .= "        <td>{$obj->nome}</td>";
                             $tabela .= "        <td>{$obj->cargo_funcao}</td>";
@@ -562,10 +579,10 @@
                         $qtde_hora_aula_subst      = preg_replace("/[^0-9]/", "", trim(filter_input(INPUT_POST, 'qtde_hora_aula_subst')) );
                         $qtde_hora_aula_outras     = preg_replace("/[^0-9]/", "", trim(filter_input(INPUT_POST, 'qtde_hora_aula_outras')) );
                         $qtde_falta                = preg_replace("/[^0-9]/", "", trim(filter_input(INPUT_POST, 'qtde_falta')) );
-                        $calc_grat_series_iniciais = intval( preg_replace("/[^0-9]/", "", "0" . trim(filter_input(INPUT_POST, 'calc_grat_series_iniciais')) ));
-                        $calc_grat_ensino_esp      = intval( preg_replace("/[^0-9]/", "", "0" . trim(filter_input(INPUT_POST, 'calc_grat_ensino_esp')) ));
-                        $calc_grat_dificio_acesso  = intval( preg_replace("/[^0-9]/", "", "0" . trim(filter_input(INPUT_POST, 'calc_grat_dificio_acesso')) ));
-                        $calc_grat_multi_serie     = intval( preg_replace("/[^0-9]/", "", "0" . trim(filter_input(INPUT_POST, 'calc_grat_multi_serie')) ));
+                        $calc_grat_series_iniciais = strip_tags( trim(filter_input(INPUT_POST, 'calc_grat_series_iniciais')) );
+                        $calc_grat_ensino_esp      = strip_tags( trim(filter_input(INPUT_POST, 'calc_grat_ensino_esp')) );
+                        $calc_grat_dificio_acesso  = strip_tags( trim(filter_input(INPUT_POST, 'calc_grat_dificio_acesso')) );
+                        $calc_grat_multi_serie     = strip_tags( trim(filter_input(INPUT_POST, 'calc_grat_multi_serie')) );
                         $observacao  = strip_tags( trim(filter_input(INPUT_POST, 'observacao')) );
                         
                         if ($observacao === "") { $observacao = null; }
@@ -598,7 +615,7 @@
                                 . "  , :calc_grat_dificil_acesso  "
                                 . "  , :calc_grat_ensino_espec    "
                                 . "  , :calc_grat_multi_serie     "
-                                . ")");
+                                . ")");                        
                             $stm->execute(array(
                                   ':id_lancto'   => $id_lancto
                                 , ':id_cliente'  => $id_cliente
@@ -607,11 +624,12 @@
                                 , ':ano_mes'     => $ano_mes
                                 , ':qtde_ch_normal'       => $qtde_hora_aula_normal
                                 , ':qtde_ch_substituicao' => $qtde_hora_aula_subst
+                                , ':qtde_ch_outras'       => 0
                                 , ':qtde_faltas'          => $qtde_falta
                                 , ':observacao'           => $observacao
                                 , ':calc_grat_series_iniciais' => $calc_grat_series_iniciais
-                                , ':calc_grat_dificil_acesso'  => $calc_grat_dificil_acesso
-                                , ':calc_grat_ensino_espec'    => $calc_grat_ensino_espec
+                                , ':calc_grat_dificil_acesso'  => $calc_grat_dificio_acesso
+                                , ':calc_grat_ensino_espec'    => $calc_grat_ensino_esp
                                 , ':calc_grat_multi_serie'     => $calc_grat_multi_serie
                             ));
                             $pdo->commit();
@@ -620,43 +638,34 @@
                         // Fechar conexão PDO
                         unset($pdo);
 
-                        $referencia = $controle . "_" . $sequencia;
-                        $servidor   = getRegistroServidor($id_cliente, $id_servidor);
+                        $servidor   = getRegistroProfessor($id_cliente, $id_servidor, $controle);
+                        $referencia = substr($servidor->id_lancto_prof, 1, strlen($servidor->id_lancto_prof) - 2); // GUID sem as chaves "{}"
 
                         $style = "padding-left: 1px; padding-right: 1px; padding-top: 1px; padding-bottom: 1px; ";
                         $input = 
-                              "<input type='hidden' id='controle_{$referencia}' value='{$controle}'>"
-                            . "<input type='hidden' id='sequencia_{$referencia}' value='{$sequencia}'>"
-                            . "<input type='hidden' id='id_cliente_{$referencia}' value='{$id_cliente}'>"
-                            . "<input type='hidden' id='id_unid_gestora_{$referencia}' value='{$id_unid_gestora}'>"
-                            . "<input type='hidden' id='id_unid_lotacao_{$referencia}' value='{$id_unid_lotacao}'>"
-                            . "<input type='hidden' id='id_evento_{$referencia}' value='{$id_evento}'>"
-                            . "<input type='hidden' id='ano_mes_{$referencia}' value='{$ano_mes}'>"
-                            . "<input type='hidden' id='id_servidor_{$referencia}' value='{$id_servidor}'>";
+                              "<input type='hidden' id='id_lancto_prof_{$referencia}'  value='{$servidor->id_lancto_prof}'>"
+                            . "<input type='hidden' id='id_lancto_{$referencia}'       value='{$servidor->id_lancto}'>"
+                            . "<input type='hidden' id='id_cliente_{$referencia}'      value='{$servidor->id_cliente}'>"
+                            . "<input type='hidden' id='id_servidor_{$referencia}'     value='{$servidor->id_servidor}'>"
+                            . "<input type='hidden' id='id_unid_lotacao_{$referencia}' value='{$servidor->id_unid_lotacao}'>"
+                            . "<input type='hidden' id='ano_mes_{$referencia}'         value='{$servidor->ano_mes}'>"
+                            . "<input type='hidden' id='observacao_{$referencia}'                value='{$servidor->observacao}'>"
+                            . "<input type='hidden' id='calc_grat_series_iniciais_{$referencia}' value='{$servidor->calc_grat_series_iniciais}'>"
+                            . "<input type='hidden' id='calc_grat_dificil_acesso_{$referencia}'  value='{$servidor->calc_grat_dificil_acesso}'>"
+                            . "<input type='hidden' id='calc_grat_ensino_espec_{$referencia}'    value='{$servidor->calc_grat_ensino_espec}'>"
+                            . "<input type='hidden' id='calc_grat_multi_serie_{$referencia}'     value='{$servidor->calc_grat_multi_serie}'>";
 
-                        $qt_readonly  = ""; // ((int)$obj->situacao !== 0?"readonly":((int)$tipo_lancamento === 1?"readonly":""));
-                        $vl_readonly  = ""; // ((int)$obj->situacao !== 0?"readonly":((int)$tipo_lancamento === 0?"readonly":""));
-
-                        $qt_proximo = "proximo_campo"; // ((int)$obj->situacao !== 0?"":((int)$tipo_lancamento === 0?"proximo_campo":""));
-                        $vl_proximo = "proximo_campo"; // ((int)$obj->situacao !== 0?"":((int)$tipo_lancamento === 1?"proximo_campo":""));
-
-                        $quant_out = 
-                              "<input type='text' class='form-control text lg-text {$qt_proximo}' maxlength='10' id='quant_{$referencia}' onchange='salvar_lancamento_servidor(this.id, 0)' "
-                            . "value='" . (($quant !== null) && ($quant !== '')?number_format($quant, 0, ',' , '.'):"0") . "' "
-                            . "style='text-align: right; margin: 0px; border: 0; background-color:transparent; width: 100%; height: 50px; {$qt_readonly}'>";
-                        $valor_out = 
-                              "<input type='text' class='form-control text lg-text {$vl_proximo}' maxlength='10' id='valor_{$referencia}' onchange='salvar_lancamento_servidor(this.id, 0)' "
-                            . "value='" . (($valor !== null) && ($valor !== '')?number_format($valor, 2, ',' , '.'):"0,00") . "' "
-                            . "style='text-align: right; margin: 0px; border: 0; background-color:transparent; width: 100%; height: 50px;' {$vl_readonly}>";
-                        $icon_ex = "<button id='excluir_servidor_lancamento_{$referencia}' class='btn btn-sm btn-round btn-primary excluir_servidor' title='Excluir Registro' onclick='excluirLancamentoServidor(this.id)' style='{$style}'><i class='glyph-icon icon-trash'></i></button>";
-
-                        $tr_table  = "    <tr class='custom-font-size-10' id='linha_servidor_{$referencia}'>";
+                        $icon_ex = "<button id='excluir_professor_lancamento_{$referencia}' class='btn btn-sm btn-round btn-primary excluir_professor' title='Excluir Registro' onclick='excluirLancamentoProfessor(this.id)' style='{$style}'><i class='glyph-icon icon-trash'></i></button>";    
+                        
+                        $tr_table = "    <tr class='custom-font-size-10' id='linha_professor_{$referencia}'>";
                         $tr_table .= "        <td style='text-align: center;'>{$sequencia}</td>";
-                        $tr_table .= "        <td style='text-align: center;'>" . str_pad($id_servidor, 7, "0", STR_PAD_LEFT) . "</td>";
+                        $tr_table .= "        <td style='text-align: center;'>" . str_pad($servidor->id_servidor, 7, "0", STR_PAD_LEFT) . "</td>";
                         $tr_table .= "        <td>{$servidor->nome}</td>";
                         $tr_table .= "        <td>{$servidor->cargo_funcao}</td>";
-                        $tr_table .= "        <td style='text-align: right; margin: 0px; padding: 0px;'>{$quant_out}</td>";
-                        $tr_table .= "        <td style='text-align: right; margin: 0px; padding: 0px;'>{$valor_out}</td>";
+                        $tr_table .= "        <td style='text-align: right;'>" . number_format($servidor->qtd_h_aula_normal, 0, ',' , '.') . "</td>";
+                        $tr_table .= "        <td style='text-align: right;'>" . number_format($servidor->qtd_h_aula_substituicao, 0, ',' , '.') . "</td>";
+                        $tr_table .= "        <td style='text-align: right;'>" . number_format($servidor->qtd_h_aula_outra, 0, ',' , '.') . "</td>";
+                        $tr_table .= "        <td style='text-align: right;'>" . number_format($servidor->qtd_falta, 0, ',' , '.') . "</td>";
                         $tr_table .= "        <td style='text-align: center;' style='{$style}'>{$icon_ex}{$input}</td>";
                         $tr_table .= "    </tr>";
                         
@@ -696,7 +705,7 @@
                             . "where (id_cliente      = {$to})    "
                             . "  and (id_servidor     = {$sv})    " 
                             . "  and (id_unid_lotacao = {$lo})    "
-                            . "  and (ano_mes         = '{$cp}')  ";
+                            . "  and (ano_mes         = '{$cp}')  "; 
                             
                         $qry = $pdo->query($sql);
                         if (($obj = $qry->fetch(PDO::FETCH_OBJ)) !== false) {
@@ -716,15 +725,15 @@
                     }
                 } break;
                 
-                case 'excluir_lancamento_servidor' : {
+                case 'excluir_lancamento_professor' : {
                     try {
                         $to = strip_tags( preg_replace("/[^0-9]/", "", trim(filter_input(INPUT_POST, 'to'))) ); // Cliente
-                        $ug = strip_tags( preg_replace("/[^0-9]/", "", trim(filter_input(INPUT_POST, 'ug'))) );
-                        $lo = strip_tags( preg_replace("/[^0-9]/", "", trim(filter_input(INPUT_POST, 'lo'))) );
-                        $ev = strip_tags( preg_replace("/[^0-9]/", "", trim(filter_input(INPUT_POST, 'ev'))) ); // Competência - ano/mês
-                        $cp = strip_tags( preg_replace("/[^0-9]/", "", trim(filter_input(INPUT_POST, 'cp'))) );
-                        $id = strip_tags( preg_replace("/[^0-9]/", "", trim(filter_input(INPUT_POST, 'id'))) ); // Controle
                         $sv = strip_tags( preg_replace("/[^0-9]/", "", trim(filter_input(INPUT_POST, 'sv'))) ); // Servidor
+                        $lo = strip_tags( preg_replace("/[^0-9]/", "", trim(filter_input(INPUT_POST, 'lo'))) ); // Escola
+                        $cp = strip_tags( preg_replace("/[^0-9]/", "", trim(filter_input(INPUT_POST, 'cp'))) ); // Competência - ano/mês
+                        $id = strip_tags( preg_replace("/[^0-9]/", "", trim(filter_input(INPUT_POST, 'id'))) ); // Controle
+                        $lc = strip_tags( preg_replace("/[^0-9]/", "", trim(filter_input(INPUT_POST, 'lc'))) ); // ID Lançamento (Cabeçalho)
+                        $gd = strip_tags( preg_replace("/[^0-9]/", "", trim(filter_input(INPUT_POST, 'gd'))) ); // ID Lançamento (Professor)
                         $hs = trim(filter_input(INPUT_POST, 'hs'));
                         
                         $obj = getRegistro($to, $cp, $id);
@@ -742,18 +751,14 @@
                                 $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
                                 $stm = $pdo->prepare(
-                                      "Delete from REMUN_EVENTO_AVULSO_ITEM       "
+                                      "Delete from REMUN_LANCTO_CH_PROF           "
                                     . "where (id_cliente      = :id_cliente)      "
-                                    . "  and (id_unid_gestora = :id_unid_gestora) "
                                     . "  and (id_unid_lotacao = :id_unid_lotacao) "
-                                    . "  and (id_evento       = :id_evento)       "
                                     . "  and (ano_mes         = :ano_mes)         "
                                     . "  and (id_servidor     = :id_servidor)     ");
                                 $stm->execute(array(
                                       ':id_cliente'       => $to
-                                    , ':id_unid_gestora'  => $ug
                                     , ':id_unid_lotacao'  => $lo
-                                    , ':id_evento'        => $ev
                                     , ':ano_mes'          => $cp
                                     , ':id_servidor'      => $sv
                                 ));

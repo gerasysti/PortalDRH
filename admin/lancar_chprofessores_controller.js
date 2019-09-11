@@ -244,22 +244,22 @@ function salvar_servidor_lancamento_ch(sequencia, callback) {
         'qtde_hora_aula_subst'  : $('#qtde_hora_aula_subst').val(),
         'qtde_hora_aula_outras' : '0',
         'qtde_falta'            : $('#qtde_falta').val(),
-        'calc_grat_series_iniciais' : '0',
-        'calc_grat_ensino_esp'      : '0',
-        'calc_grat_dificio_acesso'  : '0',
-        'calc_grat_multi_serie'     : '0',
+        'calc_grat_series_iniciais' : 'N',
+        'calc_grat_ensino_esp'      : 'N',
+        'calc_grat_dificio_acesso'  : 'N',
+        'calc_grat_multi_serie'     : 'N',
         'observacao' : $('#observacao').val()
     };
 
     if ( $('#calc_grat_series_iniciais').is(":checked") ) params.calc_grat_series_iniciais = $('#calc_grat_series_iniciais').val();
-    if ( $('#calc_grat_ensino_esp').is(":checked") )      params.calc_grat_ensino_esp = $('#calc_grat_ensino_esp').val();
-    if ( $('#calc_grat_dificio_acesso').is(":checked") )  params.calc_grat_dificio_acesso = $('#calc_grat_dificio_acesso').val();
-    if ( $('#calc_grat_multi_serie').is(":checked") )     params.calc_grat_multi_serie = $('#calc_grat_multi_serie').val();
+    if ( $('#calc_grat_ensino_esp').is(":checked") )      params.calc_grat_ensino_esp      = $('#calc_grat_ensino_esp').val();
+    if ( $('#calc_grat_dificio_acesso').is(":checked") )  params.calc_grat_dificio_acesso  = $('#calc_grat_dificio_acesso').val();
+    if ( $('#calc_grat_multi_serie').is(":checked") )     params.calc_grat_multi_serie     = $('#calc_grat_multi_serie').val();
     
     // Iniciamos o Ajax 
     $.ajax({
         // Definimos a url
-        url : './lancar_eventos_dao.php',
+        url : './lancar_chprofessores_dao.php',
         // Definimos o tipo de requisição
         type: 'post',
         // Definimos o tipo de retorno
@@ -429,7 +429,7 @@ function verificar_lancamento_ch_professor(ano_mes, escola, servidor, callback) 
     // Finalizamos o Ajax
 }
 
-function excluirLancamentoProfessor(id) {
+function excluir_professor_lancamento(id) {
     var referencia = id.replace("excluir_professor_lancamento_", "");
     var i_linha = document.getElementById("linha_professor_" + referencia);
     var colunas = i_linha.getElementsByTagName('td');
@@ -463,7 +463,7 @@ function excluirLancamentoProfessor(id) {
                 // Iniciamos o Ajax 
                 $.ajax({
                     // Definimos a url
-                    url : './lancar_eventos_dao.php',
+                    url : './lancar_chprofessores_dao.php',
                     // Definimos o tipo de requisição
                     type: 'post',
                     // Definimos o tipo de retorno
@@ -478,14 +478,14 @@ function excluirLancamentoProfessor(id) {
                     success : function(data){
                         var retorno = data;
                         if (retorno === "OK") {
-                            var qtde_servidores = parseInt("0" + $('#qtde_servidores').val()) - 1;
-                            $('#qtde_servidores').val(qtde_servidores);
+                            var qtde_professores = parseInt("0" + $('#qtde_professores').val()) - 1;
+                            $('#qtde_professores').val(qtde_professores);
                             
                             $('#btnF_confirma_msg').trigger("click");
                             RemoveTableRow(i_linha);
                         } else {
                             $('#btnF_confirma_msg').trigger("click");
-                            mensagem_erro( "<p><strong>Erro ao tentar excluir o lançamento do servidor selecionado:</strong> <br><br>" + retorno + "</p>" );
+                            mensagem_erro( "<p><strong>Erro ao tentar excluir o lançamento de Carga Horária do Servidor selecionado:</strong> <br><br>" + retorno + "</p>" );
                         }
                     },
                     error: function (request, status, error) {

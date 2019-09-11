@@ -238,8 +238,13 @@
                 </div>
                 
                 <div id="header-nav-right">
+                    <!--
                     <a href="#" class="hdr-btn" id="fullscreen-btn" title="Tela Cheia">
                         <i class="glyph-icon icon-arrows-alt"></i>
+                    </a>
+                    -->
+                    <a href="javascript:void(0);" class="header-btn" id="toor-btn" title="Ajuda">
+                        <i class="glyph-icon icon-question"></i>
                     </a>
                     <!--<a class="header-btn" id="logout-btn" href="index.php" title="Sair">-->
                     <a class="header-btn" id="logout-btn" href="index.php?ac=clear" title="Sair">    
@@ -284,7 +289,7 @@
                         <?php endif;?>
                         
                         <?php if (intval($usuario['lancar_eventos']) === 1):?>
-                        <li class="header"><span>Base de Dados</span></li>
+                        <li class="header base-dados"><span>Base de Dados</span></li>
                         <li>
                             <a href="javascript:void(0);" title="Pesquisar Unidades Gestoras" onclick="controle_unidade_gestora('<?php echo 'id_' . $id?>', '<?php echo 'lg_' . $_SESSION['acesso']['us']?>')">
                                 <i class="glyph-icon icon-bank"></i>
@@ -311,7 +316,7 @@
                             </a>
                         </li>
                         <?php endif;?>
-                        <li class="header"><span>Manutenção de Dados</span></li>
+                        <li class="header manutencao-dados"><span>Manutenção de Dados</span></li>
                         <li>
                             <a href="javascript:void(0);" title="Lançamento de Eventos por Servidor" onclick="controle_lancar_eventos_mensais('<?php echo 'id_' . $id?>', '<?php echo 'lg_' . $_SESSION['acesso']['us']?>')">
                                 <i class="glyph-icon icon-money"></i>
@@ -327,7 +332,7 @@
                         <?php endif;?>
                         
                         <li class="divider"></li>
-                        <li>
+                        <li id="menu-opcao_sair">
                             <a href="index.php?ac=clear" title="Sair">
                                 <i class="glyph-icon icon-power-off"></i>
                                 <span>Sair</span>
@@ -452,6 +457,9 @@
         <script type="text/javascript" src="./servidor_controller.js"></script>
         <script type="text/javascript" src="./lancar_eventos_controller.js"></script>
         <script type="text/javascript" src="./lancar_chprofessores_controller.js"></script>
+       
+        <script src="../js/jquery.aSimpleTour.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-scrollTo/2.1.2/jquery.scrollTo.js"></script>
         
         <script type="text/javascript">
             body_sizer_controle();
@@ -479,7 +487,101 @@
 //                          }, 3000);
 //
 //                        });
-            
+            var tour = {
+                autoStart: false,
+                welcomeMessage: '<h2>Tour</h2><p>Bem-vindo ao <strong>Guia de Navegação</strong> do sistema.</p><br>',
+                data: [{
+                    element : '#page-sidebar', // '.scroll-sidebar',
+                    tooltip : 'Este é o menu principal do sistema.',
+                    position: 'RT',
+                    text    : '<h2>Tour</h2><p>Bem-vindo ao <strong>Guia de Navegação</strong> do sistema.</p><br>'
+                }, {
+                    element : '.base-dados',
+                    tooltip : 'Grupo de Tabelas do Sistema',
+                    position: 'R',
+                    text    : '<h2>Base de Dados</h2><line><p>Os registros deste grupo estão disponíveis apenas para pesquisa e a carga destas informações é feita pelo sistema <strong>REMUNERATUS</strong>.</p><br>'
+                }, {
+                    element : '.manutencao-dados',
+                    tooltip : 'Grupo de Rotinas de Lançamentos',
+                    position: 'R',
+                    text    : '<h2>Manutenção de Dados</h2><line><p>Os dados inseridos pelo usuário através desta opções serão importados pelo sistema <strong>REMUNERATUS</strong> na central da entidade.</p><br>'
+//                }, {
+//                    element: '#how pre',
+//                    tooltip: 'Or can be used into a click event',
+//                    position: 'B'
+//                }, {
+//                    element: '#the-tour',
+//                    tooltip: 'The tour section it is very important',
+//                    position: 'T',
+//                    text: '<h1>Data</h1><p>It is a attribute that contains every the texts and configurations that the plugin use</p>'
+//                }, {
+//                    element: '#the-tour dt[data-name="element"]',
+//                    tooltip: 'Use a selector!',
+//                    position: 'R',
+//                    'controlsPosition': 'BR'
+//                }, {
+//                    element: '#the-tour dt[data-name="position"]',
+//                    tooltip: 'Like this, "R"',
+//                    position: 'R'
+//                }, {
+//                    element: '#the-tour dt[data-name="text"]',
+//                    tooltip: 'This can be HTML! (be standard, pls)',
+//                    position: 'R'
+//                }, {
+//                    element: '#the-tour dt[data-name="tooltip"]',
+//                    tooltip: 'Oops! I just forgot myself configuration!',
+//                    position: 'R'
+//                }, {
+//                    element: '#other',
+//                    tooltip: 'Backgrounds and more!',
+//                    text: '<p>Use rgba() because it looks really nice</p>'
+//                },{
+//                    element: '#dependency',
+//                    tooltip: 'Please use it'
+//                },{
+//                    element: '#demos',
+//                    tooltip: 'Wanna see some demos?',
+//                    text: '<h2>Look out for our demos</h2>',
+//                    callback: function() {
+//                        $('[data-toggle=dropdown]').dropdown('toggle');
+//                    }
+//                },{
+//                    element: '#github',
+//                    tooltip: 'fork it',
+//                    text: '<h1>That\'s all!</h1><p>Now you can download it or fork it on Github.</p>'
+                }],
+                controlsPosition: 'TR',
+                buttons: {
+                    next: {
+                        text : 'Próximo &rarr;',
+                        class: 'btn btn-default'
+                    },
+                    prev: {
+                        text : '&larr; Anterior',
+                        class: 'btn btn-default'
+                    },
+                    start: {
+                        text : 'Iniciar',
+                        class: 'btn btn-primary'
+                    },
+                    end: {
+                        text : 'Fechar',
+                        class: 'btn btn-primary'
+                    }
+                },
+                controlsCss: {
+                    background: 'rgba(55, 59, 65, 0.9)',
+                    color: '#fff',
+                    width: '400px',
+                    'border-radius': 10
+                }
+            };
+
+            $(document).ready(function(){
+                $('#toor-btn').on('click', function(){
+                    $.aSimpleTour(tour);
+                });
+            });            
         </script>
         
     </body>

@@ -449,7 +449,7 @@ where (s.id_cliente = 15019)
                                                     <div class="col-sm-5 padding-field">
                                                         <div class="checkbox checkbox-primary">
                                                             <label>
-                                                                <input type="checkbox" class="custom-checkbox" name="calc_grat_series_iniciais" id="calc_grat_series_iniciais" value="1">
+                                                                <input type="checkbox" class="custom-checkbox" name="calc_grat_series_iniciais" id="calc_grat_series_iniciais" value="S">
                                                                 Calcular Gratificação de Séries Iniciais
                                                             </label>
                                                         </div>
@@ -457,7 +457,7 @@ where (s.id_cliente = 15019)
                                                     <div class="col-sm-5 padding-field">
                                                         <div class="checkbox checkbox-primary">
                                                             <label>
-                                                                <input type="checkbox" class="custom-checkbox" name="calc_grat_ensino_esp" id="calc_grat_ensino_esp" value="1">
+                                                                <input type="checkbox" class="custom-checkbox" name="calc_grat_ensino_esp" id="calc_grat_ensino_esp" value="S">
                                                                 Calcular Gratificação de Ensino Especial
                                                             </label>
                                                         </div>
@@ -469,7 +469,7 @@ where (s.id_cliente = 15019)
                                                     <div class="col-sm-5 padding-field">
                                                         <div class="checkbox checkbox-primary">
                                                             <label>
-                                                                <input type="checkbox" class="custom-checkbox" name="calc_grat_dificio_acesso" id="calc_grat_dificio_acesso" value="1">
+                                                                <input type="checkbox" class="custom-checkbox" name="calc_grat_dificio_acesso" id="calc_grat_dificio_acesso" value="S">
                                                                 Calcular Gratificação de Difícil Acesso
                                                             </label>
                                                         </div>
@@ -477,7 +477,7 @@ where (s.id_cliente = 15019)
                                                     <div class="col-sm-5 padding-field">
                                                         <div class="checkbox checkbox-primary">
                                                             <label>
-                                                                <input type="checkbox" class="custom-checkbox" name="calc_grat_multi_serie" id="calc_grat_multi_serie" value="1">
+                                                                <input type="checkbox" class="custom-checkbox" name="calc_grat_multi_serie" id="calc_grat_multi_serie" value="S">
                                                                 Calcular Gratificação Multi-Série
                                                             </label>
                                                         </div>
@@ -491,7 +491,7 @@ where (s.id_cliente = 15019)
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-default" data-dismiss="modal" id="btn_servidor_fechar">Fechar</button>
-                                    <button type="button" class="btn btn-primary proximo_campo" id="btn_servidor_confirmar" onclick="confirmar_servidor()">Confirmar</button>
+                                    <button type="button" class="btn btn-primary proximo_campo" id="btn_servidor_confirmar" onclick="confirmar_carga_horaria()">Confirmar</button>
                                 </div>
                             </div>
                         </div>
@@ -676,7 +676,7 @@ where (s.id_cliente = 15019)
                             }
                         }
 
-                        function confirmar_servidor() {
+                        function confirmar_carga_horaria() {
                             var situacao = parseInt($('#situacao').val());
                             if (situacao === 0) {
                                 var controle = parseFloat("0" + $('#controle').val());
@@ -707,7 +707,7 @@ where (s.id_cliente = 15019)
                                                 sequencia = (qtde_professores + 1);
                                                 salvar_servidor_lancamento_ch(sequencia, function(retorno){
                                                     if (retorno !== "OK") {
-                                                        $('#quant').focus();
+                                                        $('#qtde_hora_aula_normal').focus();
                                                     } else {
                                                         qtde_professores += 1;
                                                         $('#qtde_professores').val( qtde_professores );
@@ -715,20 +715,29 @@ where (s.id_cliente = 15019)
                                                         if (qtde_professores === 1) {
                                                             carregar_lancamento_professores();
                                                         } else {
-//                                                            var file_json = "../downloads/lanc_ch_srv_" + $('#hs').val() + ".json";
-//                                                            $.getJSON(file_json, function(data){
-//                                                                $("#datatable-responsive_serv").append(data.form[0].table_tr);
-//                                                            });
+                                                            var file_json = "../downloads/lanc_ch_srv_" + $('#hs').val() + ".json";
+                                                            $.getJSON(file_json, function(data){
+                                                                $("#datatable-responsive_prof").append(data.form[0].table_tr);
+                                                            });
                                                         }
-//
-//                                                        $('#sequencia').val("0");
-//                                                        $('#id_servidor').val("");
-//                                                        $('#nm_servidor').val("");
-//                                                        $('#quant').val("");
-//                                                        $('#valor').val("");
-//                                                        $('#obs').val("");
-//
-//                                                        $('#id_servidor').focus();
+
+                                                        $('#sequencia').val("0");
+                                                        $('#id_escola').val( zero_esquerda($('#id_unid_lotacao').val(), 5) );
+                                                        $('#nm_escola').val( $('#id_unid_lotacao option:selected').text() );
+                                                        $('#id_servidor').val("");
+                                                        $('#nm_servidor').val("");
+                                                        $('#dt_admissao').val("");
+                                                        $('#cargo_funcao').val("");
+                                                        $('#qtde_hora_aula_normal').val("");
+                                                        $('#qtde_hora_aula_subst').val("");
+                                                        $('#qtde_falta').val("");
+                                                        $('#observacao').val("");
+                                                        $('#calc_grat_series_iniciais').prop('checked', false).uniform();
+                                                        $('#calc_grat_ensino_esp').prop('checked', false).uniform();
+                                                        $('#calc_grat_dificio_acesso').prop('checked', false).uniform();
+                                                        $('#calc_grat_multi_serie').prop('checked', false).uniform();
+
+                                                        $('#id_servidor').focus();
                                                     }
                                                 });
                                             }
