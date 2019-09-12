@@ -41,7 +41,8 @@
         $style = "padding-left: 1px; padding-right: 1px; padding-top: 1px; padding-bottom: 1px; ";
         $input = 
               "<input type='hidden' id='controle_{$referencia}' value='{$controle}'>"
-            . "<input type='hidden' id='id_lancto_{$referencia}' value='{$obj->id_lancto}'>"
+            . "<input type='hidden' id='id_lancto_{$referencia}'  value='{$obj->id_lancto}'>"
+            . "<input type='hidden' id='referencia_{$referencia}' value='{$referencia}'>"
             . "<input type='hidden' id='id_cliente_{$referencia}' value='{$id_cliente}'>"
             . "<input type='hidden' id='id_unid_lotacao_{$referencia}' value='{$id_unid_lotacao}'>"
             . "<input type='hidden' id='ano_mes_{$referencia}' value='{$ano_mes}'>"
@@ -823,13 +824,14 @@
                     }
                 } break;
                 
-                case 'situacao_lancamento_evento' : {
+                case 'situacao_lancamento_chprof' : {
                     try {
                         $to = strip_tags( preg_replace("/[^0-9]/", "", trim(filter_input(INPUT_POST, 'to'))) );
                         $ug = strip_tags( preg_replace("/[^0-9]/", "", trim(filter_input(INPUT_POST, 'ug'))) );
                         $lo = strip_tags( preg_replace("/[^0-9]/", "", trim(filter_input(INPUT_POST, 'lo'))) );
                         $ev = strip_tags( preg_replace("/[^0-9]/", "", trim(filter_input(INPUT_POST, 'ev'))) );
                         $cp = strip_tags( preg_replace("/[^0-9]/", "", trim(filter_input(INPUT_POST, 'cp'))) );
+                        $lc = strip_tags( trim(filter_input(INPUT_POST, 'lc')) );
                         $id = strip_tags( preg_replace("/[^0-9]/", "", trim(filter_input(INPUT_POST, 'id'))) );
                         $st = strip_tags( preg_replace("/[^0-9]/", "", trim(filter_input(INPUT_POST, 'st'))) );
                         $hs = trim(filter_input(INPUT_POST, 'hs'));
@@ -849,19 +851,13 @@
                                 $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
                                 $stm = $pdo->prepare(
-                                      "Update REMUN_EVENTO_AVULSO Set "
-                                    . "  situacao = {$st} "
-                                    . "where (id_cliente      = :id_cliente)"
-                                    . "  and (id_unid_gestora = :id_unid_gestora)"
-                                    . "  and (id_unid_lotacao = :id_unid_lotacao)"
-                                    . "  and (id_evento       = :id_evento)"
-                                    . "  and (ano_mes         = :ano_mes) ");
+                                      "Update REMUN_LANCTO_CH Set "
+                                    . "  situacao = {$st}         "
+                                    . "where (id_cliente = :id_cliente) "
+                                    . "  and (id_lancto  = :id_lancto)  ");
                                 $stm->execute(array(
-                                      ':id_cliente'       => $to
-                                    , ':id_unid_gestora'  => $ug
-                                    , ':id_unid_lotacao'  => $lo
-                                    , ':id_evento'        => $ev
-                                    , ':ano_mes'          => $cp
+                                      ':id_cliente' => $to
+                                    , ':id_lancto'  => $lc
                                 ));
 
                                 $pdo->commit();

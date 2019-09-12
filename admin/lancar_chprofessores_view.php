@@ -279,6 +279,7 @@ where (s.id_cliente = 15019)
                                                 <div class="col-sm-1 padding-field">
                                                     <input type="hidden" id="id_cliente" value="0">
                                                     <input type="hidden" id="id_lancto"  value="">
+                                                    <input type="hidden" id="referencia" value="">
                                                     <input type="text" class="form-control text lg-text" maxlength="10" id="controle" readonly>
                                                 </div>
                                                 <label for="data" class="col-sm-1 control-label padding-label">Data</label>

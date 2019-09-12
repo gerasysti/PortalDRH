@@ -295,6 +295,7 @@ function editarLancamentoCH(id) {
     
     $('#controle').val( $('#controle_' + referencia).val() );
     $('#id_lancto').val( $('#id_lancto_' + referencia).val() );
+    $('#referencia').val( $('#referencia_' + referencia).val() );
     $('#id_cliente').val( $('#id_cliente_' + referencia).val() );
     $('#ano_mes').val( $('#ano_mes_' + referencia).val() );
     $('#id_unid_lotacao').val( $('#id_unid_lotacao_' + referencia).val() );
@@ -499,7 +500,7 @@ function excluir_professor_lancamento(id) {
     }
 }
 
-function situacao_lancamento_evento(situacao) {
+function situacao_lancamento_chprof(situacao) {
     if ( $('#importado').is(":checked") ) {
         mensagem_alerta("Este lançamento já foi <strong>importado</strong> para o sistema de folha Remuneratus$ na central e não poderá ser alterado.<br>Entre em contato com a direção.");
     } else
@@ -516,13 +517,12 @@ function situacao_lancamento_evento(situacao) {
             var link = document.getElementById("btnC_confirma_msg");
             link.onclick = function() {
                 var params = {
-                    'ac' : 'situacao_lancamento_evento',
+                    'ac' : 'situacao_lancamento_chprof',
                     'hs' : $('#hs').val(),
                     'to' : $('#id_cliente').val(),
-                    'ug' : $('#id_unid_gestora').val(),
                     'lo' : $('#id_unid_lotacao').val(),
-                    'ev' : $('#id_evento').val(),
                     'cp' : $('#ano_mes').val(),
+                    'lc' : $('#id_lancto').val(),
                     'id' : $('#controle').val(),
                     'st' : situacao
                 };
@@ -530,7 +530,7 @@ function situacao_lancamento_evento(situacao) {
                 // Iniciamos o Ajax 
                 $.ajax({
                     // Definimos a url
-                    url : './lancar_eventos_dao.php',
+                    url : './lancar_chprofessores_dao.php',
                     // Definimos o tipo de requisição
                     type: 'post',
                     // Definimos o tipo de retorno
@@ -547,14 +547,12 @@ function situacao_lancamento_evento(situacao) {
                         if (retorno === "OK") {
                             $('#btnF_confirma_msg').trigger("click");
                             
-                            $('#situacao_' +  + parseInt($('#controle').val())).val(situacao);
+                            $('#situacao_' +  $('#referencia').val()).val(situacao);
                             $('#situacao').val(situacao);
                             $('#situacao').trigger('chosen:updated');
                             
                             $('#ano_mes').prop('disabled', (parseInt(situacao) === 1)); 
-                            $('#id_unid_gestora').prop('disabled', (parseInt(situacao) === 1)); 
                             $('#id_unid_lotacao').prop('disabled', (parseInt(situacao) === 1)); 
-                            $('#id_evento').prop('disabled', (parseInt(situacao) === 1)); 
                             
                             carregar_lancamento_professores();
                         } else {
@@ -579,7 +577,7 @@ function finalizar_lancamento_chprof() {
         mensagem_alerta("Salve, primeiramente, os dados inciais do Lançamento da Carga Horária.");
     } else {
         if ($('#situacao').val() === "0") {
-            situacao_lancamento_evento("1");
+            situacao_lancamento_chprof("1");
         }
     }
 }
@@ -590,7 +588,7 @@ function reabrir_lancamento_chprof() {
         mensagem_alerta("O Lançamento da Carga Horária não está pronto para esta operação.");
     } else {
         if ($('#situacao').val() === "1") {
-            situacao_lancamento_evento("0");
+            situacao_lancamento_chprof("0");
         }
     }
 }
@@ -609,6 +607,7 @@ function abrir_lancamento_chprofessores(id, us) {
         $('#op').val("novo_lancamento");
         $('#controle').val( "00000" );
         $('#id_lancto').val("");
+        $('#referencia').val("");
         $('#id_cliente').val( $('#cliente').val() );
         $('#data').val( $('#hoje').val() );
         $('#ano_mes').val( $('#competencia_atual').val());
