@@ -163,6 +163,7 @@
 
         <div id="page-wrapper">
             <div id="page-header" class="bg-gradient-9">
+                <input type="hidden" id="id_cliente" value="<?php echo $unidade;?>">
                 <div id="mobile-navigation">
                     <button id="nav-toggle" class="collapsed" data-toggle="collapse" data-target="#page-sidebar"><span></span></button>
                     <a href="principal.php?un=<?php echo $md5_unidade;?>" class="logo-content-small" title="Controle de Remunerações"></a>

@@ -34,6 +34,7 @@ function body_sizer_principal() {
 };
 
 function home() {
+    /*
     var str = "";
     
     str += "<div id='page-content'>";
@@ -41,6 +42,32 @@ function home() {
     str += "        <div id='page-title'>";
     str += "            <h2><strong>" + nome_unidade + "</strong></h2>";
     str += "            <p><strong>"  + cnpj_unidade + "</strong></p>";
+    str += "        </div>";
+    str += "        <div class='panel ng-scope'>";
+    str += "            <div class='panel-body'>";
+    str += "                <h3 class='title-hero'>Informações</h3>";
+    str += "                <div class='example-box-wrapper'>";
+    str += "                    <div class='row'>";
+    str += "                        <div class='col-md-4'>";
+    str += "                            <div class='tile-box bg-primary'>";
+    str += "                                <div class='tile-header'>";
+    str += "                                    Vencimento Base";
+    str += "                                    <div class='float-right'>";
+    str += "                                        <i class='glyph-icon icon-caret-up'></i>";
+    str += "                                        0%";
+    str += "                                    </div>";
+    str += "                                </div>";
+    str += "                                <div class='tile-content-wrapper'>";
+    str += "                                    <i class='glyph-icon icon-bullhorn'></i>";
+    str += "                                    <div class='tile-content'>";
+    str += "                                        <span>R$</span> 0,00";
+    str += "                                    </div>";
+    str += "                                </div>";
+    str += "                            </div>";
+    str += "                        </div>";
+    str += "                    </div>";
+    str += "                </div>";
+    str += "            </div>";
     str += "        </div>";
     str += "        <div id='page-wait'>";
     str += "            <a href='#' class='btn btn-md btn-default overlay-button hide' data-style='dark' data-theme='bg-default' data-opacity='60' id='link_wait'>";
@@ -51,36 +78,38 @@ function home() {
     
     $('#descktop').html(str);
     body_sizer_principal();
+    */    
+    var params = {
+        'ac' : 'dashboard',
+        'id' : $('#id_cliente').val()
+    };
     
-//    var params = {
-//        'ac' : 'dashboard'
-//    };
-//    
-//    // Iniciamos o Ajax 
-//    $.ajax({
-//        // Definimos a url
-//        url : './dashboard.php',
-//        // Definimos o tipo de requisição
-//        type: 'post',
-//        // Definimos o tipo de retorno
-//        dataType : 'html',
-//        // Dolocamos os valores a serem enviados
-//        data: params,
-//        // Antes de enviar ele alerta para esperar
-//        beforeSend : function(){
-//            $('#page-wait').html( loading_spinner() );
-//        },
-//        // Colocamos o retorno na tela
-//        success : function(data){
-//            $('#descktop').html(data);
-//            body_sizer_principal();
-//        },
-//        error: function (request, status, error) {
-//            $('#page-wait').html("");
-//            $('#descktop').html("Erro na chamada da página!<br> (" + status + ")" + request.responseText + "<br><strong>Error : </strong>" + error.toString());
-//        }
-//    });  
-//    // Finalizamos o Ajax
+    // Iniciamos o Ajax 
+    $.ajax({
+        // Definimos a url
+        //url : './dashboard.php',
+        url : './src/_home.php',
+        // Definimos o tipo de requisição
+        type: 'post',
+        // Definimos o tipo de retorno
+        dataType : 'html',
+        // Dolocamos os valores a serem enviados
+        data: params,
+        // Antes de enviar ele alerta para esperar
+        beforeSend : function(){
+            $('#page-wait').html( loading_spinner() );
+        },
+        // Colocamos o retorno na tela
+        success : function(data){
+            $('#descktop').html(data);
+            body_sizer_principal();
+        },
+        error: function (request, status, error) {
+            $('#page-wait').html("");
+            $('#descktop').html("Erro na chamada da página!<br> (" + status + ")" + request.responseText + "<br><strong>Error : </strong>" + error.toString());
+        }
+    });  
+    // Finalizamos o Ajax
 }
 
 function wait() {

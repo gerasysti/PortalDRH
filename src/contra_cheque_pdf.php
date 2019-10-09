@@ -1,5 +1,11 @@
 <!DOCTYPE html>
 <?php
+/*
+Usuário para teste:
+ * Cliente      : PRIFEITURA MINUCIPAL DE DOM ELISEU
+ * Matrícula    :   10613
+ * Senha        :   Aguiar866
+*/
     //ini_set('memory_limit', '512M');
     include("../lib/mpdf60/mpdf.php");
     
@@ -153,6 +159,24 @@
                 margin-left: 1cm;
                 margin-right: 1cm;
             }
+            .font_arial { 
+                font-family: "Arial"; 
+            }
+            .font_serif { 
+                font-family: Times, "Times New Roman", Georgia, serif; 
+            }
+            .font_sansserif { 
+                font-family: Verdana, Arial, Helvetica, sans-serif; 
+            }
+            .font_monospace { 
+                font-family: "Lucida Console", Courier, monospace; 
+            }
+            .font_cursive { 
+                font-family: cursive; 
+            }
+            .font_fantasy { 
+                font-family: fantasy; 
+            }
             .fonteCourier { 
                 font-family: "courier"; 
             }
@@ -170,6 +194,9 @@
             }
             .fonteTamanho4 { 
                 font-size: 4pt;  
+            }
+            .fonteTamanho4_5 { 
+                font-size: 4.5pt;  
             }
             .fonteTamanho5 { 
                 font-size: 5pt;  
@@ -732,7 +759,7 @@
         ?>
         
         <div>
-            <table class="comBorda fonteTamanho8" cellpadding="3" cellspacing="0" width="100%">
+            <table class="comBorda fonteTamanho7" cellpadding="3" cellspacing="0" width="100%">
                 <tr>
                     <td class="bordaADireita" rowspan="3" align="center" width="100">
                         <img src="<?php echo $dados_cliente['BRASAO-CLI'];?>" height="70" alt="Brasão da Unidade/Órgão"/> <!-- <?php // echo $dados_cliente['BRASAO-TAM'];?> -->
@@ -758,51 +785,56 @@
             
             <p class="fonteTamanho3"></p>
             
-            <table class="comBorda fonteTamanho9 textoAlinhadoAoTopo" cellpadding="3" cellspacing="0"  width="100%">
+            <table class="comBorda fonteTamanho7 textoAlinhadoAoTopo" cellpadding="3" cellspacing="0"  width="100%">
                 <tr>
+                    <!--COLUNA 1-->
                     <?php if (intval($dados_cliente['EXIBIR_MATRICULA']) === 1):?>
-                    <td class="espacoCelula3"><span class="fonteTamanho5 fonteNegrito">ID</span><br><b><?php echo $dados['id_servidor'];?></b></td>
+                    <td class="espacoCelula3"><span class="fonteTamanho5">ID</span><br><b><?php echo $dados['id_servidor'];?></b></td>
                     <?php else:?>
-                    <td class="espacoCelula3"><span class="fonteTamanho5 fonteNegrito">MATRICULA</span><br><b><?php echo $dados['id_servidor'];?></b></td>
+                    <td class="espacoCelula3"><span class="fonteTamanho5">MATRICULA</span><br><b><?php echo $dados['id_servidor'];?></b>/td>
                     <?php endif;?>
                     
-                    <td class="espacoCelula3" style="width: 40%;"><span class="fonteTamanho5 fonteNegrito">NOME DO SERVIDOR</span><br><b><?php echo $dados['nome'];?></b></td>
-                    <td class="espacoCelula3"><span class="fonteTamanho5 fonteNegrito">ADMISSÃO</span><br><b><?php echo $dados['dt_admissao'];?></b></td>
+                    <!--COLUNA 2-->
+                    <td class="espacoCelula3" style="width: 40%;"><span class="fonteTamanho5">NOME DO SERVIDOR</span><br><b><?php echo $dados['nome'];?></b></td>
+                    <!--COLUNA 3-->
+                    <td class="espacoCelula3"><span class="fonteTamanho5">ADMISSÃO</span><br><b><?php echo $dados['dt_admissao'];?></b></td>
                     
+                    <!--COLUNA 4-->
                     <?php if (trim($dados['desc_cargo_origem']) !== trim($dados['desc_cargo_atual'])): ?>
-                    <td class="espacoCelula3" colspan="3"><span class="fonteTamanho5 fonteNegrito">CARGO/FUNÇÃO ORIGEM</span><br><b><?php echo $dados['id_cargo_origem'];?> - <?php echo $dados['desc_cargo_origem'];?></b></td>
+                    <td class="espacoCelula3" colspan="3"><span class="fonteTamanho5">CARGO/FUNÇÃO ORIGEM</span><br><b><?php echo $dados['id_cargo_origem'];?> - <?php echo $dados['desc_cargo_origem'];?></b></td>
                     <?php else:?>
                     <td class="espacoCelula3" colspan="3">&nbsp;</td>
                     <?php endif;?>
                     
+                    <!--COLUNA 5-->
                     <?php if (intval($dados_cliente['EXIBIR_MATRICULA']) === 1):?>
-                    <td class="espacoCelula3"><span class="fonteTamanho5 fonteNegrito">MATRÍCULA</span><br><b><?php echo $dados['matricula'];?></b></td>
+                    <td class="espacoCelula3"><span class="fonteTamanho5">MATRÍCULA</span><br><b><?php echo $dados['matricula'];?></b></td>
                     <?php else:?>
                     <td class="espacoCelula3">&nbsp;</td>
                     <?php endif;?>
                 </tr>
                 <tr>
-                    <td class="espacoCelula3" colspan="4"><span class="fonteTamanho5 fonteNegrito">SUB-UNID. ORÇAMENTÁRIA (CENTRO DE CUSTO)</span><br><b><?php echo $dados['id_sub_unid_orcam'];?> - <?php echo $dados['descr_sub_unid_orcam'];?></b></td>
-                    <td class="espacoCelula3" colspan="3"><span class="fonteTamanho5 fonteNegrito">CARGO/FUNÇÃO ATUAL</span><br><b><?php echo $dados['id_cargo_atual'] . " - " . $dados['desc_cargo_atual'];?></b></td>
+                    <td class="espacoCelula3" colspan="4"><span class="fonteTamanho5">SUB-UNID. ORÇAMENTÁRIA (CENTRO DE CUSTO)</span><br><b><?php echo $dados['id_sub_unid_orcam'];?> - <?php echo $dados['descr_sub_unid_orcam'];?></b></td>
+                    <td class="espacoCelula3" colspan="3"><span class="fonteTamanho5">CARGO/FUNÇÃO ATUAL</span><br><b><?php echo $dados['id_cargo_atual'] . " - " . $dados['desc_cargo_atual'];?></b></td>
                 </tr>
                 <tr>
-                    <td class="espacoCelula3" colspan="3"><span class="fonteTamanho5 fonteNegrito">UNID. DE LOTAÇÃO (LOCAL DE TRABALHO)</span><br><b><?php echo $dados['id_unid_lotacao'];?> - <?php echo $dados['descr_unid_lotacao'];?></b></td>
-                    <td class="espacoCelula3"><span class="fonteTamanho5 fonteNegrito">CPF</span><br><b><?php echo $dados['cpf'];?></b></td>
-                    <td class="espacoCelula3"><span class="fonteTamanho5 fonteNegrito">RG</span><br><b><?php echo $dados['rg'];?></b></td>
-                    <td class="espacoCelula3"><span class="fonteTamanho5 fonteNegrito">PIS/PASEP</span><br><b><?php echo $dados['pis_pasep'];?></b></td>
-                    <td class="espacoCelula3"><span class="fonteTamanho5 fonteNegrito"><?php echo strtoupper($dados['descr_situac_tcm']);?></span><br><b><?php echo $dados['descr_est_funcional'];?></b></td>
+                    <td class="espacoCelula3" colspan="3"><span class="fonteTamanho5">UNID. DE LOTAÇÃO (LOCAL DE TRABALHO)</span><br><b><?php echo $dados['id_unid_lotacao'];?> - <?php echo $dados['descr_unid_lotacao'];?></b></td>
+                    <td class="espacoCelula3"><span class="fonteTamanho5">CPF</span><br><b><?php echo $dados['cpf'];?></b></td>
+                    <td class="espacoCelula3"><span class="fonteTamanho5">RG</span><br><b><?php echo $dados['rg'];?></b></td>
+                    <td class="espacoCelula3"><span class="fonteTamanho5">PIS/PASEP</span><br><b><?php echo $dados['pis_pasep'];?></b></td>
+                    <td class="espacoCelula3"><span class="fonteTamanho5"><?php echo strtoupper($dados['descr_situac_tcm']);?></span><br><b><?php echo $dados['descr_est_funcional'];?></b></td>
                 </tr>
             </table>
 
             <p class="fonteTamanho3"></p>
             
-            <table class="semBorda fonteTamanho8 textoAlinhadoAoTopo" cellpadding="3" cellspacing="0" width="100%">
+            <table class="semBorda fonteTamanho7 textoAlinhadoAoTopo" cellpadding="3" cellspacing="0" width="100%">
                 <tr>
                     <td colspan="4" class="larguraColuna50perc bordaAcima bordaABaixo bordaAEsquerda bordaADireita corFundoCinza3">
-                        <span class="fonteTamanho7 fonteNegrito fonteItalico">VENCIMENTOS / PROVENTOS</span>
+                        <center><span class="fonteTamanho7 fonteNegrito fonteItalico">VENCIMENTOS / PROVENTOS</span></center>
                     </td>
                     <td colspan="4" class="larguraColuna50perc bordaAcima bordaABaixo bordaADireita corFundoCinza3">
-                        <span class="fonteTamanho7 fonteNegrito fonteItalico">DESCONTOS</span>
+                        <center><span class="fonteTamanho7 fonteNegrito fonteItalico">DESCONTOS</span></center>
                     </td>
                 </tr>
                 <tr>
@@ -830,14 +862,14 @@
                 </tr>
                 <?php endfor;?>
                 <tr>
-                    <td colspan="2" class="bordaAEsquerda corFundoCinza1 fonteNegrito fonteTamanho7 textoVeriticalCentro">TOTAL</td>
-                    <td colspan="2" class="bordaADireita corFundoCinza1 fonteNegrito textoAlinhadoDireita"><?php echo $dados_base_calc['tot_venctos'];?></td>
-                    <td colspan="2" class="corFundoCinza1 fonteNegrito fonteTamanho7 textoVeriticalCentro">TOTAL</td>
-                    <td colspan="2" class="bordaADireita corFundoCinza1 fonteNegrito textoAlinhadoDireita"><?php echo $dados_base_calc['tot_descontos'];?></td>
+                    <td colspan="3" class="bordaAEsquerda corFundoCinza1 fonteNegrito fonteTamanho7 textoVeriticalCentro textoAlinhadoDireita">TOTAL &nbsp;</td>
+                    <td class="bordaADireita corFundoCinza1 fonteNegrito textoAlinhadoDireita"><?php echo $dados_base_calc['tot_venctos'];?></td>
+                    <td colspan="3" class="corFundoCinza1 fonteNegrito fonteTamanho7 textoVeriticalCentro textoAlinhadoDireita">TOTAL &nbsp;</td>
+                    <td class="bordaADireita corFundoCinza1 fonteNegrito textoAlinhadoDireita"><?php echo $dados_base_calc['tot_descontos'];?></td>
                 </tr>
                 <tr>
-                    <td colspan="2" class="bordaAEsquerda bordaABaixo corFundoCinza3 fonteNegrito fonteTamanho7 textoVeriticalCentro">SALÁRIO LÍQUIDO</td>
-                    <td colspan="2" class="bordaADireita bordaABaixo corFundoCinza3 fonteNegrito textoAlinhadoDireita">R$ <?php echo $dados_base_calc['sal_liquido'];?></td>
+                    <td colspan="3" class="bordaAEsquerda bordaABaixo corFundoCinza3 fonteNegrito fonteTamanho7 textoVeriticalCentro textoAlinhadoDireita">SALÁRIO LÍQUIDO &nbsp;</td>
+                    <td class="bordaADireita bordaABaixo corFundoCinza3 fonteNegrito textoAlinhadoDireita"><?php echo $dados_base_calc['sal_liquido'];?></td>
                     <td colspan="4" class="bordaADireita bordaABaixo corFundoCinza3 "></td>
                 </tr>
             </table>
@@ -864,47 +896,47 @@
                     <td class="bordaADireita corFundoCinza1 fonteTamanho7 textoAlinhadoDireita">QUANT.</td>
                     <td class="bordaADireita corFundoCinza1 fonteTamanho7 textoAlinhadoDireita">VALOR (R$)</td>
                 </tr>
-                <?php for ($i = 0; $i < 10; $i++): ?>
+                <?php // for ($i = 0; $i < 10; $i++): ?>
                 <tr>
-                    <td class="bordaAEsquerda bordaADireita"><?php echo (!empty($dados_vencimentos_v[$i])?$dados_vencimentos_v[$i]['cod_evento']:"&nbsp;");?></td>
-                    <td class="bordaADireita"><?php echo (!empty($dados_vencimentos_v[$i])?$dados_vencimentos_v[$i]['descricao']:"&nbsp;");?></td>
-                    <td class="bordaADireita textoAlinhadoDireita"><?php echo (!empty($dados_vencimentos_v[$i])?$dados_vencimentos_v[$i]['ref_qtd']:"&nbsp;");?></td>
-                    <td class="bordaADireita textoAlinhadoDireita"><?php echo (!empty($dados_vencimentos_v[$i])?$dados_vencimentos_v[$i]['valor']:"&nbsp;");?></td>
+                    <td class="bordaAEsquerda bordaADireita"><?php // echo (!empty($dados_vencimentos_v[$i])?$dados_vencimentos_v[$i]['cod_evento']:"&nbsp;");?></td>
+                    <td class="bordaADireita"><?php // echo (!empty($dados_vencimentos_v[$i])?$dados_vencimentos_v[$i]['descricao']:"&nbsp;");?></td>
+                    <td class="bordaADireita textoAlinhadoDireita"><?php // echo (!empty($dados_vencimentos_v[$i])?$dados_vencimentos_v[$i]['ref_qtd']:"&nbsp;");?></td>
+                    <td class="bordaADireita textoAlinhadoDireita"><?php // echo (!empty($dados_vencimentos_v[$i])?$dados_vencimentos_v[$i]['valor']:"&nbsp;");?></td>
                     <td class="semBorda fonteTamanho3">&nbsp;</td>
-                    <td class="bordaAEsquerda bordaADireita"><?php echo (!empty($dados_vencimentos_d[$i])?$dados_vencimentos_d[$i]['cod_evento']:"&nbsp;");?></td>
-                    <td class="bordaADireita"><?php echo (!empty($dados_vencimentos_d[$i])?$dados_vencimentos_d[$i]['descricao']:"&nbsp;");?></td>
-                    <td class="bordaADireita textoAlinhadoDireita"><?php echo (!empty($dados_vencimentos_d[$i])?$dados_vencimentos_d[$i]['ref_qtd']:"&nbsp;");?></td>
-                    <td class="bordaADireita textoAlinhadoDireita"><?php echo (!empty($dados_vencimentos_d[$i])?$dados_vencimentos_d[$i]['valor']:"&nbsp;");?></td>
+                    <td class="bordaAEsquerda bordaADireita"><?php // echo (!empty($dados_vencimentos_d[$i])?$dados_vencimentos_d[$i]['cod_evento']:"&nbsp;");?></td>
+                    <td class="bordaADireita"><?php // echo (!empty($dados_vencimentos_d[$i])?$dados_vencimentos_d[$i]['descricao']:"&nbsp;");?></td>
+                    <td class="bordaADireita textoAlinhadoDireita"><?php // echo (!empty($dados_vencimentos_d[$i])?$dados_vencimentos_d[$i]['ref_qtd']:"&nbsp;");?></td>
+                    <td class="bordaADireita textoAlinhadoDireita"><?php // echo (!empty($dados_vencimentos_d[$i])?$dados_vencimentos_d[$i]['valor']:"&nbsp;");?></td>
                 </tr>
-                <?php endfor;?>
+                <?php // endfor;?>
                 <tr>
                     <td colspan="2" class="bordaAEsquerda corFundoCinza1 fonteNegrito fonteTamanho7 textoVeriticalCentro">TOTAL</td>
-                    <td colspan="2" class="bordaADireita corFundoCinza1 fonteNegrito textoAlinhadoDireita"><?php echo $dados_base_calc['tot_venctos'];?></td>
+                    <td colspan="2" class="bordaADireita corFundoCinza1 fonteNegrito textoAlinhadoDireita"><?php // echo $dados_base_calc['tot_venctos'];?></td>
                     <td class="semBorda fonteTamanho3">&nbsp;</td>
                     <td colspan="2" class="bordaAEsquerda corFundoCinza1 fonteNegrito fonteTamanho7 textoVeriticalCentro">TOTAL</td>
-                    <td colspan="2" class="bordaADireita corFundoCinza1 fonteNegrito textoAlinhadoDireita"><?php echo $dados_base_calc['tot_descontos'];?></td>
+                    <td colspan="2" class="bordaADireita corFundoCinza1 fonteNegrito textoAlinhadoDireita"><?php // echo $dados_base_calc['tot_descontos'];?></td>
                 </tr>
                 <tr>
                     <td colspan="2" class="bordaAEsquerda bordaABaixo corFundoCinza3 fonteNegrito fonteTamanho7 textoVeriticalCentro">SALÁRIO LÍQUIDO</td>
-                    <td colspan="2" class="bordaADireita bordaABaixo corFundoCinza3 fonteNegrito textoAlinhadoDireita">R$ <?php echo $dados_base_calc['sal_liquido'];?></td>
+                    <td colspan="2" class="bordaADireita bordaABaixo corFundoCinza3 fonteNegrito textoAlinhadoDireita">R$ <?php // echo $dados_base_calc['sal_liquido'];?></td>
                     <td class="semBorda fonteTamanho3">&nbsp;</td>
-                    <td colspan="4" class="bordaAEsquerda bordaADireita bordaABaixo corFundoCinza3 fonteNegrito fonteTamanho7 textoVeriticalCentro">DEPTO: <?php echo $dados['descr_depto'];?></td>
+                    <td colspan="4" class="bordaAEsquerda bordaADireita bordaABaixo corFundoCinza3 fonteNegrito fonteTamanho7 textoVeriticalCentro">DEPTO: <?php // echo $dados['descr_depto'];?></td>
                 </tr>
             </table>
 -->
             <p class="fonteTamanho3"></p>
 
-            <table class="comBorda fonteTamanho9 textoAlinhadoAoTopo" cellpadding="3" cellspacing="0"  width="100%">
+            <table class="comBorda fonteTamanho7 textoAlinhadoAoTopo" cellpadding="3" cellspacing="0"  width="100%">
                 <tr>
-                    <td class="espacoCelula3 textoAlinhadoDireita"><span class="fonteTamanho5 fonteNegrito">VENCTO BASE (<?php echo $dados['tipo_sal'];?>)</span><br><b><?php echo $dados['vencto_base_cargo'];?></b></td>
-                    <td class="espacoCelula3 textoAlinhadoDireita"><span class="fonteTamanho5 fonteNegrito">BASE CALC. PREVID.</span><br><b><?php echo $dados['bc_previd'];?></b></td>
-                    <td class="espacoCelula3 textoAlinhadoDireita"><span class="fonteTamanho5 fonteNegrito">BASE CALC. IRRF</span><br><b><?php echo $dados['bc_irrf'];?></b></td>
-                    <td class="espacoCelula3 textoAlinhadoDireita"><span class="fonteTamanho5 fonteNegrito">DEPEND. IRRF</span><br><b><?php echo $dados['qtd_depend_irrf'];?></b></td>
-                    <td class="espacoCelula3 textoAlinhadoDireita"><span class="fonteTamanho5 fonteNegrito">DEDUÇÕES</span><br><b><?php echo $dados['tot_deduc_depend'];?></b></td>
+                    <td class="espacoCelula3 textoAlinhadoDireita"><span class="fonteTamanho5">VENCTO BASE (<?php echo $dados['tipo_sal'];?>)</span><br><b><?php echo $dados['vencto_base_cargo'];?></b></td>
+                    <td class="espacoCelula3 textoAlinhadoDireita"><span class="fonteTamanho5">BASE CALC. PREVID.</span><br><b><?php echo $dados['bc_previd'];?></b></td>
+                    <td class="espacoCelula3 textoAlinhadoDireita"><span class="fonteTamanho5">BASE CALC. IRRF</span><br><b><?php echo $dados['bc_irrf'];?></b></td>
+                    <td class="espacoCelula3 textoAlinhadoDireita"><span class="fonteTamanho5">DEPEND. IRRF</span><br><b><?php echo $dados['qtd_depend_irrf'];?></b></td>
+                    <td class="espacoCelula3 textoAlinhadoDireita"><span class="fonteTamanho5">DEDUÇÕES</span><br><b><?php echo $dados['tot_deduc_depend'];?></b></td>
                     <?php if (intval($dados_cliente['MARGEM_CONSIGNAVEL']) === 1):?>
-                    <td class="espacoCelula3 textoAlinhadoDireita"><span class="fonteTamanho5 fonteNegrito">BC. CONSIGNÁVEL</span><br><b><?php echo $dados['bc_mrg_consig'];?></b></td>
-                    <td class="espacoCelula3 textoAlinhadoDireita"><span class="fonteTamanho5 fonteNegrito">VALOR CONSIGNÁVEL</span><br><b><?php echo $dados['val_mrg_consig'];?></b></td>
-                    <td class="espacoCelula3 textoAlinhadoDireita"><span class="fonteTamanho5 fonteNegrito">SALDO CONSIGNÁVEL</span><br><b><?php echo $dados['saldo_mrg_consig'];?></b></td>
+                    <td class="espacoCelula3 textoAlinhadoDireita"><span class="fonteTamanho5">BC. CONSIGNÁVEL</span><br><b><?php echo $dados['bc_mrg_consig'];?></b></td>
+                    <td class="espacoCelula3 textoAlinhadoDireita"><span class="fonteTamanho5">VALOR CONSIGNÁVEL</span><br><b><?php echo $dados['val_mrg_consig'];?></b></td>
+                    <td class="espacoCelula3 textoAlinhadoDireita"><span class="fonteTamanho5">SALDO CONSIGNÁVEL</span><br><b><?php echo $dados['saldo_mrg_consig'];?></b></td>
                     <?php else:?>
                     <td class="espacoCelula3 textoAlinhadoDireita">&nbsp;</td>
                     <td class="espacoCelula3 textoAlinhadoDireita">&nbsp;</td>
@@ -917,7 +949,7 @@
             
             <p class="fonteTamanho3"></p>
 
-            <table class="comBorda fonteTamanho9 textoAlinhadoAoTopo" cellpadding="3" cellspacing="0"  width="100%">
+            <table class="comBorda fonteTamanho7 textoAlinhadoAoTopo" cellpadding="3" cellspacing="0"  width="100%">
                 <tr>
                     <td class="espacoCelula3"><span class="fonteTamanho5 fonteNegrito">DEPTO:</span><br><p><?php echo $dados['descr_depto'];?></p></td>
                 </tr>
@@ -935,6 +967,7 @@
     </body>
 </html>
 <?php
+    ini_set("display_errors", 0);
     $html = ob_get_clean(); 
 
     $filename = "CCH_{$id_ser}{$nr_ano}{$nr_mes}{$nr_par}_{$md5_unidade}.pdf";
