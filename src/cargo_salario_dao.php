@@ -131,7 +131,7 @@
                             ."  , s.val_ref06, s.val_ref07, s.val_ref08, s.val_ref09, s.val_ref10 "
                             ."  , s.val_ref11, s.val_ref12, s.val_ref13, s.val_ref14, s.val_ref15 "
                             ."from REMUN_CARGO_FUNCAO c "
-                            ."  left join REMUN_CARGO_REF s on (s.id_cliente = c.id_cliente and s.id_cargo = c.id_cargo and s.ano_mes = '{$nr_ano}{$nr_mes}') "
+                            ."  inner join REMUN_CARGO_REF s on (s.id_cliente = c.id_cliente and s.id_cargo = c.id_cargo and s.ano_mes = '{$nr_ano}{$nr_mes}') "
                             ."where c.id_cliente = {$id_cliente} "
                             ."order by "
                             ."    c.descricao "; 

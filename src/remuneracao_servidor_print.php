@@ -337,6 +337,7 @@
 </html>
 <?php
     error_reporting(0);
+    set_time_limit(60);
     $html = ob_get_clean(); 
     /**
      *  Função ob_get_clean obtém conteúdo que está no buffer

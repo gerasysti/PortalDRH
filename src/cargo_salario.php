@@ -12,6 +12,7 @@
     $id_und = (int)preg_replace("/[^0-9]/", "", "0".trim(filter_input(INPUT_POST, 'un')));
     $nr_ano = date("Y");
     $nr_mes = date("m");
+    $nr_mes_ultimo = $nr_mes; 
     
     $meses = [
         "01" => 'JANEIRO',
@@ -79,13 +80,25 @@
                                                         $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
                                                         $sql = 
-                                                             "Select "
-                                                            ."    e.nr_exercicio "
-                                                            ."from GET_EXERCICIO_CARGO_REF({$id_und}) e ";
+                                                              "Select "
+                                                            . "    e.nr_exercicio "
+                                                            . "  , substring(x.ano_mes from 5 for 2) as nr_mes "
+                                                            . "  , x.ano_mes "
+                                                            . "from GET_EXERCICIO_CARGO_REF({$id_und}) e "
+                                                            . "  inner join ( "
+                                                            . "    Select "
+                                                            . "        substring(s.ano_mes from 1 for 4) as nr_exercicio "
+                                                            . "      , max(s.ano_mes) as ano_mes "
+                                                            . "    from REMUN_CARGO_REF s "
+                                                            . "    where (s.id_cliente = {$id_und}) "
+                                                            . "    group by "
+                                                            . "        substring(s.ano_mes from 1 for 4) "
+                                                            . "  ) x on (x.nr_exercicio = e.nr_exercicio)";
 
                                                         $res = $pdo->query($sql);
                                                         while (($obj = $res->fetch(PDO::FETCH_OBJ)) !== false) {
                                                             $selected = ((int)$obj->nr_exercicio === (int)$nr_ano ? ' selected': '');
+                                                            $nr_mes_ultimo = $obj->nr_mes;
                                                             echo "<option value={$obj->nr_exercicio} {$selected}>{$obj->nr_exercicio}</option>";
                                                         }
                                                     ?>
@@ -99,7 +112,11 @@
                                                     <optgroup label="Mês">
                                                     <?php
                                                         foreach ($meses as $codigo => $descricao) {
-                                                            $selected = ((int)$codigo === (int)$nr_mes ? ' selected': '');
+                                                            if (intval($nr_mes_ultimo) < intval($nr_mes)) {
+                                                                $selected = ((int)$codigo === (int)$nr_mes_ultimo ? ' selected': '');
+                                                            } else {
+                                                                $selected = ((int)$codigo === (int)$nr_mes ? ' selected': '');
+                                                            }
                                                             echo "<option value={$codigo} {$selected}>{$descricao}</option>";
                                                         }
                                                     ?>

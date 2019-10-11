@@ -428,3 +428,38 @@ ALTER TABLE REMUN_LANCTO_CH
 ADD CONSTRAINT UNQ_REMUN_LANCTO_CH_ANOMES
 UNIQUE (ID_CLIENTE,ID_UNID_LOTACAO,ANO_MES,SITUACAO);
 
+
+
+/*------ GERASYS.TI 11/10/2019 11:57:29 --------*/
+
+/*!!! Error occured !!!
+Column does not belong to referenced table.
+Dynamic SQL Error.
+SQL error code = -206.
+Column unknown.
+E.NR_EXERCICIO.
+At line 2, column 7.
+
+*/
+
+/*------ GERASYS.TI 11/10/2019 12:00:50 --------*/
+
+/*!!! Error occured !!!
+Invalid token.
+Dynamic SQL Error.
+SQL error code = -104.
+Invalid expression in the select list (not contained in either an aggregate function or the GROUP BY clause).
+
+*/
+
+/*------ GERASYS.TI 11/10/2019 12:01:15 --------*/
+
+/*!!! Error occured !!!
+Column does not belong to referenced table.
+Dynamic SQL Error.
+SQL error code = -206.
+Column unknown.
+X.NR_EXERCICIO.
+At line 13, column 12.
+
+*/

@@ -112,6 +112,40 @@ function home() {
     // Finalizamos o Ajax
 }
 
+function lei_acesso_informacao() {
+    var params = {
+        'inc' : 'http://www.planalto.gov.br/ccivil_03/_Ato2011-2014/2011/Lei/L12527.htm',
+        'id'  : $('#id_cliente').val()
+    };
+    
+    // Iniciamos o Ajax 
+    $.ajax({
+        // Definimos a url
+        url : './lei.php',
+        // Definimos o tipo de requisição
+        type: 'post',
+        // Definimos o tipo de retorno
+        dataType : 'html',
+        // Dolocamos os valores a serem enviados
+        data: params,
+        // Antes de enviar ele alerta para esperar
+        beforeSend : function(){
+            $('#page-wait').html( loading_spinner() );
+        },
+        // Colocamos o retorno na tela
+        success : function(data){
+            $('#descktop').html(data);
+            body_sizer_principal();
+            $('#panel-body').css('height', ($('#page-content').height() - 60));
+        },
+        error: function (request, status, error) {
+            $('#page-wait').html("");
+            $('#descktop').html("Erro na chamada da página!<br> (" + status + ")" + request.responseText + "<br><strong>Error : </strong>" + error.toString());
+        }
+    });  
+    // Finalizamos o Ajax
+}
+
 function wait() {
     var str = "";
     str += "<div id='loading'>";

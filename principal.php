@@ -198,7 +198,7 @@
             </div>
             
             <div id="page-sidebar">
-                <div class="scroll-sidebar">
+                <div class="scroll-sidebar no-print">
 
                     <ul id="sidebar-menu">
 <!--                        <li class="header"><span>Administração</span></li>
@@ -215,6 +215,12 @@
                             <a href="javascript:void(0);" title="Página Inicial" onclick="home()">
                                 <i class="glyph-icon icon-home"></i>
                                 <span>Home</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="javascript:void(0);" title="Lei de Acesso a Informação" onclick="lei_acesso_informacao()">
+                                <i class="glyph-icon icon-legal"></i>
+                                <span>Lei de Acesso a Informação</span>
                             </a>
                         </li>
                         <li>
