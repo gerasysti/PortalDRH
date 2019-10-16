@@ -106,9 +106,52 @@ and open the template in the editor.
     $qry = $pdo->query($sql);    
     $dados   = $qry->fetchAll(PDO::FETCH_ASSOC);
     $valores = null;
+    $ano_mes = date('Ym');
+    $ano     = substr($ano_mes, 0, 4);
     foreach($dados as $item) {
         $valores = $item;
+        $ano_mes = $valores['ano_mes'];
     }
+    
+    $sql = 
+          "Select first 6 "
+        . "  y.* "
+        . "from ( "
+        . "    Select "
+        . "      x.* "
+        . "    from ( "
+        . "        Select first 6 "
+        . "            s.ano_mes "
+        . "          , substring(s.ano_mes from 5 for 2) || '/' || substring(s.ano_mes from 1 for 4) as ds_competencia "
+        . "          , count( s.ano_mes ) as qt_registros "
+        . "          , sum( case when coalesce(s.id_est_funcional, 0) = 1 then 1 else 0 end ) as qt_servidores "
+        . "          , (sum( s.tot_venctos )   / 1000000.0) as tot_venctos "
+        . "          , (sum( s.tot_descontos ) / 1000000.0) as tot_descontos "
+        . "          , (sum( s.sal_liquido )   / 1000000.0) as tot_salarios "
+        . "        from REMUN_BASE_CALC_MES s "
+        . "        where (s.id_cliente = {$id}) "
+        . "          and (substring(s.ano_mes from 1 for 4) = '{$ano}') "
+        . "          and (s.ano_mes < '{$ano_mes}') "
+        . "        group by "
+        . "            s.ano_mes "
+        . "        order by "
+        . "          s.ano_mes DESC "
+        . "    ) x "
+        . "    "
+        . "    Union "
+        . "    "
+        . "    Select '{$ano}94', null, 0, 0, 0.0, 0.0, 0.0 from VW_INFORMACOES union "
+        . "    Select '{$ano}95', null, 0, 0, 0.0, 0.0, 0.0 from VW_INFORMACOES union "
+        . "    Select '{$ano}96', null, 0, 0, 0.0, 0.0, 0.0 from VW_INFORMACOES union "
+        . "    Select '{$ano}97', null, 0, 0, 0.0, 0.0, 0.0 from VW_INFORMACOES union "
+        . "    Select '{$ano}98', null, 0, 0, 0.0, 0.0, 0.0 from VW_INFORMACOES union "
+        . "    Select '{$ano}99', null, 0, 0, 0.0, 0.0, 0.0 from VW_INFORMACOES "
+        . ") y          "
+        . "order by     "
+        . "  y.ano_mes  ";
+        
+    $qry = $pdo->query($sql);    
+    $dados_grafico_sparkline = $qry->fetchAll(PDO::FETCH_ASSOC);
     
     unset($res);
     unset($qry);
@@ -142,6 +185,7 @@ and open the template in the editor.
                     <h2><strong><?php echo $des_unidade;?></strong></h2>
                     <p><strong><?php echo $inf_unidade;?></strong></p>
                 </div>
+                
                 <div class='panel ng-scope'>
                     <div class='panel-body'>
                         <h3 class='title-hero'>Informações</h3>
@@ -267,29 +311,66 @@ and open the template in the editor.
                             </div>
                             
                             <div class="row">
-                                
+                                <?php
+                                    $sparklineV = "";
+                                    $sparklineD = "";
+                                    $sparklineS = "";
+                                    $listgrade  = "";
+                                    $mes_inicio = "00/0000";
+                                    $mes_final  = "00/0000";
+                                    foreach($dados_grafico_sparkline as $reg) {
+                                        if (intval($reg['qt_registros']) > 0) {
+                                            $sparklineV .= $reg['tot_venctos'] . ",";
+                                            $sparklineD .= $reg['tot_descontos'] . ",";
+                                            $sparklineS .= $reg['tot_salarios'] . ",";
+                                            $listgrade  .= "<div class='col-md-2'>{$reg['ds_competencia']}</div>";
+                                            $mes_inicio  = ($mes_inicio === "00/0000"?$reg['ds_competencia']:$mes_inicio); 
+                                            $mes_final   = $reg['ds_competencia'];
+                                        } else {
+                                            $sparklineV .= "0,";
+                                            $sparklineD .= "0,";
+                                            $sparklineS .= "0,";
+                                            $listgrade  .= "<div class='col-md-2'>...</div>  \n";
+                                        }
+                                    }
+
+                                    if ($sparklineV === "") {
+                                        $sparklineV = "0";
+                                        $sparklineD = "0";
+                                        $sparklineS = "0";
+                                        $listgrade  = "<div class='col-md-2'>...</div>";
+                                    } else {
+                                        $sparklineV = substr($sparklineV, 0, strlen($sparklineV) - 1);
+                                        $sparklineD = substr($sparklineD, 0, strlen($sparklineD) - 1);
+                                        $sparklineS = substr($sparklineS, 0, strlen($sparklineS) - 1);
+                                    }
+                                ?>
                                 <div class="col-md-4">
                                     <div class="dashboard-box dashboard-box-chart bg-white content-box">
                                         <div class="content-wrapper">
                                             <div class="header">
-                                                ...
-                                                <span>Vencimentos de <b> 01/2019</b> até <b>06/2019</b></span>
+                                                <span>Vencimentos de <b> <?php echo $mes_inicio;?></b> até <b><?php echo $mes_final;?></b></span>
                                             </div>
-                                            <div class="bs-label bg-green">0%</div>
-                                            <div class="center-div sparkline-big-alt">0,0.5,0,0,0,0.6</div>
+                                            <div class="bs-label bg-primary"><i class='glyph-icon icon-money'></i></div>
+                                            <!--<div class="center-div sparkline-big-alt">0,0.5,0,0,0,0.6</div>
                                             <div class="row list-grade">
-                                                <div class="col-md-2">01/2019</div>
-                                                <div class="col-md-2">02/2019</div>
-                                                <div class="col-md-2">03/2019</div>
-                                                <div class="col-md-2">04/2019</div>
-                                                <div class="col-md-2">05/2019</div>
-                                                <div class="col-md-2">06/2019</div>
+                                                <div class='col-md-2'>01/2019</div>
+                                                <div class='col-md-2'>02/2019</div>
+                                                <div class='col-md-2'>03/2019</div>
+                                                <div class='col-md-2'>04/2019</div>
+                                                <div class='col-md-2'>05/2019</div>
+                                                <div class='col-md-2'>06/2019</div>
+                                            </div>
+                                            -->
+                                            <div class="center-div sparkline-big-alt"><?php echo $sparklineV;?></div>
+                                            <div class="row list-grade">
+                                                <?php echo $listgrade;?>
                                             </div>
                                         </div>
                                         <div class="button-pane">
                                             <div class="size-md float-left">
                                                 <a href="#" title="">
-                                                    Dados financeiros consolidados
+                                                    Vencimentos consolidados em milhões (Total / 1.000.000)
                                                 </a>
                                             </div>
                                             <!--
@@ -301,10 +382,54 @@ and open the template in the editor.
                                     </div>
                                 </div>
                                 
+                                <div class="col-md-4">
+                                    <div class="dashboard-box dashboard-box-chart bg-white content-box">
+                                        <div class="content-wrapper">
+                                            <div class="header">
+                                                <span>Descontos de <b> <?php echo $mes_inicio;?></b> até <b><?php echo $mes_final;?></b></span>
+                                            </div>
+                                            <div class="bs-label bg-warning"><i class='glyph-icon icon-money'></i></div>
+                                            <div class="center-div sparkline-big-alt"><?php echo $sparklineD;?></div>
+                                            <div class="row list-grade">
+                                                <?php echo $listgrade;?>
+                                            </div>
+                                        </div>
+                                        <div class="button-pane">
+                                            <div class="size-md float-left">
+                                                <a href="#" title="">
+                                                    Descontos consolidados em milhões (Total / 1.000.000)
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="col-md-4">
+                                    <div class="dashboard-box dashboard-box-chart bg-white content-box">
+                                        <div class="content-wrapper">
+                                            <div class="header">
+                                                <span>Salários de <b> <?php echo $mes_inicio;?></b> até <b><?php echo $mes_final;?></b></span>
+                                            </div>
+                                            <div class="bs-label bg-primary"><i class='glyph-icon icon-money'></i></div>
+                                            <div class="center-div sparkline-big-alt"><?php echo $sparklineS;?></div>
+                                            <div class="row list-grade">
+                                                <?php echo $listgrade;?>
+                                            </div>
+                                        </div>
+                                        <div class="button-pane">
+                                            <div class="size-md float-left">
+                                                <a href="#" title="">
+                                                    Salários consolidados em milhões (Total / 1.000.000)
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
+                
                 <div id="page-wait">
                     <a href="#" class="btn btn-md btn-default overlay-button hide" data-style="dark" data-theme="bg-default" data-opacity="60" id="link_wait"></a>
                 </div>

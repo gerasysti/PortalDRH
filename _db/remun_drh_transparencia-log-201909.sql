@@ -463,3 +463,58 @@ X.NR_EXERCICIO.
 At line 13, column 12.
 
 */
+
+/*------ GERASYS.TI 15/10/2019 20:45:07 --------*/
+
+/*!!! Error occured !!!
+Invalid token.
+Dynamic SQL Error.
+SQL error code = -104.
+Token unknown - line 24, column 5.
+Union.
+
+*/
+
+/*------ GERASYS.TI 15/10/2019 20:45:18 --------*/
+
+/*!!! Error occured !!!
+Invalid token.
+Dynamic SQL Error.
+SQL error code = -104.
+Invalid command.
+count of column list and variable list do not match.
+
+*/
+
+/*------ GERASYS.TI 15/10/2019 20:45:38 --------*/
+
+/*!!! Error occured !!!
+Invalid token.
+Dynamic SQL Error.
+SQL error code = -104.
+Invalid command.
+invalid ORDER BY clause.
+
+*/
+
+/*------ GERASYS.TI 15/10/2019 20:45:39 --------*/
+
+/*!!! Error occured !!!
+Invalid token.
+Dynamic SQL Error.
+SQL error code = -104.
+Invalid command.
+invalid ORDER BY clause.
+
+*/
+
+/*------ GERASYS.TI 15/10/2019 20:48:11 --------*/
+
+/*!!! Error occured !!!
+Invalid token.
+Dynamic SQL Error.
+SQL error code = -104.
+Token unknown - line 1, column 10.
+first.
+
+*/
