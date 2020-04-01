@@ -83,7 +83,7 @@
                                 . "<input type='hidden' id='descricao_{$referencia}' value='{$descricao}'>"
                                 . "<input type='hidden' id='cod_tcm_{$referencia}' value='{$cod_tcm}'>";
                             
-                            $icon_ed = "<button id='editar_unidade_{$referencia}'  class='btn btn-round btn-primary' title='Editar Registro'  onclick='editarUnidadeGestora(this.id)'  style='{$style}'><i class='glyph-icon icon-edit'></i></button>";
+                            $icon_ed = "<button id='editar_unidade_{$referencia}'  class='btn btn-round btn-primary' title='Visualizar Registro'  onclick='editarUnidadeGestora(this.id)'  style='{$style}'><i class='glyph-icon icon-edit'></i></button>";
                             $icon_ex = ""; //"<button id='excluir_unidade_{$referencia}' class='btn btn-round btn-primary' title='Excluir Registro' onclick='excluirUnidadeGestora(this.id)' style='{$style}'><i class='glyph-icon icon-trash'></i></button>";
                             $icon_st = ""; 
                             

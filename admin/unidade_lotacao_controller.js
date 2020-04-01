@@ -51,6 +51,7 @@ function configurarTabelaUnidadeLotacao(){
     });
     
     $('.dataTables_filter input').attr("placeholder", "Localizar...");
+    $('.dataTables_filter input').focus();
 }
 
 function consultarUnidadeLotacao(id, us) {

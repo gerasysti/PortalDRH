@@ -90,7 +90,7 @@
                                 . "<input type='hidden' id='tipo_lancamento_{$referencia}' value='{$tipo_lancamento}'>"
                                 . "<input type='hidden' id='sem_uso_{$referencia}' value='{$sem_uso}'>";
                             
-                            $icon_ed = "<button id='editar_evento_{$referencia}'  class='btn btn-round btn-primary' title='Editar Registro'  onclick='editarEvento(this.id)'  style='{$style}'><i class='glyph-icon icon-edit'></i></button>";
+                            $icon_ed = "<button id='editar_evento_{$referencia}'  class='btn btn-round btn-primary' title='Visualizar Registro'  onclick='editarEvento(this.id)'  style='{$style}'><i class='glyph-icon icon-edit'></i></button>";
                             $icon_ex = ""; //"<button id='excluir_evento_{$referencia}' class='btn btn-round btn-primary' title='Excluir Registro' onclick='excluirEvento(this.id)' style='{$style}'><i class='glyph-icon icon-trash'></i></button>";
                             $icon_st = "";
                             

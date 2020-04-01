@@ -38,13 +38,15 @@ and open the template in the editor.
     $des_unidade = "Título da Unidade no Portal";
     $inf_unidade = "Informações da Unidade";
     
+    $ano_mes = date('Ym');
+    
     $cnf = Configuracao::getInstancia();
     $pdo = $cnf->db('', '');
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
     $sql = 
-          "Select "
-        . "    u.id "
+          "Select     "
+        . "    u.id   "
         . "  , u.nome "
         . "  , u.cnpj "
         . "  , u.municipio_nome "
@@ -54,7 +56,18 @@ and open the template in the editor.
         . "  , coalesce(u.ender_lograd, '...') as endereco "
         . "  , coalesce(u.ender_num,    '...') as numero "
         . "  , coalesce(u.ender_bairro, '...') as bairro "
+        . "  , coalesce(x.ano_mes,   '000000') as ano_mes "
         . "from ADM_CLIENTE u "
+        . "  left join ( "
+        . "    Select "
+        . "        x.id_cliente "
+        . "      , max(x.ano_mes) as ano_mes "
+        . "    from REMUN_BASE_CALC_MES x "
+        . "    where (x.id_cliente = {$_REQUEST['id']}) "
+        . "      and (x.parcela    = '0') "
+        . "    group by "
+        . "        x.id_cliente "
+        . "  ) x on (x.id_cliente = u.id) "
         . "where (u.id = {$_REQUEST['id']})";
 
     $res = $pdo->query($sql);
@@ -63,7 +76,11 @@ and open the template in the editor.
         $id = $obj->id;
         $des_unidade = $obj->titulo_portal;
         $inf_unidade = "CNPJ: " . formatarTexto('##.###.###/####-##', $obj->cnpj);
+        $ano_mes     = $obj->ano_mes;
     }
+
+    $ano = substr($ano_mes, 0, 4);
+    $mes = substr($ano_mes, 4, 2);
     
     $sql = 
           "Select "
@@ -78,7 +95,7 @@ and open the template in the editor.
     foreach($dados as $item) {
         $cadastro = $item;
     }
-    
+
     $sql = 
           "Select "
         . "    x.ano_mes "
@@ -93,21 +110,34 @@ and open the template in the editor.
         . "        x.parcela "
         . "      , x.id_cliente "
         . "      , max(x.ano_mes) as ano_mes "
-        . "    from REMUN_BASE_CALC_MES x "
-        . "    where (x.id_cliente = {$id}) "
+        . "    from REMUN_BASE_CALC_MES x    "
+        . "    where (x.id_cliente = {$id})  "
+        . "      and (x.parcela    = 'XXXXXX')    "
+        . "      and (x.tot_venctos > 0)     "
         . "    group by "
         . "        x.parcela "
         . "      , x.id_cliente "
         . ") x "
         . "  inner join REMUN_BASE_CALC_MES s on (s.id_cliente = x.id_cliente and s.ano_mes = x.ano_mes and s.parcela = x.parcela) "
+        . "where (s.tot_venctos > 0) "
         . "group by "
         . "    x.ano_mes ";
-        
+    /*    
+    $sql = 
+          "Select "
+        . "    '{$ano_mes}' as ano_mes "
+        . "  , substring('{$ano_mes}' from 5 for 2) || '/' || substring('{$ano_mes}' from 1 for 4) as ds_competencia "
+        . "  , count(r.R_MATRIC)      as qt_registros    "
+        . "  , count(r.R_MATRIC)      as qt_servidores   "
+        . "  , sum(r.R_VENCTO_BASE)   as vencimento_base "
+        . "  , sum(r.R_TOT_VENCTOS)   as tot_venctos "
+        . "  , sum(r.R_TOT_DESCONTOS) as tot_descontos "
+        . "  , sum(r.R_SAL_LIQUIDO)   as tot_salarios "
+        . "from SP_FOLHA_TRANSPARENCIA({$id}, '{$ano}', '{$mes}', '0', 0) r ";
+    */
     $qry = $pdo->query($sql);    
     $dados   = $qry->fetchAll(PDO::FETCH_ASSOC);
     $valores = null;
-    $ano_mes = date('Ym');
-    $ano     = substr($ano_mes, 0, 4);
     foreach($dados as $item) {
         $valores = $item;
         $ano_mes = $valores['ano_mes'];
@@ -132,6 +162,8 @@ and open the template in the editor.
         . "        where (s.id_cliente = {$id}) "
         . "          and (substring(s.ano_mes from 1 for 4) = '{$ano}') "
         . "          and (s.ano_mes < '{$ano_mes}') "
+        . "          and (s.parcela     = 'XXXXXX') "
+        . "          and (s.tot_venctos > 0)     "
         . "        group by "
         . "            s.ano_mes "
         . "        order by "

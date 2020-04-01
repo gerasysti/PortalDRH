@@ -327,6 +327,10 @@
 //                              $('#loader-overlay').fadeOut('fast');
 //                            }, 3000);
                         });
+                        
+                        if ( $('#id_cliente').val() !== "0" ) {
+                            $('#btn_consultar').trigger("click");
+                        }
                     </script>
                 </div>
         

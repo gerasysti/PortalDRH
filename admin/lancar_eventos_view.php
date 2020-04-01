@@ -14,6 +14,7 @@
       , e.sem_uso
     from REMUN_EVENTO e
     where (e.id_cliente = 15019) // PREFEITURA MINUCIPAL DE DOM ELISEU
+      and (e.tipo_lancamento <> 9)
  * 
  */
     require_once '../lib/classes/configuracao.php';
@@ -135,7 +136,8 @@
        . "  , e.descricao  "
        . "  , e.codigo     "
        . "from REMUN_EVENTO e "
-       . "where (e.sem_uso    = 'N') "
+       . "where (e.tipo_lancamento <> 9) "
+       . "  and (e.sem_uso    = 'N') "
        . "  and (e.id_cliente = {$usuario['cliente']}) "
        . "order by "
        . "    e.descricao ";
@@ -152,11 +154,11 @@
     $ano = date("Y");
     $inicio_data = strtotime("{$ano}/01/01");
     $final_data  = strtotime("{$ano}/12/01");
-    $data_corrente = $final_data;
-    while ($data_corrente >= $inicio_data) {
+    $data_corrente = $inicio_data;
+    while ($data_corrente <= $final_data) {
         $nr_mes_ano = date('Ym',    $data_corrente);
         $ds_mes_ano = date('m/Y', $data_corrente);
-        $data_corrente = strtotime( date('Y/m/01/', $data_corrente).' -1 month');
+        $data_corrente = strtotime( date('Y/m/01/', $data_corrente).' +1 month');
         
         $lista_anomes .= "<option value='{$nr_mes_ano}' class='optionChild'>{$ds_mes_ano}</option>";
     }

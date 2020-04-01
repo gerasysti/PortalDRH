@@ -123,11 +123,11 @@ where (s.id_cliente = 15019)
     $ano = date("Y");
     $inicio_data = strtotime("{$ano}/01/01");
     $final_data  = strtotime("{$ano}/12/01");
-    $data_corrente = $final_data;
-    while ($data_corrente >= $inicio_data) {
+    $data_corrente = $inicio_data;
+    while ($data_corrente <= $final_data) {
         $nr_mes_ano = date('Ym',    $data_corrente);
         $ds_mes_ano = date('m/Y', $data_corrente);
-        $data_corrente = strtotime( date('Y/m/01/', $data_corrente).' -1 month');
+        $data_corrente = strtotime( date('Y/m/01/', $data_corrente).' +1 month');
         
         $lista_anomes .= "<option value='{$nr_mes_ano}' class='optionChild'>{$ds_mes_ano}</option>";
     }

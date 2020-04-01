@@ -56,6 +56,7 @@ function configurarTabelaServidor(){
     });
     
     $('.dataTables_filter input').attr("placeholder", "Localizar...");
+    $('.dataTables_filter input').focus();
 }
 
 function consultarServidor(id, us) {
