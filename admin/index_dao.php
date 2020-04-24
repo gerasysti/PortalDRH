@@ -59,8 +59,9 @@
                       'Update ADM_USUARIO u Set '
                     . '    u.senha          = :senha '
                     . '  , u.ultimo_acdesso = current_timestamp '
-                    . 'where u.id_cliente = 0 '
-                    . '  and u.id         = :id   ');
+//                    . 'where u.id_cliente = 0 '
+//                    . '  and u.id         = :id   ');
+                    . 'where u.id         = :id   ');
                 $stm->execute(array(
                     ':senha'         => hashSenhaUser($senha),
                     ':id'            => $obj->id

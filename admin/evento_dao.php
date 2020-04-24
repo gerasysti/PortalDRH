@@ -65,6 +65,7 @@
                             . "  , e.sem_uso    "
                             . "from REMUN_EVENTO e "
                             . "where (e.id_cliente = {$to}) "
+                            . "  and (e.tipo_lancamento <> 9) "
                             . "  and (upper(e.descricao) like upper('%{$ps}%')) "
                             . "order by         "
                             . "    e.descricao  ";

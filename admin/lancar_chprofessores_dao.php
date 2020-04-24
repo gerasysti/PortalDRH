@@ -625,7 +625,7 @@
                                 , ':ano_mes'     => $ano_mes
                                 , ':qtde_ch_normal'       => $qtde_hora_aula_normal
                                 , ':qtde_ch_substituicao' => $qtde_hora_aula_subst
-                                , ':qtde_ch_outras'       => 0
+                                , ':qtde_ch_outras'       => $qtde_hora_aula_outras
                                 , ':qtde_faltas'          => $qtde_falta
                                 , ':observacao'           => $observacao
                                 , ':calc_grat_series_iniciais' => $calc_grat_series_iniciais

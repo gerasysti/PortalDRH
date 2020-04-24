@@ -256,6 +256,7 @@
                                                         <select class="form-control chosen-select" id="tipo_lancamento" style="width: 100%;" disabled>
                                                             <option value="0" class="optionChild">por Quantidade</option>
                                                             <option value="1" class="optionChild">por Valor (R$)</option>
+                                                            <option value="2" class="optionChild">por Quantidade e Valor (R$)</option>
                                                         </select>
                                                     </div>
                                                 </div>

@@ -242,7 +242,7 @@ function salvar_servidor_lancamento_ch(sequencia, callback) {
         'id_servidor': $('#id_servidor').val(),
         'qtde_hora_aula_normal' : $('#qtde_hora_aula_normal').val(),
         'qtde_hora_aula_subst'  : $('#qtde_hora_aula_subst').val(),
-        'qtde_hora_aula_outras' : '0',
+        'qtde_hora_aula_outras' : $('#qtde_hora_aula_outras').val(),
         'qtde_falta'            : $('#qtde_falta').val(),
         'calc_grat_series_iniciais' : 'N',
         'calc_grat_ensino_esp'      : 'N',

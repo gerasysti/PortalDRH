@@ -345,6 +345,7 @@ where (s.id_cliente = 15019)
                         <button class="btn btn-default" data-toggle="modal" data-target=".box_informe"  id="box_informe"></button>
                         <button class="btn btn-default" data-toggle="modal" data-target=".box_alerta"   id="box_alerta"></button>
                         <button class="btn btn-default" data-toggle="modal" data-target=".box_erro"     id="box_erro"></button>
+                        <button class="btn btn-default" data-toggle="modal" data-target=".box_pesquisa" id="box_pesquisa"></button>
                     </div>
 
                     <div class="col-md-12" id="panel_lancamentos">
@@ -426,21 +427,25 @@ where (s.id_cliente = 15019)
                                                 <div class="form-group" style="margin: 2px;">
                                                     <label for="qtde_hora_aula_normal" class="col-sm-2 control-label padding-label">Horas Normais</label>
                                                     <div class="col-sm-2 padding-field">
-                                                        <input type="text" class="form-control text lg-text text-right proximo_campo" maxlength="10" id="qtde_hora_aula_normal" onkeypress="return somente_numero(event);">
+                                                        <input type="text" class="form-control text lg-text text-right proximo_campo" maxlength="10" id="qtde_hora_aula_normal" onkeypress="return somente_numero(event);" value="0">
                                                     </div>
                                                     <label for="qtde_hora_aula_subst" class="col-sm-2 control-label padding-label">Substituição</label>
                                                     <div class="col-sm-2 padding-field">
-                                                        <input type="text" class="form-control text lg-text text-right proximo_campo" maxlength="10" id="qtde_hora_aula_subst" onkeypress="return somente_numero(event);">
+                                                        <input type="text" class="form-control text lg-text text-right proximo_campo" maxlength="10" id="qtde_hora_aula_subst" onkeypress="return somente_numero(event);" value="0">
                                                     </div>
-                                                    <label for="qtde_falta" class="col-sm-2 control-label padding-label">Faltas</label>
+                                                    <label for="qtde_hora_aula_outras" class="col-sm-2 control-label padding-label">Outras Horas</label>
                                                     <div class="col-sm-2 padding-field">
-                                                        <input type="text" class="form-control text lg-text text-right proximo_campo" maxlength="10" id="qtde_falta" onkeypress="return somente_numero(event);">
+                                                        <input type="text" class="form-control text lg-text text-right proximo_campo" maxlength="10" id="qtde_hora_aula_outras" onkeypress="return somente_numero(event);" value="0">
                                                     </div>
                                                 </div>
                                                 
                                                 <div class="form-group" style="margin: 2px;">
+                                                    <label for="qtde_falta" class="col-sm-2 control-label padding-label">Faltas</label>
+                                                    <div class="col-sm-2 padding-field">
+                                                        <input type="text" class="form-control text lg-text text-right proximo_campo" maxlength="10" id="qtde_falta" onkeypress="return somente_numero(event);" value="0">
+                                                    </div>
                                                     <label for="observacao" class="col-sm-2 control-label padding-label">Observações</label>
-                                                    <div class="col-sm-10 padding-field">
+                                                    <div class="col-sm-6 padding-field">
                                                         <input type="text" class="form-control text lg-text proximo_campo" maxlength="40" id="observacao" >
                                                     </div>
                                                 </div>
@@ -498,9 +503,27 @@ where (s.id_cliente = 15019)
                         </div>
                     </div>
                     
+                    <div class="modal fade bs-example-modal box_pesquisa" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-lg">
+                            <div class="modal-content">
+                                <div class="modal-header bg-primary">
+                                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                    <h4 class="modal-title"> Buscar Servidor</h4>
+                                </div>
+                                <div class="modal-body" id="tabela-professores">
+                                    <div class='remove-border glyph-icon demo-icon tooltip-button icon-spin-5 icon-spin' title='' data-original-title='icon-spin-5'></div>
+                                    <p>Carregando lista de professores.... aguarde!</p>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-default" data-dismiss="modal" id="btn_pesquisa_fechar">Fechar</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
                     <script type="text/javascript">
                         /* Ao pressionar uma tecla em um campo que seja de class="proximo_campo" */ 
-                        $('#tabela-lancamento_professores, .box_servidor').on('keyup', '.proximo_campo', function(e) {
+                        $('#tabela-lancamento_professores, .box_servidor, .box_pesquisa').on('keyup', '.proximo_campo', function(e) {
                             /* 
                              * Verifica se o evento é Keycode (para IE e outros browsers)
                              * se não for pega o evento Which (Firefox)
@@ -546,12 +569,17 @@ where (s.id_cliente = 15019)
                         $('#box_informe').fadeOut();
                         $('#box_alerta').fadeOut();
                         $('#box_erro').fadeOut();
+                        $('#box_pesquisa').fadeOut();
                         
                         $(".input-mask").inputmask();
                         $('input[type="checkbox"].custom-checkbox').uniform();
                         
                         $('.box_servidor').on('shown.bs.modal', function(event) {
                             $('#id_servidor').focus();
+                        });
+                        
+                        $('.box_pesquisa').on('shown.bs.modal', function(event) {
+                            $('.dataTables_filter input').focus();
                         });
                         
                         try {
@@ -561,8 +589,6 @@ where (s.id_cliente = 15019)
                         } catch (e) {
                             ;
                         }
-
-                            
                         
                         // Função "overlay" extraída do arquivo "overlay.js"
                         $('.overlay-button').click(function(){
@@ -597,23 +623,12 @@ where (s.id_cliente = 15019)
                         
                         function buscar_registro_servidor() {
                             var situacao = parseInt($('#situacao').val());
+                            // Se a situação do lançamento está aberta
                             if (situacao === 0) {
                                 var id_servidor = parseFloat("0" + $('#id_servidor').val());
                                 if (id_servidor > 0) {
                                     var id_cliente = parseInt("0" + $('#id_cliente').val());
-                                    var id_unid_gestora = parseInt("0" + $('#id_unid_gestora').val());
-                                    carregar_registro_servidor(id_cliente, id_servidor, id_unid_gestora, function (data) {
-                                        if ( id_unid_gestora !== parseInt("0" + data.form[0].unid_gest) ) {
-                                            $('#id_servidor').val("");
-                                            $('#nm_servidor').val("");
-                                            $('#dt_admissao').val("");
-                                            $('#cargo_funcao').val("");
-                                            mensagem_alerta(
-                                                "Servidor(a) <strong>" + data.form[0].nome + "</strong> não pertence a esta Unidade Gestora!<br><br><ul>" + 
-                                                "<li>Unidade Gestora : <strong>" + data.form[0].unidade_gestora + "</strong></li>" + 
-                                                "<li>Unidade de Lotação : <strong>" + data.form[0].unidade_lotacao + "</strong></li>" + 
-                                                "<li>Cargo/Função : <strong>" + data.form[0].cargo_funcao + "</strong></li></ul>");
-                                        } else
+                                    carregar_registro_servidor(id_cliente, id_servidor, "0", function (data) {
                                         if ( parseInt("0" + data.form[0].situacao) !== 1 ) {
                                             $('#nm_servidor').val("");
                                             $('#dt_admissao').val("");
@@ -634,10 +649,7 @@ where (s.id_cliente = 15019)
                                         }
                                     });
                                 } else {
-                                    $('#nm_servidor').val("");
-                                    $('#dt_admissao').val("");
-                                    $('#cargo_funcao').val("");
-                                    mensagem_alerta("Informe o ID do Servidor");
+                                    pesquisarProfessores();
                                 }
                             }
                         }
@@ -660,9 +672,10 @@ where (s.id_cliente = 15019)
                                     $('#nm_servidor').val("");
                                     $('#dt_admissao').val("");
                                     $('#cargo_funcao').val("");
-                                    $('#qtde_hora_aula_normal').val("");
-                                    $('#qtde_hora_aula_subst').val("");
-                                    $('#qtde_falta').val("");
+                                    $('#qtde_hora_aula_normal').val("0");
+                                    $('#qtde_hora_aula_subst').val("0");
+                                    $('#qtde_hora_aula_outras').val("0");
+                                    $('#qtde_falta').val("0");
                                     $('#observacao').val("");
                                     $('#calc_grat_series_iniciais').prop('checked', false).uniform();
                                     $('#calc_grat_ensino_esp').prop('checked', false).uniform();
@@ -689,8 +702,9 @@ where (s.id_cliente = 15019)
                                     var mrc = "<i class='glyph-icon icon-edit'></i>&nbsp;";
 
                                     if ($('#nm_servidor').val()  === "") msg += mrc + "Servidor<br>";
-                                    if ($('#qtde_hora_aula_normal').val()  === "") msg += mrc + "Horas Normais<br>";
+                                    if ($('#qtde_hora_aula_normal').val() === "") msg += mrc + "Horas Normais<br>";
                                     if ($('#qtde_hora_aula_subst').val()  === "") msg += mrc + "Substituição<br>";
+                                    if ($('#qtde_hora_aula_outras').val() === "") msg += mrc + "Outras Horas<br>";
                                     if ($('#qtde_falta').val()  === "") msg += mrc + "Faltas<br>";
 
                                     if (msg.trim() !== "") {
@@ -729,9 +743,10 @@ where (s.id_cliente = 15019)
                                                         $('#nm_servidor').val("");
                                                         $('#dt_admissao').val("");
                                                         $('#cargo_funcao').val("");
-                                                        $('#qtde_hora_aula_normal').val("");
-                                                        $('#qtde_hora_aula_subst').val("");
-                                                        $('#qtde_falta').val("");
+                                                        $('#qtde_hora_aula_normal').val("0");
+                                                        $('#qtde_hora_aula_subst').val("0");
+                                                        $('#qtde_hora_aula_outras').val("0");
+                                                        $('#qtde_falta').val("0");
                                                         $('#observacao').val("");
                                                         $('#calc_grat_series_iniciais').prop('checked', false).uniform();
                                                         $('#calc_grat_ensino_esp').prop('checked', false).uniform();
@@ -780,6 +795,111 @@ where (s.id_cliente = 15019)
                                     $('#' + id).focus();
                                 }
                             });
+                        }
+                        
+                        function configurarTabelaProfessor() {
+                            // Configurando Tabela
+                            // https://datatables.net/manual/styling/classes#nowrap
+                            var table = $('#datatable-responsive-prof').DataTable({
+                                "paging": true,
+                                "pageLength": 10, // Quantidade de registros na paginação
+                                "lengthChange": false,
+                                "searching": true,
+                                "ordering": true,
+                                "info": true,
+                                "autoWidth": true,
+                                "processing": true,
+                                "columns": [
+                                    { "width": "10px" },   // 0. ID
+                                    null,                  // 1. Nome
+                                    null,                  // 2. Cargo/Função
+                                    { "width": "10px" }    // 3. Controles
+                                ],
+                                "columnDefs": [
+                                    {"orderable": false, "targets": 0}, // ID
+                                    {"orderable": false, "targets": 3}  // Controles
+                                ],
+                                "order": [[1, 'asc']], // <-- Ordenação 
+                                "language": {
+                                        "paginate": {
+                                            "first"   : "Primeira", //"<<", // Primeira página
+                                            "last"    : "Útima",    //">>", // Última página
+                                            "next"    : "Próxima",  //">",  // Próxima página
+                                            "previous": "Anterior", //"<"   // Página anterior
+                                        },
+                                        "aria": {
+                                            "sortAscending" : ": ativar para classificação ascendente na coluna",
+                                            "sortDescending": ": ativar para classificação descendente na coluna"
+                                        },
+                                        "info": "Exibindo _PAGE_ / _PAGES_",
+                                        "infoEmpty": "Sem dados para exibição",
+                                        "infoFiltered":   "(Filtrado a partir de _MAX_ registros)",
+                                        "zeroRecords": "Sem registro(s) para exibição",
+                                        "lengthMenu": "Exibindo _MENU_ registro(s)",
+                                        "loadingRecords": "Por favor, aguarde - carregando...",
+                                        "processing": "Processando...",
+                                        "search": "Localizar:"
+                                }
+                            });
+
+                            $('.dataTables_filter input').attr("placeholder", "Localizar...");
+                            $('.dataTables_filter input').focus();
+                        }
+                        
+                        function pesquisarProfessores() {
+                            var id = $('#id_sessao').val();
+                            var us = $('#lg_sessao').val();
+                            
+                            var hash  = id.split("_");
+                            var email = us.split("_");
+                            var params = {
+                                'ac' : 'consultar_professor',
+                                'id' : hash[1],
+                                'us' : email[1],
+                                'to' : $('#cliente').val()
+                            };
+
+                            if (parseInt(params.to) === 0) {
+                                mensagem_alerta("Usuário <strong>não está associado ao cadastro de um cliente</strong>!<br>Favor, entre em contato com o suporte da plataforma.");
+                            } else {
+                                // Iniciamos o Ajax 
+                                $.ajax({
+                                    // Definimos a url
+                                    url : './servidor_dao.php',
+                                    // Definimos o tipo de requisição
+                                    type: 'post',
+                                    // Definimos o tipo de retorno
+                                    dataType : 'html',
+                                    // Dolocamos os valores a serem enviados
+                                    data: params,
+                                    // Antes de enviar ele alerta para esperar
+                                    beforeSend : function(){
+                                        $('#tabela-professores').html("<div class='remove-border glyph-icon demo-icon tooltip-button icon-spin-5 icon-spin' title='' data-original-title='icon-spin-5'></div><p>Carregando lista de professores.... aguarde!</p>");
+                                    },
+                                    // Colocamos o retorno na tela
+                                    success : function(data){
+                                        $('#tabela-professores').html(data);
+                                        configurarTabelaProfessor();
+                                        $('#box_pesquisa').trigger("click");
+                                    },
+                                    error: function (request, status, error) {
+                                        $('#tabela-professores').html("Erro na execução da pesquisa!<br> (" + status + ")" + request.responseText + "<br><strong>Error : </strong>" + error.toString());
+                                    }
+                                });  
+                                // Finalizamos o Ajax
+                            }
+                        }
+                        
+                        function selecionar_professor(id) {
+                            var referencia = id.replace("selecionar_professor_", "");
+                            
+                            $('#id_servidor').val( $('#id_servidor_' + referencia).val() );
+                            $('#nm_servidor').val( $('#nome_' + referencia).val() + " (CPF : " + $('#cpf_' + referencia).val() + ")");
+                            $('#dt_admissao').val( $('#dt_admissao_' + referencia).val() );
+                            $('#cargo_funcao').val( $('#cargo_funcao_' + referencia).val() );
+                            
+                            $('#btn_pesquisa_fechar').trigger("click");
+                            $('#qtde_hora_aula_normal').focus();
                         }
                     </script>
                 </div>

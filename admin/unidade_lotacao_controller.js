@@ -8,7 +8,7 @@ function configurarTabelaUnidadeLotacao(){
     // Configurando Tabela
     var table = $('#datatable-responsive').DataTable({
         "paging": true,
-        "pageLength": 25, // Quantidade de registros na paginação
+        "pageLength": 8, // Quantidade de registros na paginação
         "lengthChange": false,
         "searching": true,
         "ordering": true,

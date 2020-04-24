@@ -288,8 +288,8 @@
                         </li>
                         <?php endif;?>
                         
-                        <?php if (intval($usuario['lancar_eventos']) === 1):?>
                         <li class="header base-dados"><span>Base de Dados</span></li>
+                        <?php if ( (intval($usuario['lancar_eventos']) === 1) || (intval($usuario['lancar_ch_professores']) === 1) ) :?>
                         <li>
                             <a href="javascript:void(0);" title="Pesquisar Unidades Gestoras" onclick="controle_unidade_gestora('<?php echo 'id_' . $id?>', '<?php echo 'lg_' . $_SESSION['acesso']['us']?>')">
                                 <i class="glyph-icon icon-bank"></i>
@@ -302,13 +302,14 @@
                                 <span>Unidades de Lotação</span>
                             </a>
                         </li>
+                        <?php if (intval($usuario['lancar_eventos']) === 1):?>
                         <li>
                             <a href="javascript:void(0);" title="Manutenção da Tabela de Eventos" onclick="controle_tabela_eventos('<?php echo 'id_' . $id?>', '<?php echo 'lg_' . $_SESSION['acesso']['us']?>')">
                                 <i class="glyph-icon icon-th"></i>
                                 <span>Tabela de Eventos</span>
                             </a>
                         </li>
-                        <?php if (intval($_SESSION['acesso']['id_cliente']) !== 0):?>
+                        <?php endif;?>
                         <li>
                             <a href="javascript:void(0);" title="Pesquisa ao Cadastro de Servidores" onclick="controle_tabela_servidores('<?php echo 'id_' . $id?>', '<?php echo 'lg_' . $_SESSION['acesso']['us']?>')">
                                 <i class="glyph-icon icon-users"></i>
@@ -316,17 +317,22 @@
                             </a>
                         </li>
                         <?php endif;?>
+                        
                         <li class="header manutencao-dados"><span>Manutenção de Dados</span></li>
+                        <?php if (intval($usuario['lancar_eventos']) === 1):?>
                         <li>
                             <a href="javascript:void(0);" title="Lançamento de Eventos por Servidor" onclick="controle_lancar_eventos_mensais('<?php echo 'id_' . $id?>', '<?php echo 'lg_' . $_SESSION['acesso']['us']?>')">
                                 <i class="glyph-icon icon-money"></i>
                                 <span>Eventos Mensais</span>
                             </a>
                         </li>
+                        <?php endif;?>
+
+                        <?php if (intval($usuario['lancar_ch_professores']) === 1):?>
                         <li>
                             <a href="javascript:void(0);" title="Lançamento de Cargar Horária por Professor" onclick="controle_cargar_horaria_prof('<?php echo 'id_' . $id?>', '<?php echo 'lg_' . $_SESSION['acesso']['us']?>')">
                                 <i class="glyph-icon icon-dashboard"></i>
-                                <span>Carga Horário Professores</span>
+                                <span>Carga Horária Professores</span>
                             </a>
                         </li>
                         <?php endif;?>
@@ -506,9 +512,10 @@
                     position: 'R',
                     text    : '<h2>Manutenção de Dados</h2><line><p>Os dados inseridos pelo usuário através desta opções serão importados pelo sistema <strong>REMUNERATUS</strong> na central da entidade.</p><br>'
 //                }, {
-//                    element: '#how pre',
-//                    tooltip: 'Or can be used into a click event',
-//                    position: 'B'
+//                    element: '#inserir_professor_lancamento',
+//                    tooltip: 'Teste',
+//                    position: 'L',
+//                    text    : '<h2>Inserir Professores</h2><line><p>Os dados inseridos pelo usuário através desta opções serão importados pelo sistema <strong>REMUNERATUS</strong> na central da entidade.</p><br>'
 //                }, {
 //                    element: '#the-tour',
 //                    tooltip: 'The tour section it is very important',

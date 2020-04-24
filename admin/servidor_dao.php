@@ -84,10 +84,10 @@
                             . $servidor
                             . "  " . ($id_unidade !== 0?"and (s.id_unid_gestora = {$id_unidade})":"")
                             . "  " . ($id_lotacao !== 0?"and (s.id_unid_lotacao = {$id_lotacao})":"")
-                            . "  " . (($id_unidade === 0) && ($id_lotacao === 0)?"and (s.situacao = 1)":"")
+                            . "  " . (($id_unidade === 0) && ($id_lotacao === 0)?"and (s.situacao = 1)":"") . " "
                             . "order by   "
                             . "    s.nome "; 
-                        
+                        //echo $sql . "<br><br>";
                         $res = $pdo->query($sql);
                         while (($obj = $res->fetch(PDO::FETCH_OBJ)) !== false) {
                             $referencia  = $obj->id_servidor; 
@@ -141,6 +141,110 @@
                             $tabela .= "        <td>" . $obj->cargo_funcao . (isset($obj->id_cargo_atual)?" ({$obj->id_cargo_atual})":"") . "</td>";
                             $tabela .= "        <td style='text-align: center;'>{$icon_st}</td>";
                             $tabela .= "        <td style='text-align: center;' style='{$style}'>{$icon_ed}&nbsp;{$icon_ex}{$input}</td>";
+                            $tabela .= "    </tr>";
+                        }
+                        
+                        $tabela .= "    </tbody>";
+                        $tabela .= "</table>";
+
+                        echo $tabela;
+                    } catch (Exception $ex) {
+                        echo $ex . "<br><br>" . $ex->getMessage();
+                    }
+                } break;
+                
+                case 'consultar_professor' : {
+                    try {
+                        $id = strip_tags( trim(filter_input(INPUT_POST, 'id')) );
+                        $us = strip_tags( trim(filter_input(INPUT_POST, 'us')) );
+                        $to = strip_tags( trim(filter_input(INPUT_POST, 'to')) );
+                        
+                        // Gerar cabeçalho de campos da Consulta em página
+                        $tabela  = "<a id='ancora_datatable-responsive'></a>";
+                        $tabela .= "<table id='datatable-responsive-prof' class='table table-striped table-bordered table-hover responsive no-wrap' cellspacing='0' width='100%'>";
+                        $tabela .= "    <thead>";
+                        $tabela .= "        <tr class='custom-font-size-12'>";
+                        $tabela .= "            <th>ID</th>";
+                        $tabela .= "            <th>Nome</th>";
+                        $tabela .= "            <th>Cargo/Função</th>";
+                        $tabela .= "            <th class='numeric' data-orderable='false' style='text-align: center;'></th>";
+                        $tabela .= "        </tr>";
+                        $tabela .= "    </thead>";
+                        $tabela .= "    <tbody>";
+                        
+                        $cnf = Configuracao::getInstancia();
+                        $pdo = $cnf->db('', '');
+                        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+                        $ln  = "";
+                        $sql = 
+                              "Select "
+                            . "    s.* "
+                            . "  , coalesce(g.descricao, '* UG NÃO INFORMADA')           as undade_gestora "
+                            . "  , coalesce(l.descricao, '* LOTAÇÃO NÃO INFORMADA')      as undade_lotacao "
+                            . "  , coalesce(f.descricao, '* CARGO/FUNÇÃO NÃO INFORMADO') as cargo_funcao   "
+                            . "from REMUN_SERVIDOR s "
+                            . "  inner join ADM_USUARIO_UNID_GESTORA x on (x.id_cliente = s.id_cliente and x.id_unid_gestora = s.id_unid_gestora and x.id_usuario = {$user_id} and x.acesso = 1) "
+                            . "  inner join ADM_USUARIO_UNID_LOTACAO y on (y.id_cliente = s.id_cliente and y.id_unid_lotacao = s.id_unid_lotacao and y.id_usuario = {$user_id} and y.acesso = 1) "
+                            . "  inner join REMUN_CARGO_FUNCAO f on (f.id_cliente = s.id_cliente and f.id_cargo = s.id_cargo_atual) "
+                            . "  left join REMUN_UNID_GESTORA g on (g.id_cliente = s.id_cliente and g.id = s.id_unid_gestora) "
+                            . "  left join REMUN_UNID_LOTACAO l on (l.id_cliente = s.id_cliente and l.id_lotacao = s.id_unid_lotacao) "
+                            . "where (s.id_cliente = {$to}) "
+                            . "  and (s.situacao = 1)   "
+                            . "  and (f.tipo_sal = '2') " // TIPO SALÁRIO: 2 - Hora/aula
+                            . "order by   "
+                            . "    s.nome "; 
+                        
+                        $res = $pdo->query($sql);
+                        while (($obj = $res->fetch(PDO::FETCH_OBJ)) !== false) {
+                            $referencia  = $obj->id_servidor; 
+                            $id_cliente  = $obj->id_cliente;
+                            $id_servidor = str_pad($obj->id_servidor, 7, "0", STR_PAD_LEFT);
+                            $matricula   = (!empty($obj->matricula)?$obj->matricula:"&nbsp;");
+                            $dt_admissao   = (!empty($obj->dt_admissao)?date('d/m/Y', strtotime($obj->dt_admissao) ):"&nbsp;");
+                            $dt_nascimento = (!empty($obj->dt_nascimento)?date('d/m/Y', strtotime($obj->dt_nascimento) ):"&nbsp;");
+                            $nome   = (!empty($obj->nome)?$obj->nome:"&nbsp;");
+                            $rg     = (!empty($obj->rg)?$obj->rg:"&nbsp;");
+                            $cpf    = (!empty($obj->cpf)?$obj->cpf:"&nbsp;");
+                            $pis_pasep  = (!empty($obj->pis_pasep)?$obj->pis_pasep:"&nbsp;");
+                            $unid_gest  = (!empty($obj->id_unid_gestora)?$obj->id_unid_gestora:"0");
+                            $unid_lota  = (!empty($obj->id_unid_lotacao)?$obj->id_unid_lotacao:"0");
+                            $cargo_funcao = (!empty($obj->cargo_funcao)?$obj->cargo_funcao:"&nbsp;");
+                            $cargo_atual  = (!empty($obj->id_cargo_atual)?$obj->id_cargo_atual:"0");
+                            $situacao     = intval("0" . $obj->situacao);
+                            
+                            $style = "padding-left: 1px; padding-right: 1px; padding-top: 1px; padding-bottom: 1px; margin: 1px;";
+                            $input = 
+                                  "<input type='hidden' id='id_cliente_{$referencia}' value='{$id_cliente}'>"
+                                . "<input type='hidden' id='id_servidor_{$referencia}' value='{$id_servidor}'>"
+                                . "<input type='hidden' id='matricula_{$referencia}' value='{$matricula}'>"
+                                . "<input type='hidden' id='dt_admissao_{$referencia}' value='{$dt_admissao}'>"
+                                . "<input type='hidden' id='nome_{$referencia}' value='{$nome}'>"
+                                . "<input type='hidden' id='rg_{$referencia}' value='{$rg}'>"
+                                . "<input type='hidden' id='cpf_{$referencia}' value='" . formatarTexto('###.###.###-##', $cpf) . "'>"
+                                . "<input type='hidden' id='pis_pasep_{$referencia}' value='{$pis_pasep}'>"
+                                . "<input type='hidden' id='dt_nascimento_{$referencia}' value='{$dt_nascimento}'>"
+                                . "<input type='hidden' id='id_unid_gestora_{$referencia}' value='{$unid_gest}'>"
+                                . "<input type='hidden' id='id_unid_lotacao_{$referencia}' value='{$unid_lota}'>"
+                                . "<input type='hidden' id='id_cargo_atual_{$referencia}' value='{$cargo_atual}'>"
+                                . "<input type='hidden' id='cargo_funcao_{$referencia}' value='{$cargo_funcao}'>"
+                                . "<input type='hidden' id='situacao_{$referencia}' value='{$situacao}'>";
+                            
+                            //$icon_ed = "<button id='selecionar_professor_{$referencia}' class='btn btn-round btn-primary' title='Selecionar Servidor' onclick='selecionar_professor(this.id)' style='{$style}'><i class='glyph-icon icon-check-square-o'></i></button>";
+                            $icon_ed = "<button id='selecionar_professor_{$referencia}' class='btn btn-round btn-default' title='Selecionar Servidor' onclick='selecionar_professor(this.id)' style='{$style}'><i class='glyph-icon icon-check'></i></button>";
+                            
+                            if ($situacao === 1) {
+                                $icon_st = "<i class='glyph-icon icon-check-square-o'></i>";
+                            } else {
+                                $icon_st = "<i class='glyph-icon icon-square-o'></i>";
+                            }
+                            
+                            // Gerar linha de registro da Consulta em página
+                            $tabela .= "    <tr class='custom-font-size-10' id='linha_{$referencia}' style='{$style}'>";
+                            $tabela .= "        <td>{$id_servidor}</td>";
+                            $tabela .= "        <td>{$nome}</td>";
+                            $tabela .= "        <td>{$cargo_funcao}</td>";
+                            $tabela .= "        <td style='text-align: center;' style='{$style}'>{$icon_ed}&nbsp;{$input}</td>";
                             $tabela .= "    </tr>";
                         }
                         
