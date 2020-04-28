@@ -209,41 +209,6 @@
                                     <input type="hidden" id="hs" value="<?php echo $_SESSION['acesso']['id'];?>">
                                 </h2>
                                 
-<!--                                
-                                <div class="panel-title example-box-wrapper">
-                                    <div class="content-box">
-                                        <h3 class="content-box-header bg-blue">
-                                            <i class="glyph-icon icon-users"></i>
-                                            Cadastro de Usuários
-                                        </h3>
-                                        <div class="header-buttons">
-                                            <a href="#" class="btn btn-xs btn-link">X</a>
-                                        </div>    
-                                    </div>
-                                </div>
-                                -->
-                                
-                                
-                                
-                                
-                                
-<!--                                
-                                <div class="col-sm-2">
-                                    <h3 class="title-hero">
-                                        Cadastro de Usuários
-                                    </h3>
-                                </div>
-                                <div class="col-sm-2">
-                                    <button class="btn btn-round btn-primary right">
-                                        <i class="glyph-icon icon-close"></i>
-                                    </button>
-                                </div>
-
-                                <h3 class="title-hero">
-                                    Cadastro de Usuários
-                                </h3>
-                                -->
-                                
                                 <div class="box-wrapper">
                                     
                                     <!--<form class="form-horizontal bordered-row" id="demo-form" data-parsley-validate="" action="./usuario_dao.php">-->
@@ -360,44 +325,8 @@
                                             </div>
                                         </div>
                                         
-                                        <div class="row">
-                                            <div class="col-md-6">
-                                                <div class="content-box">
-                                                    <h3 class="content-box-header bg-blue">
-                                                        Acesso às Unidades Gestoras
-                                                        <div class='header-buttons-separator'>
-                                                            <a href='javascript:preventDefault();' class='icon-separator' title="Atualizar" onclick="carregar_unidades_permissao('1')">
-                                                                <i class='glyph-icon icon-refresh'></i>
-                                                            </a>
-                                                        </div>
-                                                    </h3>
-                                                    <div class="content-box-wrapper" id="box-unidade_gestora">
-                                                        Relação de unidades gestoras de acordo com o cliente selecionado.
-                                                        <!--This content boxes has the header with .bg-primary class.-->
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <div class="col-md-6">
-                                                <div class="content-box">
-                                                    <h3 class="content-box-header bg-blue">
-                                                        Acesso às Unidades de Lotação
-                                                        <div class='header-buttons-separator'>
-                                                            <a href='javascript:preventDefault();' class='icon-separator' title="Atualizar" onclick="carregar_unidades_permissao('2')">
-                                                                <i class='glyph-icon icon-refresh'></i>
-                                                            </a>
-                                                        </div>
-                                                    </h3>
-                                                    <div class="content-box-wrapper" id="box-unidade_lotacao">
-                                                        Relação de unidades de lotação de acordo com o cliente selecionado.
-                                                        <!--This content boxes has the header with .bg-primary class.-->
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-
                                         <div class="bg-default">
-                                            <button class="btn btn-primary" onclick="fechar_cadastro()" id="btn_form_fechar">Fechar</button>
+                                            <button class="btn btn-primary" onclick="document.getElementById('panel_permissoes').style.display = 'none';fechar_cadastro();" id="btn_form_fechar">Fechar</button>
                                             <button class="btn btn-primary pull-right" onclick="salvarUsuario()" id="btn_form_salvar">Salvar</button>
                                         </div>
                                     </div>
@@ -411,6 +340,72 @@
                         <button class="btn btn-default" data-toggle="modal" data-target=".box_erro"     id="box_erro"></button>
                     </div>
 
+                    <div class="col-md-12" id="panel_permissoes">
+                        <div class="panel">
+                            <div class="panel-body">
+                                <h2 class="title-hero">
+                                    <strong>Permissões</strong>
+                                </h2>
+                                <div class="box-wrapper">
+                                    
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="content-box">
+                                                <h3 class="content-box-header bg-blue">
+                                                    Acesso às Unidades Gestoras
+                                                    <div class='header-buttons-separator'>
+                                                        <a href='javascript:preventDefault();' class='icon-separator' title="Atualizar" onclick="carregar_unidades_permissao('1')">
+                                                            <i class='glyph-icon icon-refresh'></i>
+                                                        </a>
+                                                    </div>
+                                                </h3>
+                                                <div class="content-box-wrapper" id="box-unidade_gestora">
+                                                    Relação de unidades gestoras de acordo com o cliente selecionado.
+                                                    <!--This content boxes has the header with .bg-primary class.-->
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-12">
+                                            <div class="content-box">
+                                                <h3 class="content-box-header bg-blue">
+                                                    Acesso às Unidades Orçamentárias
+                                                    <div class='header-buttons-separator'>
+                                                        <a href='javascript:preventDefault();' class='icon-separator' title="Atualizar" onclick="carregar_unidades_permissao('2')">
+                                                            <i class='glyph-icon icon-refresh'></i>
+                                                        </a>
+                                                    </div>
+                                                </h3>
+                                                <div class="content-box-wrapper" id="box-unidade_orcament">
+                                                    Relação de unidades orçamentárias de acordo com o cliente selecionado.
+                                                    <!--This content boxes has the header with .bg-primary class.-->
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-12">
+                                            <div class="content-box">
+                                                <h3 class="content-box-header bg-blue">
+                                                    Acesso às Unidades de Lotação
+                                                    <div class='header-buttons-separator'>
+                                                        <a href='javascript:preventDefault();' class='icon-separator' title="Atualizar" onclick="carregar_unidades_permissao('3')">
+                                                            <i class='glyph-icon icon-refresh'></i>
+                                                        </a>
+                                                    </div>
+                                                </h3>
+                                                <div class="content-box-wrapper" id="box-unidade_lotacao">
+                                                    Relação de unidades de lotação de acordo com o cliente selecionado.
+                                                    <!--This content boxes has the header with .bg-primary class.-->
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
                     <script type="text/javascript">
                         $('#link_overlay').fadeOut();
                         
@@ -421,6 +416,7 @@
                         $(".input-mask").inputmask();
                         $('input[type="checkbox"].custom-checkbox').uniform();
                         
+                        document.getElementById("panel_permissoes").style.display  = 'none';
                         fechar_cadastro();
                         formatar_checkbox();
 /*
@@ -468,6 +464,15 @@
                             }
                             
                             if ((lista === '0') || (lista === '2')) {
+                                $('#box-unidade_orcament').html("<strong>Carregando unidades orçamentárias...</strong>");
+                                carregar_unidade_orcament_allows(id_cliente, id_usuario, function(retorno){
+                                    $('#box-unidade_orcament').html(retorno);
+                                    configurarTabUnidadeOrcamentPermissao();
+                                    $('input[type="checkbox"].custom-checkbox').uniform();
+                                });
+                            }
+                            
+                            if ((lista === '0') || (lista === '3')) {
                                 $('#box-unidade_lotacao').html("<strong>Carregando unidades de lotação...</strong>");
                                 carregar_unidade_lotacao_allows(id_cliente, id_usuario, function(retorno){
                                     $('#box-unidade_lotacao').html(retorno);
@@ -498,10 +503,17 @@
                                 if (controles[0] === "ugt") {
                                     gravar_permissao_ugt(controles[1], controles[2], $('#id').val(), $('#acesso_' + referencia).val());
                                 } else
+                                if (controles[0] === "uoc") {
+                                    gravar_permissao_uoc(controles[1], controles[2], $('#id').val(), $('#acesso_' + referencia).val());
+                                } else
                                 if (controles[0] === "ulo") {
                                     gravar_permissao_ulo(controles[1], controles[2], $('#id').val(), $('#acesso_' + referencia).val());
                                 } 
                             }
+                        }
+                        
+                        if ( $('#id_cliente_padrao').val() !== "0" ) {
+                            $('#btn_consultar').trigger("click");
                         }
                     </script>
                 </div>

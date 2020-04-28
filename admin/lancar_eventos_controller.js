@@ -159,17 +159,19 @@ function consultarEventosLancados(id, us) {
             // Antes de enviar ele alerta para esperar
             beforeSend : function(){
                 $('#link_overlay').trigger("click");
-                $('#page-wait').html( loading_spinner() );
-                $('#tabela-servidores').html("");
+                //$('#page-wait').html( loading_spinner() );
+                //$('#tabela-servidores').html("");
 
                 $('#btn_consultar').attr('disabled', true);
+                if (typeof($('#loader-overlay')) !== 'undefined') $('#loader-overlay').fadeIn('fast');
             },
             // Colocamos o retorno na tela
             success : function(data){
-                $('#page-wait').html("");
+                //$('#page-wait').html("");
                 $('#tabela-lancamentos').html(data);
 
                 $('#btn_consultar').attr('disabled', false);
+                if (typeof($('#loader-overlay')) !== 'undefined') $('#loader-overlay').fadeOut('fast');
                 configurarTabelaEventosLancados();
             },
             error: function (request, status, error) {
@@ -177,6 +179,7 @@ function consultarEventosLancados(id, us) {
                 $('#tabela-lancamentos').html("Erro na execução da pesquisa!<br> (" + status + ")" + request.responseText + "<br><strong>Error : </strong>" + error.toString());
 
                 $('#btn_consultar').attr('disabled', false);
+                if (typeof($('#loader-overlay')) !== 'undefined') $('#loader-overlay').fadeOut('fast');
             }
         });  
         // Finalizamos o Ajax

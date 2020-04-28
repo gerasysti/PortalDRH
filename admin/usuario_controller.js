@@ -85,13 +85,14 @@ function configurarTabelaUsuario(){
 //    $('.DTTT_container a').addClass('btn btn-default btn-md');
     
     $('.dataTables_filter input').attr("placeholder", "Localizar...");
+    $('.dataTables_filter input').focus();
 }
 
 function configurarTabUnidadeGestoraPermissao(){
     // Configurando Tabela
     var table = $('#datatable-responsive-ugt').DataTable({
         "paging": true,
-        "pageLength": 5, // Registros por paginação
+        "pageLength": 10, // Registros por paginação
         "lengthChange": false,
         "searching": true,
         "ordering": true,
@@ -99,7 +100,51 @@ function configurarTabUnidadeGestoraPermissao(){
         "autoWidth": true,
         "processing": true,
         "columns": [
-            null, // 0. ID
+            { "width": "5px" }, // 0. ID
+            null, // 1. Nome
+            { "width": "5px" }  // 2. Acesso
+        ],
+        "columnDefs": [
+            {"orderable": false, "targets": 0}, // ID
+            {"orderable": false, "targets": 2}  // Acesso
+        ],
+        "order": [[1, 'asc']], 
+        "language": {
+                "paginate": {
+                    "first"   : "Primeira", //"<<", // Primeira página
+                    "last"    : "Útima",    //">>", // Última página
+                    "next"    : "Próxima",  //">",  // Próxima página
+                    "previous": "Anterior", //"<"   // Página anterior
+                },
+                "aria": {
+                    "sortAscending" : ": ativar para classificação ascendente na coluna",
+                    "sortDescending": ": ativar para classificação descendente na coluna"
+                },
+                "info": "Exibindo _PAGE_ / _PAGES_",
+                "infoEmpty": "Sem dados para exibição",
+                "infoFiltered":   "(Filtrado a partir de _MAX_ registros)",
+                "zeroRecords": "Sem registro(s) para exibição",
+                "lengthMenu": "Exibindo _MENU_ registro(s)",
+                "loadingRecords": "Por favor, aguarde - carregando...",
+                "processing": "Processando...",
+                "search": "Localizar:"
+        }
+    });
+}
+
+function configurarTabUnidadeOrcamentPermissao(){
+    // Configurando Tabela
+    var table = $('#datatable-responsive-uoc').DataTable({
+        "paging": true,
+        "pageLength": 10, // Registros por paginação
+        "lengthChange": false,
+        "searching": true,
+        "ordering": true,
+        "info": true,
+        "autoWidth": true,
+        "processing": true,
+        "columns": [
+            { "width": "5px" }, // 0. ID
             null, // 1. Nome
             { "width": "5px" }  // 2. Acesso
         ],
@@ -135,7 +180,7 @@ function configurarTabUnidadeLotacaoPermissao(){
     // Configurando Tabela
     var table = $('#datatable-responsive-ulo').DataTable({
         "paging": true,
-        "pageLength": 5, // Registros por paginação
+        "pageLength": 10, // Registros por paginação
         "lengthChange": false,
         "searching": true,
         "ordering": true,
@@ -143,7 +188,7 @@ function configurarTabUnidadeLotacaoPermissao(){
         "autoWidth": true,
         "processing": true,
         "columns": [
-            null, // 0. ID
+            { "width": "5px" }, // 0. ID
             null, // 1. Nome
             { "width": "5px" }  // 2. Acesso
         ],
@@ -199,24 +244,27 @@ function consultarUsuario(id, us) {
         // Antes de enviar ele alerta para esperar
         beforeSend : function(){
             $('#link_overlay').trigger("click");
-            $('#page-wait').html( loading_spinner() );
-            $('#tabela-usuarios').html("");
+            //$('#page-wait').html( loading_spinner() );
+            //$('#tabela-usuarios').html("");
             
             $('#btn_consultar').attr('disabled', true);
+            if (typeof($('#loader-overlay')) !== 'undefined') $('#loader-overlay').fadeIn('fast');
         },
         // Colocamos o retorno na tela
         success : function(data){
-            $('#page-wait').html("");
+            //$('#page-wait').html("");
             $('#tabela-usuarios').html(data);
             
             $('#btn_consultar').attr('disabled', false);
+            if (typeof($('#loader-overlay')) !== 'undefined') $('#loader-overlay').fadeOut('fast');
             configurarTabelaUsuario();
         },
         error: function (request, status, error) {
-            $('#page-wait').html("");
+            //$('#page-wait').html("");
             $('#tabela-usuarios').html("Erro na execução da pesquisa!<br> (" + status + ")" + request.responseText + "<br><strong>Error : </strong>" + error.toString());
             
             $('#btn_consultar').attr('disabled', false);
+            if (typeof($('#loader-overlay')) !== 'undefined') $('#loader-overlay').fadeOut('fast');
         }
     });  
     // Finalizamos o Ajax
@@ -254,6 +302,12 @@ function editarUsuario(id) {
         $('input[type="checkbox"].custom-checkbox').uniform();
     });
     
+    carregar_unidade_orcament_allows(id_cliente, id_usuario, function(retorno){
+        $('#box-unidade_orcament').html(retorno);
+        configurarTabUnidadeOrcamentPermissao();
+        $('input[type="checkbox"].custom-checkbox').uniform();
+    });
+    
     carregar_unidade_lotacao_allows(id_cliente, id_usuario, function(retorno){
         $('#box-unidade_lotacao').html(retorno);
         configurarTabUnidadeLotacaoPermissao();
@@ -264,6 +318,7 @@ function editarUsuario(id) {
     document.getElementById("panel_pesquisa").style.display  = 'none';
     document.getElementById("panel_resultado").style.display = 'none';
     $('#panel_cadastro').fadeIn( 400, "linear" );
+    $('#panel_permissoes').fadeIn( 400, "linear" );
     
 //    
 //    $('input[type="checkbox"].custom-checkbox').uniform();
@@ -307,6 +362,7 @@ function inserirUsuario(id, us) {
     document.getElementById("panel_pesquisa").style.display  = 'none';
     document.getElementById("panel_resultado").style.display = 'none';
     $('#panel_cadastro').fadeIn( 400, "linear" );
+    $('#panel_permissoes').fadeIn( 400, "linear" );
 }
 
 function excluirUsuario(id) {
@@ -445,8 +501,10 @@ function salvarUsuario() {
                         $('#btn_form_fechar').attr('disabled', false);
                         $('#btn_form_salvar').attr('disabled', false);
                         if (typeof($('#loader-overlay')) !== 'undefined') $('#loader-overlay').fadeOut('fast');
-                        
+                        /*
+                        document.getElementById("panel_permissoes").style.display  = 'none';
                         fechar_cadastro();
+                        */
                     } else {
                         $('#btn_form_fechar').attr('disabled', false);
                         $('#btn_form_salvar').attr('disabled', false);
@@ -475,6 +533,42 @@ function salvarUsuario() {
 function carregar_unidade_gestora_allows(cliente, usuario, callback) {
     var params = {
         'ac' : 'carregar_unidade_gestora_permissao',
+        'hs' : $('#hs').val(),
+        'id_cliente' : cliente,
+        'id_usuario' : usuario
+    };
+    
+    // Iniciamos o Ajax 
+    $.ajax({
+        // Definimos a url
+        url : './usuario_dao.php',
+        // Definimos o tipo de requisição
+        type: 'post',
+        // Definimos o tipo de retorno
+        dataType : 'html',
+        // Dolocamos os valores a serem enviados
+        data: params,
+        // Antes de enviar ele alerta para esperar
+        beforeSend : function(){
+            ;
+        },
+        // Colocamos o retorno na tela
+        success : function(data){
+            if (callback && typeof(callback) === "function") {
+                callback(data);
+            }
+        },
+        error: function (request, status, error) {
+            $('#btnF_confirma_msg').trigger("click");
+            mensagem_erro( "<p><strong>Erro ao tentar executar script!</strong> <br><br>(" + status + ")" + request.responseText + "<br><strong>Error : </strong>" + error.toString());
+        }
+    });  
+    // Finalizamos o Ajax
+}
+
+function carregar_unidade_orcament_allows(cliente, usuario, callback) {
+    var params = {
+        'ac' : 'carregar_unidade_orcament_permissao',
         'hs' : $('#hs').val(),
         'id_cliente' : cliente,
         'id_usuario' : usuario
@@ -558,6 +652,48 @@ function gravar_permissao_ugt(cliente, unidade, usuario, permissao) {
     
     if ( $('#lancar_eventos').is(":checked") ) params.lancar = $('#lancar_eventos').val();
     if ( $('#lancar_ch_professores').is(":checked") ) params.lancar_chp = $('#lancar_ch_professores').val();
+    
+    // Iniciamos o Ajax 
+    $.ajax({
+        // Definimos a url
+        url : './usuario_dao.php',
+        // Definimos o tipo de requisição
+        type: 'post',
+        // Definimos o tipo de retorno
+        dataType : 'html',
+        // Dolocamos os valores a serem enviados
+        data: params,
+        // Antes de enviar ele alerta para esperar
+        beforeSend : function(){
+            ;
+        },
+        // Colocamos o retorno na tela
+        success : function(data){
+            var retorno = data;
+            if (retorno !== "OK") {
+                mensagem_erro(retorno);
+            }
+        },
+        error: function (request, status, error) {
+            $('#btnF_confirma_msg').trigger("click");
+            mensagem_erro( "<p><strong>Erro ao tentar executar script!</strong> <br><br>(" + status + ")" + request.responseText + "<br><strong>Error : </strong>" + error.toString());
+        }
+    });  
+    // Finalizamos o Ajax
+}
+
+function gravar_permissao_uoc(cliente, unidade, usuario, permissao) {
+    var params = {
+        'ac' : 'gravar_permissao_uoc',
+        'hs' : $('#hs').val(),
+        'id_cliente' : cliente,
+        'id_unidade' : unidade,
+        'id_usuario' : usuario,
+        'acesso'     : permissao,
+        'lancar'     : '0'
+    };
+    
+    if ( $('#lancar_eventos').is(":checked") ) params.lancar = $('#lancar_eventos').val();
     
     // Iniciamos o Ajax 
     $.ajax({

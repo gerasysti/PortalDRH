@@ -201,6 +201,74 @@
                     }
                 } break;
                 
+                case 'carregar_unidade_orcament_permissao' : {
+                    try {
+                        $id_cliente = (int)preg_replace("/[^0-9]/", "", "0" . trim(filter_input(INPUT_POST, 'id_cliente')));
+                        $id_usuario = (int)preg_replace("/[^0-9]/", "", "0" . trim(filter_input(INPUT_POST, 'id_usuario')));
+                        
+                        $tabela  = 
+                          "<table id='datatable-responsive-uoc' class='table table-striped table-bordered table-hover responsive no-wrap' cellspacing='0' width='100%'>"
+                        . "    <thead>"
+                        . "        <tr class='custom-font-size-12'>"
+                        . "            <th>#</th>"
+                        . "            <th>Unidade Orçamentária</th>"
+                        . "            <th data-orderable='false' style='text-align: center;'>Acesso</th>"
+                        . "        </tr>"
+                        . "    </thead>"
+                        . "    <tbody>";
+
+                        $cnf = Configuracao::getInstancia();
+                        $pdo = $cnf->db('', '');
+                        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+                        
+                        $sql = 
+                              "Select           "
+                            . "    u.id         "
+                            . "  , u.descricao  "
+                            . "  , coalesce(p.acesso, 0) as acesso "
+                            . "  , coalesce(p.lancar_eventos, 0) as lancar_eventos "
+                            . "from REMUN_UNID_ORCAMENT u "
+                            . "  left join ADM_USUARIO_UNID_ORCAMENT p on (p.id_cliente = u.id_cliente and p.id_unid_orcament = u.id and p.id_usuario = {$id_usuario}) "
+                            . "where (u.id_cliente = {$id_cliente}) "
+                            . "order by        "
+                            . "    u.descricao ";
+                                
+                        $qtde = 0;
+                        $res  = $pdo->query($sql);
+                        while (($obj = $res->fetch(PDO::FETCH_OBJ)) !== false) {
+                            $referencia = "uoc_" . $id_cliente . "_" . $obj->id;
+                            $id = str_pad($obj->id, 3, "0", STR_PAD_LEFT);
+                            
+                            //$acesso = "<input class='custom-checkbox' type='checkbox' name='acesso_{$referencia}' id='acesso_{$referencia}' value='1'>";
+                            $acesso = ((int)$obj->acesso === 1?"<i class='glyph-icon icon-check-square-o' id='img_acesso_{$referencia}'></i>":"<i class='glyph-icon icon-square-o' id='img_acesso_{$referencia}'></i>");
+                            $input  = 
+                                  "<input type='hidden' id='id_cliente_{$referencia}' value='{$id_cliente}'>"
+                                . "<input type='hidden' id='id_unid_orcament_{$referencia}' value='{$id}'>"
+                                . "<input type='hidden' id='acesso_{$referencia}' value='{$obj->acesso}'>";
+                            
+                            // Gerar linha de registro da Consulta em página
+                            $tabela .= 
+                                  "    <tr class='custom-font-size-10' id='linha_{$referencia}'>"
+                                . "        <td>{$id}</td>"
+                                . "        <td>{$obj->descricao}</td>"
+                                . "        <td style='text-align: center;'><a href='javascript:preventDefault();' id='marcar_acesso_{$referencia}' onclick='des_marcar_acesso(this.id)'>{$acesso}</a>{$input}</td>"
+                                . "    </tr>";
+                                
+                            $qtde += 1;
+                        }
+                        
+                        $tabela .= "    </tbody>";
+                        $tabela .= "</table><input type='hidden' id='qtde_ugt' value='{$qtde}'>";
+                        
+                        unset($res);
+                        unset($pdo);
+                        
+                        echo $tabela;
+                    } catch (Exception $ex) {
+                        echo $ex . "<br><br>" . $ex->getMessage();
+                    }
+                } break;
+                
                 case 'carregar_unidade_lotacao_permissao' : {
                     try {
                         $id_cliente = (int)preg_replace("/[^0-9]/", "", "0" . trim(filter_input(INPUT_POST, 'id_cliente')));
@@ -356,6 +424,90 @@
                           , ':acesso'         => $acesso
                           , ':lancar_eventos' => $lancar
                           , ':lancar_ch_professores' => $lancar_chp
+                        ));
+                        $pdo->commit();
+
+                        unset($res);
+                        unset($stm);
+                        unset($pdo);
+                        
+                        echo "OK";
+                    } catch (Exception $ex) {
+                        echo $ex . "<br><br>" . $ex->getMessage();
+                    }
+                } break;
+                
+                case 'gravar_permissao_uoc' : {
+                    try {
+                        $id_cliente = (int)preg_replace("/[^0-9]/", "", "0" . trim(filter_input(INPUT_POST, 'id_cliente')));
+                        $id_unidade = (int)preg_replace("/[^0-9]/", "", "0" . trim(filter_input(INPUT_POST, 'id_unidade')));
+                        $id_usuario = (int)preg_replace("/[^0-9]/", "", "0" . trim(filter_input(INPUT_POST, 'id_usuario')));
+                        $acesso     = (int)preg_replace("/[^0-9]/", "", "0" . trim(filter_input(INPUT_POST, 'acesso')));
+                        $lancar     = (int)preg_replace("/[^0-9]/", "", "0" . trim(filter_input(INPUT_POST, 'lancar')));
+
+                        if ($id_cliente === 0) {
+                            echo "<strong>Cliente não definido!</strong>";
+                            exit();
+                        } else
+                        if ($id_usuario === 0) {
+                            echo "<strong>Usuário não definido!</strong>";
+                            exit();
+                        } else
+                        if ($id_unidade === 0) {
+                            echo "<strong>Unidade não definida!</strong>";
+                            exit();
+                        } 
+                        
+                        if ($acesso === 0) {
+                            $lancar = 0;
+                        }
+                        
+                        $cnf = Configuracao::getInstancia();
+                        $pdo = $cnf->db('', '');
+                        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+                        $sql = 
+                              "Select "
+                            . "     g.acesso         "
+                            . "   , g.lancar_eventos "
+                            . "from ADM_USUARIO_UNID_ORCAMENT g      "
+                            . "where (g.id_cliente = {$id_cliente}) "
+                            . "  and (g.id_usuario = {$id_usuario}) "
+                            . "  and (g.id_unid_orcament = {$id_unidade})";
+
+                        $res  = $pdo->query($sql);
+                        if (($obj = $res->fetch(PDO::FETCH_OBJ)) === false) {
+                            $sql = 
+                                  "Insert Into ADM_USUARIO_UNID_ORCAMENT ("
+                                . "    id_cliente      "
+                                . "  , id_usuario      "
+                                . "  , id_unid_orcament"
+                                . "  , acesso          "
+                                . "  , lancar_eventos  "
+                                . ") values ("
+                                . "    :id_cliente      "
+                                . "  , :id_usuario      "
+                                . "  , :id_unidade      "
+                                . "  , :acesso          "
+                                . "  , :lancar_eventos  "
+                                . ")";
+                        } else {
+                            $sql = 
+                                  "Update ADM_USUARIO_UNID_ORCAMENT Set  "
+                                . "    acesso         = :acesso          "
+                                . "  , lancar_eventos = :lancar_eventos  "
+                                . "where (id_cliente = :id_cliente) "
+                                . "  and (id_usuario = :id_usuario) "
+                                . "  and (id_unid_gestora = :id_unidade) ";
+                        }
+                            
+                        $stm = $pdo->prepare($sql);
+                        $stm->execute(array(
+                            ':id_cliente'     => $id_cliente
+                          , ':id_usuario'     => $id_usuario
+                          , ':id_unidade'     => $id_unidade
+                          , ':acesso'         => $acesso
+                          , ':lancar_eventos' => $lancar
                         ));
                         $pdo->commit();
 
