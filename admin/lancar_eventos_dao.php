@@ -24,21 +24,21 @@
         //$referencia = $obj->id_unid_gestora . "_" . $obj->id_unid_lotcao . "_" . $obj->id_evento . "_" . $obj->ano_mes;
         $referencia = $obj->controle;
 
-        $controle        = str_pad($obj->controle, 5, "0", STR_PAD_LEFT);
-        $id_cliente      = $obj->id_cliente;
-        $id_unid_gestora = $obj->id_unid_gestora;
-        $id_unid_lotacao = $obj->id_unid_lotacao;
-        $id_evento       = $obj->id_evento; 
-        $ano_mes         = (int)$obj->ano_mes;
-        $data            = (!empty($obj->data)?date('d/m/Y', strtotime($obj->data) ):"&nbsp;");
-        $situacao        = (int)$obj->situacao;
-        $importado       = (int)$obj->importado;
+        $controle         = str_pad($obj->controle, 5, "0", STR_PAD_LEFT);
+        $id_cliente       = $obj->id_cliente;
+        $id_unid_gestora  = $obj->id_unid_gestora;
+        $id_unid_orcament = $obj->id_unid_orcament;
+        $id_evento        = $obj->id_evento; 
+        $ano_mes          = (int)$obj->ano_mes;
+        $data             = (!empty($obj->data)?date('d/m/Y', strtotime($obj->data) ):"&nbsp;");
+        $situacao         = (int)$obj->situacao;
+        $importado        = (int)$obj->importado;
 
         $rubrica = (!empty($obj->rubrica)?trim($obj->rubrica):"&nbsp;");
         $tipo    = (!empty($obj->tipo)?trim($obj->tipo):"D");
-        $tipo_lancamento = (!empty($obj->tipo_lancamento)?$obj->tipo_lancamento:"0");
-        $unidade_gestora = (!empty($obj->unidade_gestora)?$obj->unidade_gestora:"&nbsp;");
-        $unidade_lotacao = (!empty($obj->unidade_lotacao)?$obj->unidade_lotacao:"&nbsp;");
+        $tipo_lancamento  = (!empty($obj->tipo_lancamento)?$obj->tipo_lancamento:"0");
+        $unidade_gestora  = (!empty($obj->unidade_gestora)?$obj->unidade_gestora:"&nbsp;");
+        $unidade_orcament = (!empty($obj->unidade_orcament)?$obj->unidade_orcament:"&nbsp;");
         $evento = (!empty($obj->evento)?$obj->evento:"&nbsp;");
         $total  = ((int)$tipo_lancamento === 0?number_format($obj->total_quant, 0, ',' , '.'):number_format($obj->total_valor, 2, ',' , '.'));
 
@@ -47,7 +47,7 @@
               "<input type='hidden' id='controle_{$referencia}' value='{$controle}'>"
             . "<input type='hidden' id='id_cliente_{$referencia}' value='{$id_cliente}'>"
             . "<input type='hidden' id='id_unid_gestora_{$referencia}' value='{$id_unid_gestora}'>"
-            . "<input type='hidden' id='id_unid_lotacao_{$referencia}' value='{$id_unid_lotacao}'>"
+            . "<input type='hidden' id='id_unid_orcament_{$referencia}' value='{$id_unid_orcament}'>"
             . "<input type='hidden' id='id_evento_{$referencia}' value='{$id_evento}'>"
             . "<input type='hidden' id='tipo_lancamento_{$referencia}' value='{$tipo_lancamento}'>"
             . "<input type='hidden' id='ano_mes_{$referencia}' value='{$ano_mes}'>"
@@ -69,7 +69,7 @@
         $tabela .= "    <tr class='custom-font-size-10' id='linha_{$referencia}'>";
         $tabela .= "        <td style='text-align: center;'>{$controle}</td>";
         $tabela .= "        <td>{$unidade_gestora}</td>";
-        $tabela .= "        <td>{$unidade_lotacao}</td>";
+        $tabela .= "        <td>{$unidade_orcament}</td>";
         $tabela .= "        <td style='text-align: center;'>{$rubrica}</td>";
         $tabela .= "        <td>{$evento}</td>";
         $tabela .= "        <td style='text-align: center;'>{$tipo}</td>";
@@ -196,7 +196,7 @@
                         $us = strip_tags( trim(filter_input(INPUT_POST, 'us')) );
                         $to = (int)preg_replace("/[^0-9]/", "", "0" . strip_tags( trim(filter_input(INPUT_POST, 'to')) ));
                         $ug = (int)preg_replace("/[^0-9]/", "", "0" . strip_tags( trim(filter_input(INPUT_POST, 'ug')) ));
-                        $lo = (int)preg_replace("/[^0-9]/", "", "0" . strip_tags( trim(filter_input(INPUT_POST, 'lo')) ));
+                        $uo = (int)preg_replace("/[^0-9]/", "", "0" . strip_tags( trim(filter_input(INPUT_POST, 'uo')) ));
                         $cp = (int)preg_replace("/[^0-9]/", "", "0" . strip_tags( trim(filter_input(INPUT_POST, 'cp')) ));
                         
                         // Gerar cabeçalho de campos da Consulta em página
@@ -206,7 +206,7 @@
                         $tabela .= "        <tr class='custom-font-size-12'>";
                         $tabela .= "            <th data-orderable='false' style='text-align: center;'>#</th>";
                         $tabela .= "            <th>UG</th>";
-                        $tabela .= "            <th>Lotação</th>";
+                        $tabela .= "            <th>UO</th>";
                         $tabela .= "            <th>Rubrica</th>";
                         $tabela .= "            <th>Evento</th>";
                         $tabela .= "            <th data-orderable='false' style='text-align: center;'>Tipo</th>";
@@ -223,8 +223,8 @@
                         $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
                         $filtro = "";
-                        if ($ug !== 0) $filtro .= "  and (mv.id_unid_gestora = {$ug}) \n";
-                        if ($lo !== 0) $filtro .= "  and (mv.id_unid_lotacao = {$lo}) \n";
+                        if ($ug !== 0) $filtro .= "  and (mv.id_unid_gestora  = {$ug}) \n";
+                        if ($uo !== 0) $filtro .= "  and (mv.id_unid_orcament = {$uo}) \n";
                         
                         $ln  = "";
                         $sql = 
@@ -232,7 +232,7 @@
                             . "    mv.controle   "
                             . "  , mv.id_cliente "
                             . "  , mv.id_unid_gestora "
-                            . "  , mv.id_unid_lotacao "
+                            . "  , mv.id_unid_orcament "
                             . "  , mv.id_evento "
                             . "  , mv.ano_mes "
                             . "  , mv.data "
@@ -243,22 +243,22 @@
                             . "  , ev.descricao as evento "
                             . "  , ev.tipo "
                             . "  , ev.tipo_lancamento "
-                            . "  , ug.razao_social as unidade_gestora "
-                            . "  , lo.descricao    as unidade_lotacao "
+                            . "  , ug.razao_social as unidade_gestora  "
+                            . "  , uo.descricao    as unidade_orcament "
                             . "  , coalesce(lc.servidores,  0) as servidores "
                             . "  , coalesce(lc.total_quant, 0) as total_quant "
                             . "  , coalesce(lc.total_valor, 0) as total_valor "
                             . "from REMUN_EVENTO_AVULSO mv "
                             . "  inner join ADM_USUARIO_UNID_GESTORA x on (x.id_cliente = mv.id_cliente and x.id_unid_gestora = mv.id_unid_gestora and x.id_usuario = {$user_id} and x.acesso = 1) "
-                            . "  inner join ADM_USUARIO_UNID_LOTACAO y on (y.id_cliente = mv.id_cliente and y.id_unid_lotacao = mv.id_unid_lotacao and y.id_usuario = {$user_id} and y.acesso = 1) "
-                            . "  left join REMUN_UNID_GESTORA ug on (ug.id_cliente = mv.id_cliente and ug.id = mv.id_unid_gestora) "
-                            . "  left join REMUN_UNID_LOTACAO lo on (lo.id_cliente = mv.id_cliente and lo.id_lotacao = mv.id_unid_lotacao) "
+                            . "  inner join ADM_USUARIO_UNID_ORCAMENT y on (y.id_cliente = mv.id_cliente and y.id_unid_orcament = mv.id_unid_orcament and y.id_usuario = {$user_id} and y.acesso = 1) "
+                            . "  left join REMUN_UNID_GESTORA ug on (ug.id_cliente = mv.id_cliente and ug.id = mv.id_unid_gestora)   "
+                            . "  left join REMUN_UNID_ORCAMENT uo on (uo.id_cliente = mv.id_cliente and uo.id = mv.id_unid_orcament) "
                             . "  left join REMUN_EVENTO ev on (ev.id_cliente = mv.id_cliente and ev.id_evento = mv.id_evento) "
                             . "  left join ( "
                             . "    Select "
                             . "        i.id_cliente "
-                            . "      , i.id_unid_gestora "
-                            . "      , i.id_unid_lotacao "
+                            . "      , i.id_unid_gestora  "
+                            . "      , i.id_unid_orcament "
                             . "      , i.id_evento "
                             . "      , i.ano_mes "
                             . "      , count(i.id_servidor) as servidores "
@@ -269,15 +269,15 @@
                             . "      and (i.ano_mes    = '{$cp}')  "
                             . "    group by "
                             . "        i.id_cliente "
-                            . "      , i.id_unid_gestora "
-                            . "      , i.id_unid_lotacao "
+                            . "      , i.id_unid_gestora  "
+                            . "      , i.id_unid_orcament "
                             . "      , i.id_evento "
                             . "      , i.ano_mes "
-                            . "  ) lc on (lc.id_cliente      = mv.id_cliente "
-                            . "       and lc.id_unid_gestora = mv.id_unid_gestora "
-                            . "       and lc.id_unid_lotacao = mv.id_unid_lotacao "
-                            . "       and lc.id_evento       = mv.id_evento "
-                            . "       and lc.ano_mes         = mv.ano_mes "
+                            . "  ) lc on (lc.id_cliente       = mv.id_cliente "
+                            . "       and lc.id_unid_gestora  = mv.id_unid_gestora "
+                            . "       and lc.id_unid_orcament = mv.id_unid_orcament "
+                            . "       and lc.id_evento        = mv.id_evento "
+                            . "       and lc.ano_mes          = mv.ano_mes "
                             . "  ) "
                             . "where (mv.id_cliente = {$to})   "
                             . "  and (mv.ano_mes    = '{$cp}') "
@@ -285,7 +285,7 @@
                             . "order by "
                             . "    mv.data desc "
                             . "  , ug.razao_social asc "
-                            . "  , lo.descricao    asc "
+                            . "  , uo.descricao    asc "
                             . "  , ev.descricao    asc ";
 
                         $lin = 1;    

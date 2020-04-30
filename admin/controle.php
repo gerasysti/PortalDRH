@@ -458,6 +458,7 @@
         <script type="text/javascript" src="./usuario_controller.js"></script>
         <script type="text/javascript" src="./cliente_controller.js"></script>
         <script type="text/javascript" src="./unidade_gestora_controller.js"></script>
+        <script type="text/javascript" src="./unidade_orcament_controller.js"></script>
         <script type="text/javascript" src="./unidade_lotacao_controller.js"></script>
         <script type="text/javascript" src="./evento_controller.js"></script>
         <script type="text/javascript" src="./servidor_controller.js"></script>

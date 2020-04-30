@@ -638,6 +638,141 @@ function carregar_unidade_lotacao_allows(cliente, usuario, callback) {
     // Finalizamos o Ajax
 }
 
+function marcar_unidade_gestora_allows(cliente, usuario, acesso, callback) {
+    var params = {
+        'ac' : 'marcar_permissao_ugt',
+        'hs' : $('#hs').val(),
+        'id_cliente' : cliente,
+        'id_usuario' : usuario,
+        'acesso' : acesso,
+        'lancar' : '0'
+    };
+    
+    if ( $('#lancar_eventos').is(":checked") ) params.lancar = $('#lancar_eventos').val();
+    
+    // Iniciamos o Ajax 
+    $.ajax({
+        // Definimos a url
+        url : './usuario_dao.php',
+        // Definimos o tipo de requisição
+        type: 'post',
+        // Definimos o tipo de retorno
+        dataType : 'html',
+        // Dolocamos os valores a serem enviados
+        data: params,
+        // Antes de enviar ele alerta para esperar
+        beforeSend : function(){
+            ;
+        },
+        // Colocamos o retorno na tela
+        success : function(data){
+            var retorno = data;
+            if (retorno !== "OK") {
+                mensagem_erro(retorno);
+            } else {
+                if (callback && typeof(callback) === "function") {
+                    callback();
+                }
+            }
+        },
+        error: function (request, status, error) {
+            $('#btnF_confirma_msg').trigger("click");
+            mensagem_erro( "<p><strong>Erro ao tentar executar script!</strong> <br><br>(" + status + ")" + request.responseText + "<br><strong>Error : </strong>" + error.toString());
+        }
+    });  
+    // Finalizamos o Ajax
+}
+
+function marcar_unidade_orcament_allows(cliente, usuario, acesso, callback) {
+    var params = {
+        'ac' : 'marcar_permissao_uoc',
+        'hs' : $('#hs').val(),
+        'id_cliente' : cliente,
+        'id_usuario' : usuario,
+        'acesso' : acesso,
+        'lancar' : '0'
+    };
+    
+    if ( $('#lancar_eventos').is(":checked") ) params.lancar = $('#lancar_eventos').val();
+    
+    // Iniciamos o Ajax 
+    $.ajax({
+        // Definimos a url
+        url : './usuario_dao.php',
+        // Definimos o tipo de requisição
+        type: 'post',
+        // Definimos o tipo de retorno
+        dataType : 'html',
+        // Dolocamos os valores a serem enviados
+        data: params,
+        // Antes de enviar ele alerta para esperar
+        beforeSend : function(){
+            ;
+        },
+        // Colocamos o retorno na tela
+        success : function(data){
+            var retorno = data;
+            if (retorno !== "OK") {
+                mensagem_erro(retorno);
+            } else {
+                if (callback && typeof(callback) === "function") {
+                    callback();
+                }
+            }
+        },
+        error: function (request, status, error) {
+            $('#btnF_confirma_msg').trigger("click");
+            mensagem_erro( "<p><strong>Erro ao tentar executar script!</strong> <br><br>(" + status + ")" + request.responseText + "<br><strong>Error : </strong>" + error.toString());
+        }
+    });  
+    // Finalizamos o Ajax
+}
+
+function marcar_unidade_lotacao_allows(cliente, usuario, acesso, callback) {
+    var params = {
+        'ac' : 'marcar_permissao_ulo',
+        'hs' : $('#hs').val(),
+        'id_cliente' : cliente,
+        'id_usuario' : usuario,
+        'acesso' : acesso,
+        'lancar' : '0'
+    };
+    
+    if ( $('#lancar_eventos').is(":checked") ) params.lancar = $('#lancar_eventos').val();
+    
+    // Iniciamos o Ajax 
+    $.ajax({
+        // Definimos a url
+        url : './usuario_dao.php',
+        // Definimos o tipo de requisição
+        type: 'post',
+        // Definimos o tipo de retorno
+        dataType : 'html',
+        // Dolocamos os valores a serem enviados
+        data: params,
+        // Antes de enviar ele alerta para esperar
+        beforeSend : function(){
+            ;
+        },
+        // Colocamos o retorno na tela
+        success : function(data){
+            var retorno = data;
+            if (retorno !== "OK") {
+                mensagem_erro(retorno);
+            } else {
+                if (callback && typeof(callback) === "function") {
+                    callback();
+                }
+            }
+        },
+        error: function (request, status, error) {
+            $('#btnF_confirma_msg').trigger("click");
+            mensagem_erro( "<p><strong>Erro ao tentar executar script!</strong> <br><br>(" + status + ")" + request.responseText + "<br><strong>Error : </strong>" + error.toString());
+        }
+    });  
+    // Finalizamos o Ajax
+}
+
 function gravar_permissao_ugt(cliente, unidade, usuario, permissao) {
     var params = {
         'ac' : 'gravar_permissao_ugt',

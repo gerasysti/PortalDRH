@@ -352,10 +352,16 @@
                                         <div class="col-md-12">
                                             <div class="content-box">
                                                 <h3 class="content-box-header bg-blue">
-                                                    Acesso às Unidades Gestoras
+                                                    <label style="color: white; padding: 0px; margin: 0px;" id="title-unidade_gestora">Acesso às Unidades Gestoras</label>
                                                     <div class='header-buttons-separator'>
-                                                        <a href='javascript:preventDefault();' class='icon-separator' title="Atualizar" onclick="carregar_unidades_permissao('1')">
+                                                        <a href='javascript:void(0);' class='icon-separator' title="Atualizar" onclick="carregar_unidades_permissao('1')">
                                                             <i class='glyph-icon icon-refresh'></i>
+                                                        </a>
+                                                        <a href='javascript:void(0);' class='icon-separator' title="Marcar Todas" onclick="marcar_unidades_permissao('1', '1')">
+                                                            <i class='glyph-icon icon-check-square-o'></i>
+                                                        </a>
+                                                        <a href='javascript:void(0);' class='icon-separator' title="Desmarcar Todas" onclick="marcar_unidades_permissao('1', '0')">
+                                                            <i class='glyph-icon icon-square-o'></i>
                                                         </a>
                                                     </div>
                                                 </h3>
@@ -369,10 +375,16 @@
                                         <div class="col-md-12">
                                             <div class="content-box">
                                                 <h3 class="content-box-header bg-blue">
-                                                    Acesso às Unidades Orçamentárias
+                                                    <label style="color: white; padding: 0px; margin: 0px;" id="title-unidade_orcament">Acesso às Unidades Orçamentárias</label>
                                                     <div class='header-buttons-separator'>
-                                                        <a href='javascript:preventDefault();' class='icon-separator' title="Atualizar" onclick="carregar_unidades_permissao('2')">
+                                                        <a href='javascript:void(0);' class='icon-separator' title="Atualizar" onclick="carregar_unidades_permissao('2')">
                                                             <i class='glyph-icon icon-refresh'></i>
+                                                        </a>
+                                                        <a href='javascript:void(0);' class='icon-separator' title="Marcar Todas" onclick="marcar_unidades_permissao('2', '1')">
+                                                            <i class='glyph-icon icon-check-square-o'></i>
+                                                        </a>
+                                                        <a href='javascript:void(0);' class='icon-separator' title="Desmarcar Todas" onclick="marcar_unidades_permissao('2', '0')">
+                                                            <i class='glyph-icon icon-square-o'></i>
                                                         </a>
                                                     </div>
                                                 </h3>
@@ -386,10 +398,16 @@
                                         <div class="col-md-12">
                                             <div class="content-box">
                                                 <h3 class="content-box-header bg-blue">
-                                                    Acesso às Unidades de Lotação
+                                                    <label style="color: white; padding: 0px; margin: 0px;" id="title-unidade_lotacao">Acesso às Unidades de Lotação</label>
                                                     <div class='header-buttons-separator'>
-                                                        <a href='javascript:preventDefault();' class='icon-separator' title="Atualizar" onclick="carregar_unidades_permissao('3')">
+                                                        <a href='javascript:void(0);' class='icon-separator' title="Atualizar" onclick="carregar_unidades_permissao('3')">
                                                             <i class='glyph-icon icon-refresh'></i>
+                                                        </a>
+                                                        <a href='javascript:void(0);' class='icon-separator' title="Marcar Todas" onclick="marcar_unidades_permissao('3', '1')">
+                                                            <i class='glyph-icon icon-check-square-o'></i>
+                                                        </a>
+                                                        <a href='javascript:void(0);' class='icon-separator' title="Desmarcar Todas" onclick="marcar_unidades_permissao('3', '0')">
+                                                            <i class='glyph-icon icon-square-o'></i>
                                                         </a>
                                                     </div>
                                                 </h3>
@@ -450,34 +468,60 @@
 //                            }, 3000);
                         });
                         
+                        function marcar_unidades_permissao(lista, permissao) {
+                            var id_cliente = $('#id_cliente').val();
+                            var id_usuario = $('#id').val();
+                            
+                            if ((lista === '0') || (lista === '1')) {
+                                marcar_unidade_gestora_allows(id_cliente, id_usuario, permissao, function(){
+                                    carregar_unidades_permissao(lista);
+                                });
+                            } 
+                            
+                            if ((lista === '0') || (lista === '2')) {
+                                marcar_unidade_orcament_allows(id_cliente, id_usuario, permissao, function(){
+                                    carregar_unidades_permissao(lista);
+                                });
+                            }
+                            
+                            if ((lista === '0') || (lista === '3')) {
+                                marcar_unidade_lotacao_allows(id_cliente, id_usuario, permissao, function(){
+                                    carregar_unidades_permissao(lista);
+                                });
+                            }
+                        }
+                        
                         function carregar_unidades_permissao(lista) {
                             var id_cliente = $('#id_cliente').val();
                             var id_usuario = $('#id').val();
                             
                             if ((lista === '0') || (lista === '1')) {
-                                $('#box-unidade_gestora').html("<strong>Carregando unidades gestoras...</strong>");
+                                $('#title-unidade_gestora').html("Carregando unidades gestoras . . . ");
                                 carregar_unidade_gestora_allows(id_cliente, id_usuario, function(retorno){
                                     $('#box-unidade_gestora').html(retorno);
                                     configurarTabUnidadeGestoraPermissao();
                                     $('input[type="checkbox"].custom-checkbox').uniform();
+                                    $('#title-unidade_gestora').html("<strong>ACESSO ÀS UNIDADES GESTORAS</strong>");
                                 });
                             }
                             
                             if ((lista === '0') || (lista === '2')) {
-                                $('#box-unidade_orcament').html("<strong>Carregando unidades orçamentárias...</strong>");
+                                $('#title-unidade_orcament').html("Carregando unidades orçamentárias . . . ");
                                 carregar_unidade_orcament_allows(id_cliente, id_usuario, function(retorno){
                                     $('#box-unidade_orcament').html(retorno);
                                     configurarTabUnidadeOrcamentPermissao();
                                     $('input[type="checkbox"].custom-checkbox').uniform();
+                                    $('#title-unidade_orcament').html("<strong>ACESSO ÀS UNIDADES ORÇAMENTÁRIAS</strong>");
                                 });
                             }
                             
                             if ((lista === '0') || (lista === '3')) {
-                                $('#box-unidade_lotacao').html("<strong>Carregando unidades de lotação...</strong>");
+                                $('#title-unidade_lotacao').html("Carregando unidades de lotação . . . ");
                                 carregar_unidade_lotacao_allows(id_cliente, id_usuario, function(retorno){
                                     $('#box-unidade_lotacao').html(retorno);
                                     configurarTabUnidadeLotacaoPermissao();
                                     $('input[type="checkbox"].custom-checkbox').uniform();
+                                    $('#title-unidade_lotacao').html("<strong>ACESSO ÀS UNIDADES DE LOTAÇÃO</strong>");
                                 });
                             }
                         }

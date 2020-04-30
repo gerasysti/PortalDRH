@@ -347,6 +347,141 @@
                     }
                 } break;
                 
+                case 'marcar_permissao_ugt' : {
+                    try {
+                        $id_cliente = (int)preg_replace("/[^0-9]/", "", "0" . trim(filter_input(INPUT_POST, 'id_cliente')));
+                        $id_usuario = (int)preg_replace("/[^0-9]/", "", "0" . trim(filter_input(INPUT_POST, 'id_usuario')));
+                        $acesso     = (int)preg_replace("/[^0-9]/", "", "0" . trim(filter_input(INPUT_POST, 'acesso')));
+                        $lancar     = (int)preg_replace("/[^0-9]/", "", "0" . trim(filter_input(INPUT_POST, 'lancar')));
+
+                        if ($id_cliente === 0) {
+                            echo "<strong>Cliente não definido!</strong>";
+                            exit();
+                        } else
+                        if ($id_usuario === 0) {
+                            echo "<strong>Usuário não definido!</strong>";
+                            exit();
+                        } 
+                        
+                        if ($acesso === 0) {
+                            $lancar = 0;
+                        }
+                        
+                        $cnf = Configuracao::getInstancia();
+                        $pdo = $cnf->db('', '');
+                        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+                        $sql = "Execute Procedure SET_PERMISSAO_UGT(:cliente, :usuario, :acesso, :lancar)";
+                        
+                        $stm = $pdo->prepare($sql);
+                        $stm->execute(array(
+                            ':cliente' => $id_cliente
+                          , ':usuario' => $id_usuario
+                          , ':acesso'  => $acesso
+                          , ':lancar'  => $lancar
+                        ));
+                        $pdo->commit();
+
+                        unset($res);
+                        unset($stm);
+                        unset($pdo);
+                        
+                        echo "OK";
+                    } catch (Exception $ex) {
+                        echo $ex . "<br><br>" . $ex->getMessage();
+                    }
+                } break;
+                
+                case 'marcar_permissao_uoc' : {
+                    try {
+                        $id_cliente = (int)preg_replace("/[^0-9]/", "", "0" . trim(filter_input(INPUT_POST, 'id_cliente')));
+                        $id_usuario = (int)preg_replace("/[^0-9]/", "", "0" . trim(filter_input(INPUT_POST, 'id_usuario')));
+                        $acesso     = (int)preg_replace("/[^0-9]/", "", "0" . trim(filter_input(INPUT_POST, 'acesso')));
+                        $lancar     = (int)preg_replace("/[^0-9]/", "", "0" . trim(filter_input(INPUT_POST, 'lancar')));
+
+                        if ($id_cliente === 0) {
+                            echo "<strong>Cliente não definido!</strong>";
+                            exit();
+                        } else
+                        if ($id_usuario === 0) {
+                            echo "<strong>Usuário não definido!</strong>";
+                            exit();
+                        } 
+                        
+                        if ($acesso === 0) {
+                            $lancar = 0;
+                        }
+                        
+                        $cnf = Configuracao::getInstancia();
+                        $pdo = $cnf->db('', '');
+                        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+                        $sql = "Execute Procedure SET_PERMISSAO_UOC(:cliente, :usuario, :acesso, :lancar)";
+                        
+                        $stm = $pdo->prepare($sql);
+                        $stm->execute(array(
+                            ':cliente' => $id_cliente
+                          , ':usuario' => $id_usuario
+                          , ':acesso'  => $acesso
+                          , ':lancar'  => $lancar
+                        ));
+                        $pdo->commit();
+
+                        unset($res);
+                        unset($stm);
+                        unset($pdo);
+                        
+                        echo "OK";
+                    } catch (Exception $ex) {
+                        echo $ex . "<br><br>" . $ex->getMessage();
+                    }
+                } break;
+                
+                case 'marcar_permissao_ulo' : {
+                    try {
+                        $id_cliente = (int)preg_replace("/[^0-9]/", "", "0" . trim(filter_input(INPUT_POST, 'id_cliente')));
+                        $id_usuario = (int)preg_replace("/[^0-9]/", "", "0" . trim(filter_input(INPUT_POST, 'id_usuario')));
+                        $acesso     = (int)preg_replace("/[^0-9]/", "", "0" . trim(filter_input(INPUT_POST, 'acesso')));
+                        $lancar     = (int)preg_replace("/[^0-9]/", "", "0" . trim(filter_input(INPUT_POST, 'lancar')));
+
+                        if ($id_cliente === 0) {
+                            echo "<strong>Cliente não definido!</strong>";
+                            exit();
+                        } else
+                        if ($id_usuario === 0) {
+                            echo "<strong>Usuário não definido!</strong>";
+                            exit();
+                        } 
+                        
+                        if ($acesso === 0) {
+                            $lancar = 0;
+                        }
+                        
+                        $cnf = Configuracao::getInstancia();
+                        $pdo = $cnf->db('', '');
+                        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+                        $sql = "Execute Procedure SET_PERMISSAO_ULO(:cliente, :usuario, :acesso, :lancar)";
+                        
+                        $stm = $pdo->prepare($sql);
+                        $stm->execute(array(
+                            ':cliente' => $id_cliente
+                          , ':usuario' => $id_usuario
+                          , ':acesso'  => $acesso
+                          , ':lancar'  => $lancar
+                        ));
+                        $pdo->commit();
+
+                        unset($res);
+                        unset($stm);
+                        unset($pdo);
+                        
+                        echo "OK";
+                    } catch (Exception $ex) {
+                        echo $ex . "<br><br>" . $ex->getMessage();
+                    }
+                } break;
+                
                 case 'gravar_permissao_ugt' : {
                     try {
                         $id_cliente = (int)preg_replace("/[^0-9]/", "", "0" . trim(filter_input(INPUT_POST, 'id_cliente')));
@@ -498,7 +633,7 @@
                                 . "  , lancar_eventos = :lancar_eventos  "
                                 . "where (id_cliente = :id_cliente) "
                                 . "  and (id_usuario = :id_usuario) "
-                                . "  and (id_unid_gestora = :id_unidade) ";
+                                . "  and (id_unid_orcament = :id_unidade) ";
                         }
                             
                         $stm = $pdo->prepare($sql);

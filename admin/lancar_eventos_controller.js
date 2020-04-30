@@ -29,7 +29,7 @@ function configurarTabelaEventosLancados(){
         "columns": [
             { "width": "10px" },   // 0. #
             null,                  // 1. Unidade Gestora
-            null,                  // 2. Unidade de Lotação
+            null,                  // 2. Unidade Orçamentária
             { "width": "10px" },   // 3. Rubrica
             null,                  // 4. Evento
             { "width": "10px" },   // 5. Tipo
@@ -139,7 +139,7 @@ function consultarEventosLancados(id, us) {
         'us' : email[1],
         'to' : $('#cliente').val(),
         'ug' : $('#id_unidade').val(),
-        'lo' : $('#id_lotacao').val(),
+        'uo' : $('#id_orcament').val(),
         'cp' : $('#ano_mes_pesquisa').val()
     };
     

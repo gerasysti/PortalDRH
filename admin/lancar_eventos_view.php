@@ -46,17 +46,18 @@
     // Montar listas
     $lista_clientes = "";
     $lista_unidades = "";
-    $lista_lotacoes = "";
+    $lista_orcament = "";
     $lista_anomes   = "";
     $lista_eventos  = "";
 
     $lista_unidades_lancar = "";
-    $lista_lotacoes_lancar = "";
+    $lista_orcament_lancar = "";
     
     $cnf = Configuracao::getInstancia();
     $pdo = $cnf->db('', '');
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
+    // Carregar Usuario
     $sql = 
           "Select "
         . "    u.* "
@@ -73,6 +74,7 @@
         $usuario = $item;
     }
     
+    // Carregar Clientes
     $sql = 
          "Select "
         ."    u.id "
@@ -90,6 +92,7 @@
         $lista_clientes .= "<option value='{$obj->id}' class='optionChild'>{$obj->titulo_portal}</option>";
     }
     
+    // Carregar Unidades Gestoras
     $sql = 
          "Select "
        . "    u.id_cliente       "
@@ -110,23 +113,34 @@
         if (((int)$obj->acesso === 1) && ((int)$obj->lancar === 1)) $lista_unidades_lancar .= "<option value='{$obj->id_unidade}' class='optionChild'>{$obj->descricao}</option>";
     }
     
+    // Carregar Unidades Orçamentárias
     $sql = 
          "Select "
-       . "    u.id_cliente "
-       . "  , u.id_lotacao "
-       . "  , u.descricao "
+       . "    o.id_cliente "
+       . "  , o.id as id_orcament "
+       . "  , o.descricao "
        . "  , coalesce(g.acesso, 0) as acesso "
        . "  , coalesce(g.lancar_eventos, 0) as lancar "
-       . "from REMUN_UNID_LOTACAO u "
-       . "  left join ADM_USUARIO_UNID_LOTACAO g on (g.id_cliente = u.id_cliente and g.id_unid_lotacao = u.id_lotacao and g.id_usuario = {$usuario['id']}) "
-       . "where (u.id_cliente = {$usuario['cliente']}) "
+       . "from REMUN_UNID_ORCAMENT o "
+       . "  inner join ( "
+       . "    Select "
+       . "        x.id_cliente "
+       . "      , x.id_unid_gestora "
+       . "    from ADM_USUARIO_UNID_GESTORA x "
+       . "    where x.id_cliente = {$usuario['cliente']} "
+       . "      and x.id_usuario = {$usuario['id']} "
+       . "      and x.acesso     = 1 "
+       . "  ) a on (a.id_cliente = o.id_cliente and a.id_unid_gestora = o.id_unid_gestora) "
+       . "  left join ADM_USUARIO_UNID_ORCAMENT g on (g.id_cliente = o.id_cliente and g.id_unid_orcament = o.id and g.id_usuario = {$usuario['id']}) "
+       . "where (o.id_cliente = {$usuario['cliente']}) "
        . "order by "
-       . "    u.descricao ";
+       . "    o.id_unid_gestora "
+       . "  , o.descricao ";
 
     $res = $pdo->query($sql);
     while (($obj = $res->fetch(PDO::FETCH_OBJ)) !== false) {
-        if ((int)$obj->acesso === 1) $lista_lotacoes .= "<option value='{$obj->id_lotacao}' class='optionChild'>{$obj->descricao}</option>";
-        if (((int)$obj->acesso === 1) && ((int)$obj->lancar === 1)) $lista_lotacoes_lancar .= "<option value='{$obj->id_lotacao}' class='optionChild'>{$obj->descricao}</option>";
+        if ((int)$obj->acesso === 1) $lista_orcament .= "<option value='{$obj->id_orcament}' class='optionChild'>{$obj->descricao}</option>";
+        if (((int)$obj->acesso === 1) && ((int)$obj->lancar === 1)) $lista_orcament_lancar .= "<option value='{$obj->id_orcament}' class='optionChild'>{$obj->descricao}</option>";
     }
     
     $sql = 
@@ -242,19 +256,21 @@
                                             
                                             <label for="id_unidade" class="col-sm-1 control-label padding-label">UG</label>
                                             <div class="col-sm-3 padding-field">
-                                                <select class="form-control chosen-select" id="id_unidade">
+                                                <select class="form-control chosen-select" id="id_unidade" onchange="listar_uniades_orcament('#id_unidade', '#lista_orcament_pesquisa', 'id_orcament')">
                                                     <option value="0" class="optionChild">Todas as Unidades Gestoras</option>
                                                     <?php echo $lista_unidades;?>
                                                 </select>
                                             </div>
                                             
-                                            <label for="id_lotacao" class="col-sm-1 control-label padding-label">Lotação</label>
+                                            <label for="id_orcament" class="col-sm-1 control-label padding-label">UO</label>
                                             <div class="col-sm-4 padding-field">
                                                 <div class="input-group">
-                                                    <select class="form-control chosen-select" id="id_lotacao" style="width: 100%;">
-                                                        <option value="0" class="optionChild">Todas as Unidades de Lotação</option>
-                                                        <?php echo $lista_lotacoes;?>
-                                                    </select>
+                                                    <div style="padding: 0px; margin: 0px;" id="lista_orcament_pesquisa">
+                                                        <select class="form-control chosen-select" id="id_orcament" style="width: 100%;">
+                                                            <option value="0" class="optionChild">Todas as Unidades Orçamentárias</option>
+                                                            <?php echo $lista_orcament;?>
+                                                        </select>
+                                                    </div>
                                                     <div class="input-group-addon" style="padding: 0px; padding-left : 4px;">
                                                         <input type="hidden" id="pesquisa" value=""/>
                                                         <button id="btn_consultar" class="btn ra-round btn-primary lg-text" onclick="consultarEventosLancados('<?php echo 'id_' . $_SESSION['acesso']['id'];?>', '<?php echo 'lg_' . $_SESSION['acesso']['us']?>')" title="Executar Consulta"><i class="glyph-icon icon-search"></i></button>
@@ -346,7 +362,7 @@
                                             <div class="form-group" style="margin: 2px;">
                                                 <label for="id_unid_gestora" class="col-sm-2 control-label padding-label">Unidade Gestora</label>
                                                 <div class="col-sm-10 padding-field">
-                                                    <select class="form-control chosen-select" id="id_unid_gestora" style="width: 100%;">
+                                                    <select class="form-control chosen-select" id="id_unid_gestora" style="width: 100%;" onchange="listar_uniades_orcament('#id_unid_gestora', '#lista_orcament_cadastro', 'id_unid_orcament')">
                                                         <option value="0" class="optionChild">Selecione a Unidade Gestora</option>
                                                         <?php echo $lista_unidades_lancar;?>
                                                     </select>
@@ -354,12 +370,14 @@
                                             </div>
                                             
                                             <div class="form-group" style="margin: 2px;">
-                                                <label for="id_unid_lotacao" class="col-sm-2 control-label padding-label">Unidade de Lotação</label>
+                                                <label for="id_unid_orcament" class="col-sm-2 control-label padding-label">Unidade Orçamentária</label>
                                                 <div class="col-sm-10 padding-field">
-                                                    <select class="form-control chosen-select" id="id_unid_lotacao" style="width: 100%;">
-                                                        <option value="0" class="optionChild">Selecione a Unidade de Lotação</option>
-                                                        <?php echo $lista_lotacoes_lancar;?>
-                                                    </select>
+                                                    <div style="padding: 0px; margin: 0px;" id="lista_orcament_cadastro">
+                                                        <select class="form-control chosen-select" id="id_unid_orcament" style="width: 100%;">
+                                                            <option value="0" class="optionChild">Selecione a Unidade Orçamentária</option>
+                                                            <?php echo $lista_orcament_lancar;?>
+                                                        </select>
+                                                    </div>
                                                 </div>
                                             </div>
                                             
@@ -680,6 +698,33 @@
 //                              $('#loader-overlay').fadeOut('fast');
 //                            }, 3000);
                         });
+                        
+                        function listar_uniades_orcament(origem, quadro, elemento) {
+                            var ls = "";
+                            var id_sessao  = $('#id_sessao').val();
+                            var lg_sessao  = $('#lg_sessao').val();
+                            var informacao = "Todas as Unidades Orçamentárias";
+                            var ug = $(origem).val();
+                            
+                            if (origem === 'id_unid_orcament') {
+                                informacao = "Selecione a Unidade Orçamentária";
+                            }
+                            
+                            listar_unidades_orcamentarias(id_sessao, lg_sessao, ug, function(retorno){
+                                ls += "<select class='form-control chosen-select' id='" + elemento + "' style='width: 100%;'>";
+                                ls += "    <option value='0' class='optionChild'>" + informacao + "</option>";
+                                ls += retorno;
+                                ls += "</select>";
+                                
+                                $(quadro).html(ls);
+                                $(quadro + " .chosen-select").chosen();
+                                $(quadro + " .chosen-search").append('<i class="glyph-icon icon-search"></i>');
+                                $(quadro + " .chosen-single div").html('<i class="glyph-icon icon-caret-down"></i>');
+
+                                $(quadro).val("0");
+                                $(quadro).trigger('chosen:updated');
+                            });
+                        }
                         
                         function fechar_lancamentos() {
                             fechar_cadastro();
