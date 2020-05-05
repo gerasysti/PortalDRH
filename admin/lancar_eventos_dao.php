@@ -93,8 +93,8 @@
               "Select "
             . "    mv.controle   "
             . "  , mv.id_cliente "
-            . "  , mv.id_unid_gestora "
-            . "  , mv.id_unid_lotacao "
+            . "  , mv.id_unid_gestora  "
+            . "  , mv.id_unid_orcament "
             . "  , mv.id_evento "
             . "  , mv.ano_mes "
             . "  , mv.data "
@@ -105,20 +105,20 @@
             . "  , ev.descricao as evento "
             . "  , ev.tipo "
             . "  , ev.tipo_lancamento "
-            . "  , ug.razao_social as unidade_gestora "
-            . "  , lo.descricao    as unidade_lotacao "
+            . "  , coalesce(nullif(trim(ug.razao_social), ''), ug.descricao) as unidade_gestora "
+            . "  , uo.descricao    as unidade_orcamentaria "
             . "  , coalesce(lc.servidores,  0) as servidores "
             . "  , coalesce(lc.total_quant, 0) as total_quant "
             . "  , coalesce(lc.total_valor, 0) as total_valor "
             . "from REMUN_EVENTO_AVULSO mv "
             . "  left join REMUN_UNID_GESTORA ug on (ug.id_cliente = mv.id_cliente and ug.id = mv.id_unid_gestora) "
-            . "  left join REMUN_UNID_LOTACAO lo on (lo.id_cliente = mv.id_cliente and lo.id_lotacao = mv.id_unid_lotacao) "
+            . "  left join REMUN_UNID_ORCAMENT uo on (uo.id_cliente = mv.id_cliente and uo.id = mv.id_unid_orcament) "
             . "  left join REMUN_EVENTO ev on (ev.id_cliente = mv.id_cliente and ev.id_evento = mv.id_evento) "
             . "  left join ( "
             . "    Select "
             . "        i.id_cliente "
             . "      , i.id_unid_gestora "
-            . "      , i.id_unid_lotacao "
+            . "      , i.id_unid_orcament "
             . "      , i.id_evento "
             . "      , i.ano_mes "
             . "      , count(i.id_servidor) as servidores "
@@ -130,14 +130,14 @@
             . "    group by "
             . "        i.id_cliente "
             . "      , i.id_unid_gestora "
-            . "      , i.id_unid_lotacao "
+            . "      , i.id_unid_orcament "
             . "      , i.id_evento "
             . "      , i.ano_mes "
-            . "  ) lc on (lc.id_cliente      = mv.id_cliente "
-            . "       and lc.id_unid_gestora = mv.id_unid_gestora "
-            . "       and lc.id_unid_lotacao = mv.id_unid_lotacao "
-            . "       and lc.id_evento       = mv.id_evento "
-            . "       and lc.ano_mes         = mv.ano_mes "
+            . "  ) lc on (lc.id_cliente       = mv.id_cliente "
+            . "       and lc.id_unid_gestora  = mv.id_unid_gestora "
+            . "       and lc.id_unid_orcament = mv.id_unid_orcament "
+            . "       and lc.id_evento        = mv.id_evento "
+            . "       and lc.ano_mes          = mv.ano_mes "
             . "  ) "
             . "where (mv.id_cliente = {$id_cliente}) "
             . "  and (mv.ano_mes    = '{$ano_mes}')  "
@@ -243,7 +243,7 @@
                             . "  , ev.descricao as evento "
                             . "  , ev.tipo "
                             . "  , ev.tipo_lancamento "
-                            . "  , ug.razao_social as unidade_gestora  "
+                            . "  , coalesce(nullif(trim(ug.razao_social), ''), ug.descricao) as unidade_gestora "
                             . "  , uo.descricao    as unidade_orcament "
                             . "  , coalesce(lc.servidores,  0) as servidores "
                             . "  , coalesce(lc.total_quant, 0) as total_quant "
@@ -284,9 +284,9 @@
                             . $filtro
                             . "order by "
                             . "    mv.data desc "
-                            . "  , ug.razao_social asc "
+                            . "  , coalesce(nullif(trim(ug.razao_social), ''), ug.descricao) asc "
                             . "  , uo.descricao    asc "
-                            . "  , ev.descricao    asc ";
+                            . "  , ev.descricao    asc "; 
 
                         $lin = 1;    
                         $res = $pdo->query($sql);
@@ -343,8 +343,8 @@
                             . "    mv.controle "
                             . "  , mv.situacao "
                             . "  , lc.id_cliente "
-                            . "  , lc.id_unid_gestora "
-                            . "  , lc.id_unid_lotacao "
+                            . "  , lc.id_unid_gestora  "
+                            . "  , lc.id_unid_orcament "
                             . "  , lc.id_evento "
                             . "  , lc.ano_mes "
                             . "  , lc.id_servidor "
@@ -358,11 +358,11 @@
                             . "  , coalesce(cf.descricao, '* CARGO/FUNÇÃO NÃO INFORMADO') as cargo_funcao \n"
                             . "from REMUN_EVENTO_AVULSO mv \n"
                             . "  inner join REMUN_EVENTO_AVULSO_ITEM lc on ( "
-                            . "        lc.id_cliente      = mv.id_cliente "
-                            . "    and lc.id_unid_gestora = mv.id_unid_gestora "
-                            . "    and lc.id_unid_lotacao = mv.id_unid_lotacao "
-                            . "    and lc.id_evento       = mv.id_evento "
-                            . "    and lc.ano_mes         = mv.ano_mes "
+                            . "        lc.id_cliente       = mv.id_cliente "
+                            . "    and lc.id_unid_gestora  = mv.id_unid_gestora  "
+                            . "    and lc.id_unid_orcament = mv.id_unid_orcament "
+                            . "    and lc.id_evento        = mv.id_evento "
+                            . "    and lc.ano_mes          = mv.ano_mes "
                             . "  ) \n"
                             . "  left join REMUN_SERVIDOR sv on (sv.id_cliente = lc.id_cliente and sv.id_servidor = lc.id_servidor)     \n"
                             . "  left join REMUN_EVENTO   ev on (ev.id_cliente = mv.id_cliente and ev.id_evento = mv.id_evento)         \n"
@@ -373,8 +373,8 @@
                             . " \n"
                             . "order by \n"
                             . "    lc.id_cliente "
-                            . "  , lc.id_unid_gestora "
-                            . "  , lc.id_unid_lotacao "
+                            . "  , lc.id_unid_gestora  "
+                            . "  , lc.id_unid_orcament "
                             . "  , lc.id_evento "
                             . "  , lc.ano_mes "
                             . "  , lc.sequencia \n"; 
@@ -391,7 +391,7 @@
                                 . "<input type='hidden' id='sequencia_{$referencia}' value='{$obj->sequencia}'>"
                                 . "<input type='hidden' id='id_cliente_{$referencia}' value='{$obj->id_cliente}'>"
                                 . "<input type='hidden' id='id_unid_gestora_{$referencia}' value='{$obj->id_unid_gestora}'>"
-                                . "<input type='hidden' id='id_unid_lotacao_{$referencia}' value='{$obj->id_unid_lotacao}'>"
+                                . "<input type='hidden' id='id_unid_orcament_{$referencia}' value='{$obj->id_unid_orcament}'>"
                                 . "<input type='hidden' id='id_evento_{$referencia}' value='{$obj->id_evento}'>"
                                 . "<input type='hidden' id='ano_mes_{$referencia}' value='{$obj->ano_mes}'>"
                                 . "<input type='hidden' id='id_servidor_{$referencia}' value='{$obj->id_servidor}'>";
@@ -460,9 +460,9 @@
                         $controle   = floatval( preg_replace("/[^0-9]/", "", "0" . trim(filter_input(INPUT_POST, 'controle'))) );
                         $id_cliente = intval( preg_replace("/[^0-9]/", "", "0" . trim(filter_input(INPUT_POST, 'id_cliente'))) );
                         $ano_mes    = strip_tags( trim(filter_input(INPUT_POST, 'ano_mes')) );
-                        $id_unid_gestora = intval( preg_replace("/[^0-9]/", "", "0" . trim(filter_input(INPUT_POST, 'id_unid_gestora'))) );
-                        $id_unid_lotacao = intval( preg_replace("/[^0-9]/", "", "0" . trim(filter_input(INPUT_POST, 'id_unid_lotacao'))) );
-                        $id_evento       = intval( preg_replace("/[^0-9]/", "", "0" . trim(filter_input(INPUT_POST, 'id_evento'))) );
+                        $id_unid_gestora  = intval( preg_replace("/[^0-9]/", "", "0" . trim(filter_input(INPUT_POST, 'id_unid_gestora'))) );
+                        $id_unid_orcament = intval( preg_replace("/[^0-9]/", "", "0" . trim(filter_input(INPUT_POST, 'id_unid_orcament'))) );
+                        $id_evento        = intval( preg_replace("/[^0-9]/", "", "0" . trim(filter_input(INPUT_POST, 'id_evento'))) );
                         $data = strip_tags( trim(filter_input(INPUT_POST, 'data')) );
                         $hora = strip_tags( trim(filter_input(INPUT_POST, 'hora')) );
                         
@@ -485,11 +485,11 @@
                                 . "  left join ADM_USUARIO us on (us.id = mv.usuario) "
                                 . "where (mv.id_cliente = {$id_cliente}) "
                                 . "  and (mv.ano_mes    = '{$ano_mes}')  "
-                                . "  and (mv.id_unid_gestora = {$id_unid_gestora}) "
-                                . "  and (mv.id_unid_lotacao = {$id_unid_lotacao}) "
-                                . "  and (mv.id_evento       = {$id_evento}) "
-                                . "  and (mv.controle       <> {$controle})  "
-                                . "  and (mv.situacao       <> 2) ";
+                                . "  and (mv.id_unid_gestora  = {$id_unid_gestora}) "
+                                . "  and (mv.id_unid_orcament = {$id_unid_orcament}) "
+                                . "  and (mv.id_evento        = {$id_evento}) "
+                                . "  and (mv.controle        <> {$controle})  "
+                                . "  and (mv.situacao        <> 2) ";
                             
                             $cnf = Configuracao::getInstancia();
                             $pdo = $cnf->db('', '');
@@ -507,22 +507,22 @@
                                     // Inserir Lançamento
                                     $stm = $pdo->prepare(
                                           "Insert Into REMUN_EVENTO_AVULSO ("
-                                        . "    controle         "
-                                        . "  , id_cliente       "
-                                        . "  , id_unid_gestora  "
-                                        . "  , id_unid_lotacao  "
-                                        . "  , id_evento        "
-                                        . "  , ano_mes          "
-                                        . "  , data             "
-                                        . "  , hora             "
-                                        . "  , usuario          "
-                                        . "  , situacao         "
-                                        . "  , importado        "
+                                        . "    controle          "
+                                        . "  , id_cliente        "
+                                        . "  , id_unid_gestora   "
+                                        . "  , id_unid_orcament  "
+                                        . "  , id_evento         "
+                                        . "  , ano_mes           "
+                                        . "  , data              "
+                                        . "  , hora              "
+                                        . "  , usuario           "
+                                        . "  , situacao          "
+                                        . "  , importado         "
                                         . ") values ("
                                         . "    :controle         "
                                         . "  , :id_cliente       "
                                         . "  , :id_unid_gestora  "
-                                        . "  , :id_unid_lotacao  "
+                                        . "  , :id_unid_orcament "
                                         . "  , :id_evento        "
                                         . "  , :ano_mes          "
                                         . "  , current_date      "
@@ -535,7 +535,7 @@
                                         ':controle'         => $controle,
                                         ':id_cliente'       => $id_cliente,
                                         ':id_unid_gestora'  => $id_unid_gestora,
-                                        ':id_unid_lotacao'  => $id_unid_lotacao,
+                                        ':id_unid_orcament' => $id_unid_orcament,
                                         ':id_evento'        => $id_evento,
                                         ':ano_mes'          => $ano_mes,
                                         ':usuario'          => $user_id
@@ -547,14 +547,14 @@
                                           "Execute procedure SET_REMUN_EVENTO_AVULSO_ITEM ( "
                                         . "    :id_cliente      "
                                         . "  , :id_unid_gestora "
-                                        . "  , :id_unid_lotacao "
+                                        . "  , :id_unid_orcament "
                                         . "  , :id_evento       "
                                         . "  , :ano_mes         "
                                         . ")");
                                     $stm->execute(array(
                                         ':id_cliente'       => $id_cliente,
                                         ':id_unid_gestora'  => $id_unid_gestora,
-                                        ':id_unid_lotacao'  => $id_unid_lotacao,
+                                        ':id_unid_orcament' => $id_unid_orcament,
                                         ':id_evento'        => $id_evento,
                                         ':ano_mes'          => $ano_mes
                                     ));
@@ -565,7 +565,7 @@
                                     $stm = $pdo->prepare(
                                           "Update REMUN_EVENTO_AVULSO mv Set            "
                                         . "    mv.id_unid_gestora  = :id_unid_gestora   "
-                                        . "  , mv.id_unid_lotacao  = :id_unid_lotacao   "
+                                        . "  , mv.id_unid_orcament = :id_unid_orcament   "
                                         . "  , mv.id_evento        = :id_evento         "
                                         . "  , mv.ano_mes          = :ano_mes           "
                                         . "where (mv.situacao  = 0)  "
@@ -574,7 +574,7 @@
                                     $stm->execute(array(
                                         ':controle'         => $controle,
                                         ':id_unid_gestora'  => $id_unid_gestora,
-                                        ':id_unid_lotacao'  => $id_unid_lotacao,
+                                        ':id_unid_orcament' => $id_unid_orcament,
                                         ':id_evento'        => $id_evento,
                                         ':ano_mes'          => $ano_mes
                                     ));
@@ -982,7 +982,7 @@
                     try {
                         $to = strip_tags( preg_replace("/[^0-9]/", "", trim(filter_input(INPUT_POST, 'to'))) );
                         $ug = strip_tags( preg_replace("/[^0-9]/", "", trim(filter_input(INPUT_POST, 'ug'))) );
-                        $lo = strip_tags( preg_replace("/[^0-9]/", "", trim(filter_input(INPUT_POST, 'lo'))) );
+                        $uo = strip_tags( preg_replace("/[^0-9]/", "", trim(filter_input(INPUT_POST, 'uo'))) );
                         $ev = strip_tags( preg_replace("/[^0-9]/", "", trim(filter_input(INPUT_POST, 'ev'))) );
                         $cp = strip_tags( preg_replace("/[^0-9]/", "", trim(filter_input(INPUT_POST, 'cp'))) );
                         $id = strip_tags( preg_replace("/[^0-9]/", "", trim(filter_input(INPUT_POST, 'id'))) );
@@ -1004,15 +1004,15 @@
 
                                 $stm = $pdo->prepare(
                                       "Delete from REMUN_EVENTO_AVULSO "
-                                    . "where (id_cliente      = :id_cliente)"
-                                    . "  and (id_unid_gestora = :id_unid_gestora)"
-                                    . "  and (id_unid_lotacao = :id_unid_lotacao)"
-                                    . "  and (id_evento       = :id_evento)"
-                                    . "  and (ano_mes         = :ano_mes) ");
+                                    . "where (id_cliente       = :id_cliente)"
+                                    . "  and (id_unid_gestora  = :id_unid_gestora)"
+                                    . "  and (id_unid_orcament = :id_unid_orcament)"
+                                    . "  and (id_evento        = :id_evento)"
+                                    . "  and (ano_mes          = :ano_mes) ");
                                 $stm->execute(array(
                                       ':id_cliente'       => $to
                                     , ':id_unid_gestora'  => $ug
-                                    , ':id_unid_lotacao'  => $lo
+                                    , ':id_unid_orcament' => $uo
                                     , ':id_evento'        => $ev
                                     , ':ano_mes'          => $cp
                                 ));

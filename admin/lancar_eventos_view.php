@@ -515,6 +515,7 @@
                         <button class="btn btn-default" data-toggle="modal" data-target=".box_informe"  id="box_informe"></button>
                         <button class="btn btn-default" data-toggle="modal" data-target=".box_alerta"   id="box_alerta"></button>
                         <button class="btn btn-default" data-toggle="modal" data-target=".box_erro"     id="box_erro"></button>
+                        <button class="btn btn-default" data-toggle="modal" data-target=".box_pesquisa" id="box_pesquisa"></button>
                     </div>
 
                     <div class="col-md-12" id="panel_lancamentos">
@@ -617,9 +618,27 @@
                         </div>
                     </div>
                     
+                    <div class="modal fade bs-example-modal box_pesquisa" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-lg">
+                            <div class="modal-content">
+                                <div class="modal-header bg-primary">
+                                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                    <h4 class="modal-title"> Buscar Servidor</h4>
+                                </div>
+                                <div class="modal-body" id="tabela-servidores">
+                                    <div class='remove-border glyph-icon demo-icon tooltip-button icon-spin-5 icon-spin' title='' data-original-title='icon-spin-5'></div>
+                                    <p>Carregando lista de servidores.... aguarde!</p>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-default" data-dismiss="modal" id="btn_pesquisa_fechar">Fechar</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
                     <script type="text/javascript">
                         /* Ao pressionar uma tecla em um campo que seja de class="proximo_campo" */ 
-                        $('#tabela-lancamento_servidores, .box_servidor').on('keyup', '.proximo_campo', function(e) {
+                        $('#tabela-lancamento_servidores, .box_servidor, .box_pesquisa').on('keyup', '.proximo_campo', function(e) {
                             /* 
                              * Verifica se o evento é Keycode (para IE e outros browsers)
                              * se não for pega o evento Which (Firefox)
@@ -667,12 +686,17 @@
                         $('#box_informe').fadeOut();
                         $('#box_alerta').fadeOut();
                         $('#box_erro').fadeOut();
+                        $('#box_pesquisa').fadeOut();
                         
                         $(".input-mask").inputmask();
                         $('input[type="checkbox"].custom-checkbox').uniform();
                         
                         $('.box_servidor').on('shown.bs.modal', function(event) {
                             $('#id_servidor').focus();
+                        });
+                        
+                        $('.box_pesquisa').on('shown.bs.modal', function(event) {
+                            $('.dataTables_filter input').focus();
                         });
                         
                         fechar_lancamentos();
@@ -809,7 +833,8 @@
                                             mensagem_alerta(
                                                 "Servidor(a) <strong>" + data.form[0].nome + "</strong> não pertence a esta Unidade Gestora!<br><br><ul>" + 
                                                 "<li>Unidade Gestora : <strong>" + data.form[0].unidade_gestora + "</strong></li>" + 
-                                                "<li>Unidade de Lotação : <strong>" + data.form[0].unidade_lotacao + "</strong></li>" + 
+                                                "<li>Unidade Orçamentária : <strong>" + data.form[0].unidade_orcamentaria + "</strong></li>" + 
+                                                "<li>Sub-unidade Orçamentária : <strong>" + data.form[0].subunidade_orcamentaria + "</strong></li>" + 
                                                 "<li>Cargo/Função : <strong>" + data.form[0].cargo_funcao + "</strong></li></ul>");
                                         } else
                                         if ( parseInt("0" + data.form[0].situacao) !== 1 ) {
@@ -826,12 +851,117 @@
                                         }
                                     });
                                 } else {
-                                    $('#nm_servidor').val("");
-                                    $('#dt_admissao').val("");
-                                    $('#cargo_funcao').val("");
-                                    mensagem_alerta("Informe o ID do Servidor");
+                                    pesquisarServidores();
                                 }
                             }
+                        }
+                        
+                        function configurarTabelaServidorLocal() {
+                            // Configurando Tabela
+                            // https://datatables.net/manual/styling/classes#nowrap
+                            var table = $('#datatable-responsive-serv').DataTable({
+                                "paging": true,
+                                "pageLength": 10, // Quantidade de registros na paginação
+                                "lengthChange": false,
+                                "searching": true,
+                                "ordering": true,
+                                "info": true,
+                                "autoWidth": true,
+                                "processing": true,
+                                "columns": [
+                                    { "width": "10px" },   // 0. ID
+                                    null,                  // 1. Nome
+                                    null,                  // 2. Cargo/Função
+                                    { "width": "10px" }    // 3. Controles
+                                ],
+                                "columnDefs": [
+                                    {"orderable": false, "targets": 0}, // ID
+                                    {"orderable": false, "targets": 3}  // Controles
+                                ],
+                                "order": [[1, 'asc']], // <-- Ordenação 
+                                "language": {
+                                        "paginate": {
+                                            "first"   : "Primeira", //"<<", // Primeira página
+                                            "last"    : "Útima",    //">>", // Última página
+                                            "next"    : "Próxima",  //">",  // Próxima página
+                                            "previous": "Anterior", //"<"   // Página anterior
+                                        },
+                                        "aria": {
+                                            "sortAscending" : ": ativar para classificação ascendente na coluna",
+                                            "sortDescending": ": ativar para classificação descendente na coluna"
+                                        },
+                                        "info": "Exibindo _PAGE_ / _PAGES_",
+                                        "infoEmpty": "Sem dados para exibição",
+                                        "infoFiltered":   "(Filtrado a partir de _MAX_ registros)",
+                                        "zeroRecords": "Sem registro(s) para exibição",
+                                        "lengthMenu": "Exibindo _MENU_ registro(s)",
+                                        "loadingRecords": "Por favor, aguarde - carregando...",
+                                        "processing": "Processando...",
+                                        "search": "Localizar:"
+                                }
+                            });
+
+                            $('.dataTables_filter input').attr("placeholder", "Localizar...");
+                            $('.dataTables_filter input').focus();
+                        }
+                        
+                        function pesquisarServidores() {
+                            var id = $('#id_sessao').val();
+                            var us = $('#lg_sessao').val();
+                            
+                            var hash  = id.split("_");
+                            var email = us.split("_");
+                            var params = {
+                                'ac' : 'consultar_servidor-pesquisa',
+                                'id' : hash[1],
+                                'us' : email[1],
+                                'to' : $('#cliente').val(),
+                                'ug' : $('#id_unid_gestora').val()
+                            };
+
+                            if (parseInt(params.to) === 0) {
+                                mensagem_alerta("Usuário <strong>não está associado ao cadastro de um cliente</strong>!<br>Favor, entre em contato com o suporte da plataforma.");
+                            } else {
+                                // Iniciamos o Ajax 
+                                $.ajax({
+                                    // Definimos a url
+                                    url : './servidor_dao.php',
+                                    // Definimos o tipo de requisição
+                                    type: 'post',
+                                    // Definimos o tipo de retorno
+                                    dataType : 'html',
+                                    // Dolocamos os valores a serem enviados
+                                    data: params,
+                                    // Antes de enviar ele alerta para esperar
+                                    beforeSend : function(){
+                                        $('#nm_servidor').val("Carregando tabela de servidores... Aguarde!");
+                                        $('#tabela-servidores').html("<div class='remove-border glyph-icon demo-icon tooltip-button icon-spin-5 icon-spin' title='' data-original-title='icon-spin-5'></div><p>Carregando lista de professores.... aguarde!</p>");
+                                    },
+                                    // Colocamos o retorno na tela
+                                    success : function(data){
+                                        $('#tabela-servidores').html(data);
+                                        $('#nm_servidor').val("");
+                                        configurarTabelaServidorLocal();
+                                        $('#box_pesquisa').trigger("click");
+                                    },
+                                    error: function (request, status, error) {
+                                        $('#tabela-servidores').html("Erro na execução da pesquisa!<br> (" + status + ")" + request.responseText + "<br><strong>Error : </strong>" + error.toString());
+                                    }
+                                });  
+                                // Finalizamos o Ajax
+                            }
+                        }
+                        
+                        function selecionar_servidor(id) {
+                            var referencia = id.replace("selecionar_servidor_", "");
+
+                            $('#id_servidor').val( $('#id_servidor_' + referencia).val() );
+                            $('#nm_servidor').val( $('#nome_' + referencia).val() + " (CPF : " + $('#cpf_' + referencia).val() + ")");
+                            $('#dt_admissao').val( $('#dt_admissao_' + referencia).val() );
+                            $('#cargo_funcao').val( $('#cargo_funcao_' + referencia).val() );
+                            
+                            $('#btn_pesquisa_fechar').trigger("click");
+                            $('#qtde_hora_aula_normal').focus();
                         }
                         
                         function adicionar_servidor() {

@@ -399,7 +399,7 @@ function excluirLancamentoEvento(id) {
                     'hs' : $('#hs').val(),
                     'to' : $('#id_cliente_' + controle).val(),
                     'ug' : $('#id_unid_gestora_' + controle).val(),
-                    'lo' : $('#id_unid_lotacao_' + controle).val(),
+                    'uo' : $('#id_unid_orcament_' + controle).val(),
                     'ev' : $('#id_evento_' + controle).val(),
                     'cp' : $('#ano_mes_' + controle).val(),
                     'id' : controle
@@ -672,7 +672,7 @@ function lancarEventos(id, us) {
         $('#data').val( $('#hoje').val() );
         $('#ano_mes').val( $('#competencia_atual').val());
         $('#id_unid_gestora').val("0");
-        $('#id_unid_lotacao').val("0");
+        $('#id_unid_orcament').val("0");
         $('#id_evento').val("0");
         $('#situacao').val("0");
 
@@ -685,7 +685,7 @@ function lancarEventos(id, us) {
 
         $('#ano_mes').trigger('chosen:updated');
         $('#id_unid_gestora').trigger('chosen:updated');
-        $('#id_unid_lotacao').trigger('chosen:updated');
+        $('#id_unid_orcament').trigger('chosen:updated');
         $('#id_evento').trigger('chosen:updated');
         $('#situacao').trigger('chosen:updated');
 
@@ -717,8 +717,8 @@ function salvarControleEventoMensal(id, us) {
             'id_cliente' : $('#id_cliente').val(),
             'controle' : parseFloat("0" + $('#controle').val()),
             'ano_mes'  : $('#ano_mes').val(),
-            'id_unid_gestora' : $('#id_unid_gestora').val(),
-            'id_unid_lotacao' : $('#id_unid_lotacao').val(),
+            'id_unid_gestora'  : $('#id_unid_gestora').val(),
+            'id_unid_orcament' : $('#id_unid_orcament').val(),
             'id_evento'       : $('#id_evento').val(),
             'data'     : $('#data').val(),
             'hora'     : $('#hora').val(),
@@ -731,7 +731,7 @@ function salvarControleEventoMensal(id, us) {
         if (parseInt("0" + params.id_cliente)       === 0) msg += mrc + "Cliente<br>";
         if (parseInt("0" + params.ano_mes)          === 0) msg += mrc + "Competência<br>";
         if (parseInt("0" + params.id_unid_gestora)  === 0) msg += mrc + "Unidade Gestora<br>";
-        if (parseInt("0" + params.id_unid_lotacao)  === 0) msg += mrc + "Unidade de Lotação<br>";
+        if (parseInt("0" + params.id_unid_orcament) === 0) msg += mrc + "Unidade Orçamentária<br>";
         if (parseInt("0" + params.id_evento)        === 0) msg += mrc + "Evento de Lançamento<br>";
         
         if (msg.trim() !== "") {
@@ -772,7 +772,7 @@ function salvarControleEventoMensal(id, us) {
                                 var colunas = i_linha.getElementsByTagName('td');
 
                                 colunas[1].firstChild.nodeValue = $('#id_unid_gestora option:selected').text();
-                                colunas[2].firstChild.nodeValue = $('#id_unid_lotacao option:selected').text();
+                                colunas[2].firstChild.nodeValue = $('#id_unid_orcament option:selected').text();
                                 colunas[3].firstChild.nodeValue = data.form[0].rubrica;
                                 colunas[4].firstChild.nodeValue = $('#id_evento option:selected').text();
                                 colunas[5].firstChild.nodeValue = data.form[0].tipo;
@@ -782,7 +782,7 @@ function salvarControleEventoMensal(id, us) {
                                 $('#controle_' + referencia).val( params.controle );
                                 $('#id_cliente_' + referencia).val( params.id_cliente );
                                 $('#id_unid_gestora_' + referencia).val( params.id_unid_gestora );
-                                $('#id_unid_lotacao_' + referencia).val( params.id_unid_lotacao );
+                                $('#id_unid_orcament_' + referencia).val( params.id_unid_orcament );
                                 $('#id_evento_' + referencia).val( params.id_evento );
                                 $('#data_' + referencia).val( params.data );
                                 $('#situacao_' + referencia).val( params.situacao );
