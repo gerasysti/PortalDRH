@@ -417,99 +417,6 @@
                             </div>
                         </div>
 
-                        <!--
-                        <div class="panel">
-                            <div class="panel-body">
-                                <h2 class="title-hero">
-                                    <strong>Lancamento de Eventos Mensais</strong>
-                                    <input type="hidden" id="op" value="novo_lancamento">
-                                    <input type="hidden" id="hs" value="<?php // echo $_SESSION['acesso']['id'];?>">
-                                    <input type="hidden" id="hoje" value="<?php // echo date('d/m/Y');?>">
-                                    <input type="hidden" id="cliente" value="<?php // echo $_SESSION['acesso']['id_cliente'];?>">
-                                    <input type="hidden" id="competencia_atual" value="<?php // echo $competencia_atual;?>">
-                                </h2>
-                                
-                                <div class="box-wrapper">
-                                    
-                                    <div class="form-horizontal bordered-row">
-                                        <div class="row">
-                                            <div class="col-md-10">
-                                                <div class="form-group" style="margin: 2px;">
-                                                    <label for="controle" class="col-sm-3 control-label padding-label">Controle</label>
-                                                    <div class="col-sm-1 padding-field">
-                                                        <input type="text" class="form-control text lg-text" maxlength="10" id="controle" readonly>
-                                                    </div>
-                                                    <label for="data_lancamento" class="col-sm-1 control-label padding-label">Data</label>
-                                                    <div class="col-sm-1 padding-field">
-                                                        <input type="text" class="form-control text lg-text" maxlength="11" id="data_lancamento" readonly>
-                                                    </div>
-                                                    <label for="ano_mes" class="col-sm-1 control-label padding-label">Competência</label>
-                                                    <div class="col-sm-2 padding-field">
-                                                        <select class="form-control chosen-select" id="ano_mes">
-                                                            <option value="0" class="optionChild">Selecione a Competência</option>
-                                                            <?php echo $lista_anomes;?>
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                                <div class="form-group" style="margin: 2px;">
-                                                    <label for="id_unid_gestora" class="col-sm-3 control-label padding-label">Unidade Gestora</label>
-                                                    <div class="col-sm-9 padding-field">
-                                                        <select class="form-control chosen-select" id="id_unid_gestora" style="width: 100%;">
-                                                            <option value="0" class="optionChild">Selecione a Unidade Gestora</option>
-                                                            <?php echo $lista_unidades_lancar;?>
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                                <div class="form-group" style="margin: 2px;">
-                                                    <label for="id_unid_lotacao" class="col-sm-3 control-label padding-label">Unidade de Lotação</label>
-                                                    <div class="col-sm-9 padding-field">
-                                                        <select class="form-control chosen-select" id="id_unid_lotacao" style="width: 100%;">
-                                                            <option value="0" class="optionChild">Selecione a Unidade de Lotação</option>
-                                                            <?php echo $lista_lotacoes_lancar;?>
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                                <div class="form-group" style="margin: 2px;">
-                                                    <label for="id_evento" class="col-sm-3 control-label padding-label">Evento de Lançamento</label>
-                                                    <div class="col-sm-9 padding-field">
-                                                        <select class="form-control chosen-select" id="id_evento" style="width: 100%;">
-                                                            <option value="0" class="optionChild">Selecione o Evento</option>
-                                                            <?php echo $lista_eventos;?>
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                                <div class="form-group" style="margin: 2px;">
-                                                    <div class="col-sm-3 padding-field">&nbsp;</div>
-                                                    <div class="col-sm-5 padding-field">
-                                                        <div class="checkbox checkbox-primary">
-                                                            <label>
-                                                                <input class="custom-checkbox" type="checkbox" name="importado" id="importado" value="1" disabled>
-                                                                Lançamentos importados pelo <strong>Remuneratu$</strong>
-                                                            </label>
-                                                        </div>
-                                                    </div>
-                                                    <label for="situacao" class="col-sm-1 control-label padding-label">Situação</label>
-                                                    <div class="col-sm-3 padding-field">
-                                                        <select class="form-control chosen-select" id="situacao" style="width: 100%;" disabled>
-                                                            <option value="0" class="optionChild">Aberto</option>
-                                                            <option value="1" class="optionChild">Finalizado</option>
-                                                            <option value="2" class="optionChild">Cancelado</option>
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                            </div> 
-                                        </div>
-
-                                        <div class="bg-default">
-                                            <button class="btn btn-primary" onclick="fechar_cadastro()" id="btn_form_fechar">Fechar</button>
-                                            <button class="btn btn-primary pull-right" onclick="salvarUsuarioXXX()" id="btn_form_salvar" disabled>Salvar</button>
-                                        </div>
-                                    </div>
-                                    
-                                </div>
-                            </div>
-                        </div>
-                        -->
                         <button class="btn btn-default" data-toggle="modal" data-target=".box_servidor" id="box_servidor"></button>
                         <button class="btn btn-default" data-toggle="modal" data-target=".box_confirme" id="box_confirme"></button>
                         <button class="btn btn-default" data-toggle="modal" data-target=".box_informe"  id="box_informe"></button>
@@ -791,7 +698,7 @@
                                 if (tipo_lancamento === 0) {
                                     if ((ids_servidores !== '#') && (qts_servidores !== '#')) {
                                         salvarServidoresLancamento(ids_servidores, qts_servidores, null, function(){
-                                            mensagem_informe("Valores gravados com sucesso.");
+                                            mensagem_informe("Quantidades gravadas com sucesso.");
                                         });
                                     } else {
                                         mensagem_alerta("Favor informe as quantidades do evento para cada servidor");
@@ -808,7 +715,21 @@
                                             mensagem_informe("Valores gravados com sucesso.");
                                         });
                                     } else {
-                                        mensagem_alerta("Favor informe as quantidades do evento para cada servidor");
+                                        mensagem_alerta("Favor informe os valores do evento para cada servidor");
+                                    }
+                                } else
+                                // Salvar quantidades e valores
+                                if (tipo_lancamento === 2) {
+                                    if ((ids_servidores !== '#') && (qts_servidores !== '#')) {
+                                        salvarServidoresLancamento(ids_servidores, qts_servidores, vls_servidores, function(){
+                                            var id_sessao = $('#id_sessao').val();
+                                            var lg_sessao = $('#lg_sessao').val();
+                                            carregarServidoresLancamento(id_sessao, lg_sessao);
+
+                                            mensagem_informe("Quantidades e Valores gravados com sucesso.");
+                                        });
+                                    } else {
+                                        mensagem_alerta("Favor informe as quantidades e valores do evento para cada servidor");
                                     }
                                 }
                             } else {
@@ -983,8 +904,10 @@
                                     $('#valor').val("");
                                     $('#obs').val("");
                                     
-                                    $('#quant').prop('readonly', (tipo_lancamento !== 0));
-                                    $('#valor').prop('readonly', (tipo_lancamento !== 1));
+                                    //$('#quant').prop('readonly', ((tipo_lancamento !== 0) && (tipo_lancamento !== 2)));
+                                    //$('#valor').prop('readonly', ((tipo_lancamento !== 1) && (tipo_lancamento !== 2)));
+                                    $('#quant').prop('readonly', (tipo_lancamento === 1));
+                                    $('#valor').prop('readonly', (tipo_lancamento === 0));
                                     
                                     $('#box_servidor').trigger("click");
                                 }
@@ -993,7 +916,7 @@
                                 mensagem_alerta("Este lançamento está <strong>" + texto + "</strong> e não poderá ser alterado.<br>Entre em contato com a direção.");
                             }
                         }
-
+                        
                         function confirmar_servidor() {
                             var situacao = parseInt($('#situacao').val());
                             if (situacao === 0) {
@@ -1007,8 +930,8 @@
                                     var mrc = "<i class='glyph-icon icon-edit'></i>&nbsp;";
 
                                     if ($('#nm_servidor').val()  === "") msg += mrc + "Servidor<br>";
-                                    if ((tipo_lancamento === 0) && ($('#quant').val() === "")) msg += mrc + "Quantidade<br>";
-                                    if ((tipo_lancamento === 1) && ($('#valor').val() === "")) msg += mrc + "Valor (R$)<br>";
+                                    if ((tipo_lancamento !== 1) && ($('#quant').val() === "")) msg += mrc + "Quantidade<br>";
+                                    if ((tipo_lancamento !== 0) && ($('#valor').val() === "")) msg += mrc + "Valor (R$)<br>";
 
                                     if (msg.trim() !== "") {
                                         mensagem_alerta( "<p><strong>Os campos listados têm seu preenchimento obrigatório:</strong> <br><br>" + msg + "</p>" );
@@ -1027,6 +950,10 @@
                                                     quant = parseFloat("0" + $('#quant').val());
                                                 } else
                                                 if (tipo_lancamento === 1) { // Lançamento pela Valor (R$)
+                                                    valor = parseFloat("0" + $('#valor').val());
+                                                } else
+                                                if (tipo_lancamento === 2) { // Lançamento pela Quantidade e pelo Valor (R$)
+                                                    quant = parseFloat("0" + $('#quant').val());
                                                     valor = parseFloat("0" + $('#valor').val());
                                                 }
 
@@ -1050,6 +977,8 @@
                                                         $('#sequencia').val("0");
                                                         $('#id_servidor').val("");
                                                         $('#nm_servidor').val("");
+                                                        $('#dt_admissao').val("");
+                                                        $('#cargo_funcao').val("");
                                                         $('#quant').val("");
                                                         $('#valor').val("");
                                                         $('#obs').val("");
@@ -1067,36 +996,36 @@
                             }
                         }
                         
-                        function salvar_lancamento_servidor(id, tipo_lanc) {
+                        function salvar_lancamento_servidor(id, tipo_lancamento) {
                             var referencia  = id;
                             var quant = null;
                             var valor = null;
                             
-                            if (tipo_lanc === 0) { // Lançamento pela Quantidade
+                            if (tipo_lancamento === 0) { // Lançamento pela Quantidade
                                 referencia = referencia.replace("quant_", "");
                                 quant      = parseFloat("0" + $('#' + id).val());
                             } else
-                            if (tipo_lanc === 1) { // Lançamento pela Valor (R$)
+                            if (tipo_lancamento === 1) { // Lançamento pelo Valor (R$)
                                 referencia = referencia.replace("valor_", "");
+                                valor      = parseFloat("0" + $('#' + id).val());
+                            } else
+                            if (tipo_lancamento === 2) { // Lançamento pela Quantidade e pelo Valor (R$)
+                                referencia = referencia.replace("quant_", "");
+                                referencia = referencia.replace("valor_", "");
+                                quant      = parseFloat("0" + $('#' + id).val());
                                 valor      = parseFloat("0" + $('#' + id).val());
                             }
                         
-                            //var controle   = $('#controle_' + referencia).val();
                             var sequencia  = $('#sequencia_' + referencia).val();
-                            //var id_cliente = $('#id_cliente_' + referencia).val();
-                            //var id_unid_gestora = $('#id_unid_gestora_' + referencia).val();
-                            //var id_unid_lotacao = $('#id_unid_lotacao_' + referencia).val();
-                            //var id_evento   = $('#id_evento_' + referencia).val();
-                            //var ano_mes     = $('#ano_mes_' + referencia).val();
                             var id_servidor = $('#id_servidor_' + referencia).val();
                             
-                            //salvarServidorLancamento(controle, sequencia, id_cliente, id_unid_gestora, id_unid_lotacao, id_evento, ano_mes, id_servidor, quant, valor, function(retorno){
                             salvarServidorLancamento(sequencia, id_servidor, quant, valor, "", function(retorno){
                                 if (retorno !== "OK") {
                                     $('#' + id).focus();
                                 }
                             });
                         }
+                        
                     </script>
                 </div>
         

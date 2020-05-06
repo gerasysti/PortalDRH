@@ -88,9 +88,9 @@ function configurarTabelaServidoresLancados(){
         "processing": true,
         "columns": [
             { "width": "10px" },   // 0. #
-            null,                  // 1. ID
+            { "width": "10px" },   // 1. ID
             null,                  // 2. Nome
-            null,                  // 3. Cargo*Função
+            null,                  // 3. Cargo/Função
             { "width": "140px" },  // 4. Quantidade
             { "width": "140px" },  // 5. Valor
             { "width": "10px" }    // 6. Controles
@@ -291,7 +291,7 @@ function salvarServidorLancamento(sequencia, id_servidor, quant, valor, obs, cal
         'controle'   : parseFloat("0" + $('#controle').val()),
         'id_cliente' : $('#id_cliente').val(),
         'id_unid_gestora' : $('#id_unid_gestora').val(),
-        'id_unid_lotacao' : $('#id_unid_lotacao').val(),
+        'id_unid_orcament': $('#id_unid_orcament').val(),
         'id_evento'       : $('#id_evento').val(),
         'ano_mes'    : $('#ano_mes').val(),
         'sequencia'  : sequencia,
@@ -345,7 +345,7 @@ function editarLancamentoEvento(id) {
     $('#id_cliente').val( $('#id_cliente_' + controle).val() );
     $('#ano_mes').val( $('#ano_mes_' + controle).val() );
     $('#id_unid_gestora').val( $('#id_unid_gestora_' + controle).val() );
-    $('#id_unid_lotacao').val( $('#id_unid_lotacao_' + controle).val() );
+    $('#id_unid_orcament').val( $('#id_unid_orcament_' + controle).val() );
     $('#id_evento').val( $('#id_evento_' + controle).val() );
     $('#data').val( $('#data_' + controle).val() );
     $('#situacao').val( $('#situacao_' + controle).val() );
@@ -353,12 +353,12 @@ function editarLancamentoEvento(id) {
     
     $('#ano_mes').prop('disabled', true); 
     $('#id_unid_gestora').prop('disabled', true); 
-    $('#id_unid_lotacao').prop('disabled', true); 
+    $('#id_unid_orcament').prop('disabled', true); 
     $('#id_evento').prop('disabled', true); 
     
     $('#ano_mes').trigger('chosen:updated');
     $('#id_unid_gestora').trigger('chosen:updated');
-    $('#id_unid_lotacao').trigger('chosen:updated');
+    $('#id_unid_orcament').trigger('chosen:updated');
     $('#id_evento').trigger('chosen:updated');
     $('#situacao').trigger('chosen:updated');
     
@@ -452,7 +452,7 @@ function verificar_lancamento_servidor(servidor, callback) {
         'hs' : $('#hs').val(),
         'to' : $('#id_cliente').val(),
         'ug' : $('#id_unid_gestora').val(),
-        'lo' : $('#id_unid_lotacao').val(),
+        'uo' : $('#id_unid_orcament').val(),
         'ev' : $('#id_evento').val(),
         'cp' : $('#ano_mes').val(),
         'id' : $('#controle').val(),
@@ -511,7 +511,7 @@ function excluirLancamentoServidor(id) {
                     'hs' : $('#hs').val(),
                     'to' : $('#id_cliente').val(),
                     'ug' : $('#id_unid_gestora').val(),
-                    'lo' : $('#id_unid_lotacao').val(),
+                    'uo' : $('#id_unid_orcament').val(),
                     'ev' : $('#id_evento').val(),
                     'cp' : $('#ano_mes').val(),
                     'id' : $('#controle').val(),
@@ -578,7 +578,7 @@ function situacao_lancamento_evento(situacao) {
                     'hs' : $('#hs').val(),
                     'to' : $('#id_cliente').val(),
                     'ug' : $('#id_unid_gestora').val(),
-                    'lo' : $('#id_unid_lotacao').val(),
+                    'uo' : $('#id_unid_orcament').val(),
                     'ev' : $('#id_evento').val(),
                     'cp' : $('#ano_mes').val(),
                     'id' : $('#controle').val(),

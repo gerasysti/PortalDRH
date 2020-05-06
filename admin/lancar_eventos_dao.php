@@ -187,6 +187,57 @@
         return $retorno;
     }
     
+    function getTipoLancamento($id_cliente, $id_evento) {
+        $retorno = 0;
+
+        $cnf = Configuracao::getInstancia();
+        $pdo = $cnf->db('', '');
+        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+        $sql = 
+              "Select "
+            . "    e.tipo_lancamento "
+            . "from REMUN_EVENTO e "
+            . "where (e.id_cliente = {$id_cliente})  "
+            . "  and (e.id_evento  = {$id_evento}) ";
+
+        $res = $pdo->query($sql);
+        if (($obj = $res->fetch(PDO::FETCH_OBJ)) !== false) {
+            $retorno = (int)$obj->tipo_lancamento;
+        }
+
+        // Fechar conexão PDO
+        unset($res);
+        unset($pdo);
+        
+        return $retorno;
+    }
+    
+    function getSituacaoLancamento($controle) {
+        $retorno = 0;
+
+        $cnf = Configuracao::getInstancia();
+        $pdo = $cnf->db('', '');
+        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+        $sql = 
+              "Select "
+            . "    a.situacao "
+            . "from REMUN_EVENTO_AVULSO a "
+            . "where (a.controle = {$controle})";
+
+        $res = $pdo->query($sql);
+        if (($obj = $res->fetch(PDO::FETCH_OBJ)) !== false) {
+            $retorno = (int)$obj->situacao;
+        }
+
+        // Fechar conexão PDO
+        unset($res);
+        unset($pdo);
+        
+        return $retorno;
+    }
+    
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (isset($_POST['ac'])) {
             switch ($_POST['ac']) {
@@ -405,7 +456,7 @@
                             $quant = 
                                   "<input type='text' class='form-control text lg-text {$qt_proximo}' maxlength='10' id='quant_{$referencia}' onchange='salvar_lancamento_servidor(this.id, 0)' "
                                 . "value='" . number_format($obj->quant, 0, ',' , '.') . "' "
-                                . "style='text-align: right; margin: 0px; border: 0; background-color:transparent; width: 100%; height: 50px; {$qt_readonly}'>";
+                                . "style='text-align: right; margin: 0px; border: 0; background-color:transparent; width: 100%; height: 50px;' {$qt_readonly}>";
                             $valor = 
                                   "<input type='text' class='form-control text lg-text {$vl_proximo}' maxlength='10' id='valor_{$referencia}' onchange='salvar_lancamento_servidor(this.id, 0)' "
                                 . "value='" . number_format($obj->valor, 2, ',' , '.') . "' "
@@ -726,8 +777,8 @@
                         $id = trim(filter_input(INPUT_POST, 'id'));
                         $controle   = floatval( preg_replace("/[^0-9]/", "", "0" . trim(filter_input(INPUT_POST, 'controle'))) );
                         $id_cliente = intval( preg_replace("/[^0-9]/", "", "0" . trim(filter_input(INPUT_POST, 'id_cliente'))) );
-                        $id_unid_gestora = intval( preg_replace("/[^0-9]/", "", "0" . trim(filter_input(INPUT_POST, 'id_unid_gestora'))) );
-                        $id_unid_lotacao = intval( preg_replace("/[^0-9]/", "", "0" . trim(filter_input(INPUT_POST, 'id_unid_lotacao'))) );
+                        $id_unid_gestora  = intval( preg_replace("/[^0-9]/", "", "0" . trim(filter_input(INPUT_POST, 'id_unid_gestora'))) );
+                        $id_unid_orcament = intval( preg_replace("/[^0-9]/", "", "0" . trim(filter_input(INPUT_POST, 'id_unid_orcament'))) );
                         $id_evento   = intval( preg_replace("/[^0-9]/", "", "0" . trim(filter_input(INPUT_POST, 'id_evento'))) );
                         $ano_mes     = strip_tags( trim(filter_input(INPUT_POST, 'ano_mes')) );
                         $sequencia   = intval( preg_replace("/[^0-9]/", "", "0" . trim(filter_input(INPUT_POST, 'sequencia'))) );
@@ -740,8 +791,9 @@
                         if (file_exists($file)) {
                             unlink($file);
                         }
-
-                        $tipo_lancamento = 0;
+                        
+                        $situacao = (int)getSituacaoLancamento($controle);
+                        $tipo_lancamento = (int)getTipoLancamento($id_cliente, $id_evento);
                         
                         $cnf = Configuracao::getInstancia();
                         $pdo = $cnf->db('', '');
@@ -750,9 +802,8 @@
                         if ($hs !== $hash) {
                             echo "Acesso Inválido";
                         } else 
-                        if ($quant !== '') {
-                            $tipo_lancamento = 0;
-                            
+                        // Lançar Quantidade    
+                        if ($tipo_lancamento === 0) { 
                             $quant = str_replace(",", ".", str_replace(".", "", $quant));
                             $quant = floatval('0' . $quant);
                             if ($obs === "") { $obs = null; }
@@ -762,7 +813,7 @@
                                 . "    :ano_mes         "
                                 . "  , :id_cliente      "
                                 . "  , :id_unid_gestora "
-                                . "  , :id_unid_lotacao "
+                                . "  , :id_unid_orcament"
                                 . "  , :id_evento       "
                                 . "  , :id_servidor     "
                                 . "  , :tipo_lanc       "
@@ -774,7 +825,7 @@
                                   ':ano_mes'          => $ano_mes
                                 , ':id_cliente'       => $id_cliente
                                 , ':id_unid_gestora'  => $id_unid_gestora
-                                , ':id_unid_lotacao'  => $id_unid_lotacao
+                                , ':id_unid_orcament' => $id_unid_orcament
                                 , ':id_evento'        => $id_evento
                                 , ':id_servidor'      => $id_servidor
                                 , ':tipo_lanc'        => $tipo_lancamento
@@ -784,9 +835,8 @@
                             ));
                             $pdo->commit();
                         } else 
-                        if ($valor !== '') {
-                            $tipo_lancamento = 1;
-                            
+                        // Lançar Valor (R$)
+                        if ($tipo_lancamento === 1) {
                             $valor = str_replace(",", ".", str_replace(".", "", $valor));
                             $valor = floatval('0' . $valor);
                             if ($obs === "") { $obs = null; }
@@ -796,7 +846,7 @@
                                 . "    :ano_mes         "
                                 . "  , :id_cliente      "
                                 . "  , :id_unid_gestora "
-                                . "  , :id_unid_lotacao "
+                                . "  , :id_unid_orcament"
                                 . "  , :id_evento       "
                                 . "  , :id_servidor     "
                                 . "  , :tipo_lanc       "
@@ -808,11 +858,48 @@
                                   ':ano_mes'          => $ano_mes
                                 , ':id_cliente'       => $id_cliente
                                 , ':id_unid_gestora'  => $id_unid_gestora
-                                , ':id_unid_lotacao'  => $id_unid_lotacao
+                                , ':id_unid_orcament' => $id_unid_orcament
                                 , ':id_evento'        => $id_evento
                                 , ':id_servidor'      => $id_servidor
                                 , ':tipo_lanc'        => $tipo_lancamento
                                 , ':quant'            => null
+                                , ':valor'            => $valor
+                                , ':obs'              => $obs
+                            ));
+                            $pdo->commit();
+                        } else 
+                        // Lançar Quantidade e Valor (R$)
+                        if ($tipo_lancamento === 2) {
+                            $quant = str_replace(",", ".", str_replace(".", "", $quant));
+                            $quant = floatval('0' . $quant);
+                            
+                            $valor = str_replace(",", ".", str_replace(".", "", $valor));
+                            $valor = floatval('0' . $valor);
+                            
+                            if ($obs === "") { $obs = null; }
+
+                            $stm = $pdo->prepare(
+                                  "Execute procedure SET_REMUN_EVENTO_SERVIDOR ( "
+                                . "    :ano_mes         "
+                                . "  , :id_cliente      "
+                                . "  , :id_unid_gestora "
+                                . "  , :id_unid_orcament"
+                                . "  , :id_evento       "
+                                . "  , :id_servidor     "
+                                . "  , :tipo_lanc       "
+                                . "  , :quant           "
+                                . "  , :valor           "
+                                . "  , :obs             "
+                                . ")");
+                            $stm->execute(array(
+                                  ':ano_mes'          => $ano_mes
+                                , ':id_cliente'       => $id_cliente
+                                , ':id_unid_gestora'  => $id_unid_gestora
+                                , ':id_unid_orcament' => $id_unid_orcament
+                                , ':id_evento'        => $id_evento
+                                , ':id_servidor'      => $id_servidor
+                                , ':tipo_lanc'        => $tipo_lancamento
+                                , ':quant'            => $quant
                                 , ':valor'            => $valor
                                 , ':obs'              => $obs
                             ));
@@ -831,13 +918,13 @@
                             . "<input type='hidden' id='sequencia_{$referencia}' value='{$sequencia}'>"
                             . "<input type='hidden' id='id_cliente_{$referencia}' value='{$id_cliente}'>"
                             . "<input type='hidden' id='id_unid_gestora_{$referencia}' value='{$id_unid_gestora}'>"
-                            . "<input type='hidden' id='id_unid_lotacao_{$referencia}' value='{$id_unid_lotacao}'>"
+                            . "<input type='hidden' id='id_unid_orcament_{$referencia}' value='{$id_unid_orcament}'>"
                             . "<input type='hidden' id='id_evento_{$referencia}' value='{$id_evento}'>"
                             . "<input type='hidden' id='ano_mes_{$referencia}' value='{$ano_mes}'>"
                             . "<input type='hidden' id='id_servidor_{$referencia}' value='{$id_servidor}'>";
 
-                        $qt_readonly  = ""; // ((int)$obj->situacao !== 0?"readonly":((int)$tipo_lancamento === 1?"readonly":""));
-                        $vl_readonly  = ""; // ((int)$obj->situacao !== 0?"readonly":((int)$tipo_lancamento === 0?"readonly":""));
+                        $qt_readonly  = ($situacao !== 0?"readonly":($tipo_lancamento === 1?"readonly":""));
+                        $vl_readonly  = ($situacao !== 0?"readonly":($tipo_lancamento === 0?"readonly":""));
 
                         $qt_proximo = "proximo_campo"; // ((int)$obj->situacao !== 0?"":((int)$tipo_lancamento === 0?"proximo_campo":""));
                         $vl_proximo = "proximo_campo"; // ((int)$obj->situacao !== 0?"":((int)$tipo_lancamento === 1?"proximo_campo":""));
@@ -845,7 +932,7 @@
                         $quant_out = 
                               "<input type='text' class='form-control text lg-text {$qt_proximo}' maxlength='10' id='quant_{$referencia}' onchange='salvar_lancamento_servidor(this.id, 0)' "
                             . "value='" . (($quant !== null) && ($quant !== '')?number_format($quant, 0, ',' , '.'):"0") . "' "
-                            . "style='text-align: right; margin: 0px; border: 0; background-color:transparent; width: 100%; height: 50px; {$qt_readonly}'>";
+                            . "style='text-align: right; margin: 0px; border: 0; background-color:transparent; width: 100%; height: 50px;' {$qt_readonly}>";
                         $valor_out = 
                               "<input type='text' class='form-control text lg-text {$vl_proximo}' maxlength='10' id='valor_{$referencia}' onchange='salvar_lancamento_servidor(this.id, 0)' "
                             . "value='" . (($valor !== null) && ($valor !== '')?number_format($valor, 2, ',' , '.'):"0,00") . "' "
@@ -882,7 +969,7 @@
                     try {
                         $to = strip_tags( preg_replace("/[^0-9]/", "", trim(filter_input(INPUT_POST, 'to'))) ); // Cliente
                         $ug = strip_tags( preg_replace("/[^0-9]/", "", trim(filter_input(INPUT_POST, 'ug'))) );
-                        $lo = strip_tags( preg_replace("/[^0-9]/", "", trim(filter_input(INPUT_POST, 'lo'))) );
+                        $uo = strip_tags( preg_replace("/[^0-9]/", "", trim(filter_input(INPUT_POST, 'uo'))) );
                         $ev = strip_tags( preg_replace("/[^0-9]/", "", trim(filter_input(INPUT_POST, 'ev'))) ); // Competência - ano/mês
                         $cp = strip_tags( preg_replace("/[^0-9]/", "", trim(filter_input(INPUT_POST, 'cp'))) );
                         $id = strip_tags( preg_replace("/[^0-9]/", "", trim(filter_input(INPUT_POST, 'id'))) ); // Controle
@@ -897,12 +984,12 @@
                               "Select "
                             . "  count(lanc.sequencia) as lancamentos "
                             . "from REMUN_EVENTO_AVULSO_ITEM lanc "
-                            . "where (id_cliente      = {$to})    "
-                            . "  and (id_unid_gestora = {$ug})    "
-                            . "  and (id_unid_lotacao = {$lo})    "
-                            . "  and (id_evento       = {$ev})    "
-                            . "  and (ano_mes         = '{$cp}')  "
-                            . "  and (id_servidor     = {$sv})    "; 
+                            . "where (id_cliente       = {$to})    "
+                            . "  and (id_unid_gestora  = {$ug})    "
+                            . "  and (id_unid_orcament = {$uo})    "
+                            . "  and (id_evento        = {$ev})    "
+                            . "  and (ano_mes          = '{$cp}')  "
+                            . "  and (id_servidor      = {$sv})    "; 
                             
                         $qry = $pdo->query($sql);
                         if (($obj = $qry->fetch(PDO::FETCH_OBJ)) !== false) {
@@ -926,7 +1013,7 @@
                     try {
                         $to = strip_tags( preg_replace("/[^0-9]/", "", trim(filter_input(INPUT_POST, 'to'))) ); // Cliente
                         $ug = strip_tags( preg_replace("/[^0-9]/", "", trim(filter_input(INPUT_POST, 'ug'))) );
-                        $lo = strip_tags( preg_replace("/[^0-9]/", "", trim(filter_input(INPUT_POST, 'lo'))) );
+                        $uo = strip_tags( preg_replace("/[^0-9]/", "", trim(filter_input(INPUT_POST, 'uo'))) );
                         $ev = strip_tags( preg_replace("/[^0-9]/", "", trim(filter_input(INPUT_POST, 'ev'))) ); // Competência - ano/mês
                         $cp = strip_tags( preg_replace("/[^0-9]/", "", trim(filter_input(INPUT_POST, 'cp'))) );
                         $id = strip_tags( preg_replace("/[^0-9]/", "", trim(filter_input(INPUT_POST, 'id'))) ); // Controle
@@ -948,17 +1035,17 @@
                                 $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
                                 $stm = $pdo->prepare(
-                                      "Delete from REMUN_EVENTO_AVULSO_ITEM       "
-                                    . "where (id_cliente      = :id_cliente)      "
-                                    . "  and (id_unid_gestora = :id_unid_gestora) "
-                                    . "  and (id_unid_lotacao = :id_unid_lotacao) "
-                                    . "  and (id_evento       = :id_evento)       "
-                                    . "  and (ano_mes         = :ano_mes)         "
-                                    . "  and (id_servidor     = :id_servidor)     ");
+                                      "Delete from REMUN_EVENTO_AVULSO_ITEM         "
+                                    . "where (id_cliente       = :id_cliente)       "
+                                    . "  and (id_unid_gestora  = :id_unid_gestora)  "
+                                    . "  and (id_unid_orcament = :id_unid_orcament) "
+                                    . "  and (id_evento        = :id_evento)        "
+                                    . "  and (ano_mes          = :ano_mes)          "
+                                    . "  and (id_servidor      = :id_servidor)      ");
                                 $stm->execute(array(
                                       ':id_cliente'       => $to
                                     , ':id_unid_gestora'  => $ug
-                                    , ':id_unid_lotacao'  => $lo
+                                    , ':id_unid_orcament' => $uo
                                     , ':id_evento'        => $ev
                                     , ':ano_mes'          => $cp
                                     , ':id_servidor'      => $sv
@@ -1035,7 +1122,7 @@
                     try {
                         $to = strip_tags( preg_replace("/[^0-9]/", "", trim(filter_input(INPUT_POST, 'to'))) );
                         $ug = strip_tags( preg_replace("/[^0-9]/", "", trim(filter_input(INPUT_POST, 'ug'))) );
-                        $lo = strip_tags( preg_replace("/[^0-9]/", "", trim(filter_input(INPUT_POST, 'lo'))) );
+                        $uo = strip_tags( preg_replace("/[^0-9]/", "", trim(filter_input(INPUT_POST, 'uo'))) );
                         $ev = strip_tags( preg_replace("/[^0-9]/", "", trim(filter_input(INPUT_POST, 'ev'))) );
                         $cp = strip_tags( preg_replace("/[^0-9]/", "", trim(filter_input(INPUT_POST, 'cp'))) );
                         $id = strip_tags( preg_replace("/[^0-9]/", "", trim(filter_input(INPUT_POST, 'id'))) );
@@ -1059,15 +1146,15 @@
                                 $stm = $pdo->prepare(
                                       "Update REMUN_EVENTO_AVULSO Set "
                                     . "  situacao = {$st} "
-                                    . "where (id_cliente      = :id_cliente)"
-                                    . "  and (id_unid_gestora = :id_unid_gestora)"
-                                    . "  and (id_unid_lotacao = :id_unid_lotacao)"
-                                    . "  and (id_evento       = :id_evento)"
-                                    . "  and (ano_mes         = :ano_mes) ");
+                                    . "where (id_cliente       = :id_cliente)"
+                                    . "  and (id_unid_gestora  = :id_unid_gestora) "
+                                    . "  and (id_unid_orcament = :id_unid_orcament)"
+                                    . "  and (id_evento        = :id_evento)"
+                                    . "  and (ano_mes          = :ano_mes) ");
                                 $stm->execute(array(
                                       ':id_cliente'       => $to
                                     , ':id_unid_gestora'  => $ug
-                                    , ':id_unid_lotacao'  => $lo
+                                    , ':id_unid_orcament' => $uo
                                     , ':id_evento'        => $ev
                                     , ':ano_mes'          => $cp
                                 ));
