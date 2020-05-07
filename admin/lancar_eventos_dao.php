@@ -632,11 +632,13 @@
                                     $pdo->commit();
                                 } 
 
+                                $tipo_lancamento = getTipoLancamento($id_cliente, $id_evento);
                                 $obj = getRegistro($id_cliente, $ano_mes, $controle);
                                 
                                 $registros = array('form' => array());
                                 $registros['form'][0]['referencia'] = $controle;
                                 $registros['form'][0]['controle']   = str_pad($controle, 5, "0", STR_PAD_LEFT);
+                                $registros['form'][0]['tipo_lancamento'] = $tipo_lancamento;
                                 $registros['form'][0]['ano_mes']    = $ano_mes;
                                 $registros['form'][0]['data']       = $data;
                                 $registros['form'][0]['hora']       = $hora;
@@ -1130,6 +1132,9 @@
                         $hs = trim(filter_input(INPUT_POST, 'hs'));
                         
                         $obj = getRegistro($to, $cp, $id);
+                        if ($ev === "") {
+                            echo "Evento de lançamento não identificado!";
+                        } else
                         if ((int)$obj->importado === 1) {
                             echo "Este lançamento já foi <strong>importado</strong> para o sistema de folha Remuneratus$ na central e não poderá ser excluído.<br>Entre em contato com a direção.";
                         } else 
@@ -1144,13 +1149,13 @@
                                 $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
                                 $stm = $pdo->prepare(
-                                      "Update REMUN_EVENTO_AVULSO Set "
-                                    . "  situacao = {$st} "
-                                    . "where (id_cliente       = :id_cliente)"
-                                    . "  and (id_unid_gestora  = :id_unid_gestora) "
-                                    . "  and (id_unid_orcament = :id_unid_orcament)"
-                                    . "  and (id_evento        = :id_evento)"
-                                    . "  and (ano_mes          = :ano_mes) ");
+                                      "Update REMUN_EVENTO_AVULSO a Set "
+                                    . "  a.situacao = {$st} "
+                                    . "where (a.id_cliente       = :id_cliente)"
+                                    . "  and (a.id_unid_gestora  = :id_unid_gestora) "
+                                    . "  and (a.id_unid_orcament = :id_unid_orcament)"
+                                    . "  and (a.id_evento        = :id_evento)"
+                                    . "  and (a.ano_mes          = :ano_mes) ");
                                 $stm->execute(array(
                                       ':id_cliente'       => $to
                                     , ':id_unid_gestora'  => $ug
@@ -1158,7 +1163,6 @@
                                     , ':id_evento'        => $ev
                                     , ':ano_mes'          => $cp
                                 ));
-
                                 $pdo->commit();
                                 
                                 // Fechar conexão PDO

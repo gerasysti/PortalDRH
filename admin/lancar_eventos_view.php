@@ -334,6 +334,7 @@
                                                 <label for="controle" class="col-sm-2 control-label padding-label">Controle</label>
                                                 <div class="col-sm-1 padding-field">
                                                     <input type="hidden" id="id_cliente" value="0">
+                                                    <input type="hidden" id="tipo_lancamento" value="0">
                                                     <input type="text" class="form-control text lg-text" maxlength="10" id="controle" readonly>
                                                 </div>
                                                 <label for="data" class="col-sm-1 control-label padding-label">Data</label>
@@ -459,7 +460,7 @@
                             <div class="modal-content">
                                 <div class="modal-header bg-primary">
                                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                                    <h4 class="modal-title"> Inserir Servidor</h4>
+                                    <h4 class="modal-title" id="modal-title_inserir"> Inserir Servidor</h4>
                                 </div>
                                 <div class="modal-body">
                                     
@@ -673,7 +674,7 @@
                             if (situacao === 0) {
                                 var controle = parseFloat("0" + $('#controle').val());
                                 var qtde_servidores = parseInt($('#qtde_servidores').val());
-                                var tipo_lancamento = parseInt($('#tipo_lancamento_' + parseFloat("0" + $('#controle').val()) ).val());
+                                var tipo_lancamento = parseInt($('#tipo_lancamento').val()); //parseInt($('#tipo_lancamento_' + parseFloat("0" + $('#controle').val()) ).val());
 
                                 var ids_servidores  = "#";
                                 var qts_servidores  = "#";
@@ -767,7 +768,7 @@
                                             $('#id_servidor').val(data.form[0].id_servidor);
                                             $('#nm_servidor').val(data.form[0].nome + " (CPF : " + data.form[0].cpf_formatado + ")");
                                             $('#dt_admissao').val(data.form[0].dt_admissao);
-                                            $('#cargo_funcao').val(data.form[0].cargo_funcao);
+                                            $('#cargo_funcao').val(data.form[0].cargo_funcao + " - " + data.form[0].subunidade_orcamentaria);
                                             $('#quant').focus();
                                         }
                                     });
@@ -879,7 +880,7 @@
                             $('#id_servidor').val( $('#id_servidor_' + referencia).val() );
                             $('#nm_servidor').val( $('#nome_' + referencia).val() + " (CPF : " + $('#cpf_' + referencia).val() + ")");
                             $('#dt_admissao').val( $('#dt_admissao_' + referencia).val() );
-                            $('#cargo_funcao').val( $('#cargo_funcao_' + referencia).val() );
+                            $('#cargo_funcao').val( $('#cargo_funcao_' + referencia).val() + " - " + $('#subundade_orcamentaria_' + referencia).val() );
                             
                             $('#btn_pesquisa_fechar').trigger("click");
                             $('#qtde_hora_aula_normal').focus();
@@ -893,8 +894,9 @@
                                     mensagem_alerta("Salve, primeiramente, os dados de controle do Evento Mensal.");
                                 } else {
                                     //var qtde_servidores = parseInt($('#qtde_servidores').val());
-                                    var tipo_lancamento = parseInt($('#tipo_lancamento_' + parseFloat("0" + $('#controle').val()) ).val());
+                                    var tipo_lancamento = parseInt($('#tipo_lancamento').val()); //parseInt($('#tipo_lancamento_' + parseFloat("0" + $('#controle').val()) ).val());
 
+                                    $('#modal-title_inserir').html(" Inserir Servidor - " + $('#id_evento option:selected').text());
                                     $('#sequencia').val("0");
                                     $('#id_servidor').val("");
                                     $('#nm_servidor').val("");
@@ -925,7 +927,7 @@
                                     mensagem_alerta("Salve, primeiramente, os dados de controle do Evento Mensal.");
                                 } else {
                                     var qtde_servidores = parseInt($('#qtde_servidores').val());
-                                    var tipo_lancamento = parseInt($('#tipo_lancamento_' + parseFloat("0" + $('#controle').val()) ).val());
+                                    var tipo_lancamento = parseInt($('#tipo_lancamento').val()); //parseInt($('#tipo_lancamento_' + parseFloat("0" + $('#controle').val()) ).val());
                                     var msg = "";
                                     var mrc = "<i class='glyph-icon icon-edit'></i>&nbsp;";
 

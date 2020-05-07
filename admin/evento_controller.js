@@ -16,11 +16,11 @@ function configurarTabelaEvento(){
         "autoWidth": true,
         "processing": true,
         "columns": [
-            null,                  // 0. ID
+            { "width": "5px" },    // 0. ID
             null,                  // 1. Rubrica
             null,                  // 2. Descrição
             null,                  // 3. Tipo
-            null,                  // 4. Ativo
+            { "width": "5px" },    // 4. Ativo
             { "width": "10px" }    // 5. Controles
         ],
         "columnDefs": [

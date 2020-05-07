@@ -38,7 +38,7 @@
                         $tabela .= "            <th>Rubrica</th>";
                         $tabela .= "            <th>Descrição</th>";
                         $tabela .= "            <th>Tipo</th>";
-                        $tabela .= "            <th data-orderable='false' style='text-align: center;'></th>";
+                        $tabela .= "            <th data-orderable='false' style='text-align: center;'>Ativo</th>";
                         $tabela .= "            <th class='numeric' data-orderable='false' style='text-align: center;'></th>";
                         $tabela .= "        </tr>";
                         $tabela .= "    </thead>";

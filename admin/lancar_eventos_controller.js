@@ -343,6 +343,7 @@ function editarLancamentoEvento(id) {
     
     $('#controle').val( $('#controle_' + controle).val() );
     $('#id_cliente').val( $('#id_cliente_' + controle).val() );
+    $('#tipo_lancamento').val( $('#tipo_lancamento_' + controle).val() );
     $('#ano_mes').val( $('#ano_mes_' + controle).val() );
     $('#id_unid_gestora').val( $('#id_unid_gestora_' + controle).val() );
     $('#id_unid_orcament').val( $('#id_unid_orcament_' + controle).val() );
@@ -619,7 +620,7 @@ function situacao_lancamento_evento(situacao) {
                             carregarServidoresLancamento(id_sessao, lg_sessao);
                         } else {
                             $('#btnF_confirma_msg').trigger("click");
-                            mensagem_erro( "<p><strong>Erro ao tentar excluir o lançamento do servidor selecionado:</strong> <br><br>" + retorno + "</p>" );
+                            mensagem_erro( "<p><strong>Erro ao tentar modificar a situação do lançamento:</strong> <br><br>" + retorno + "</p>" );
                         }
                     },
                     error: function (request, status, error) {
@@ -669,6 +670,7 @@ function lancarEventos(id, us) {
         $('#op').val("novo_lancamento");
         $('#controle').val( "00000" );
         $('#id_cliente').val( $('#cliente').val() );
+        $('#tipo_lancamento').val( "0" );
         $('#data').val( $('#hoje').val() );
         $('#ano_mes').val( $('#competencia_atual').val());
         $('#id_unid_gestora').val("0");
@@ -763,6 +765,7 @@ function salvarControleEventoMensal(id, us) {
                             this.qtd = data.form.length;
                             if (params.op === "novo_lancamento") {
                                 $('#controle').val(data.form[0].controle);
+                                $('#tipo_lancamento').val(data.form[0].tipo_lancamento);
                                 AddTableRowLancamentoEvento(data.form[0].table_tr);
                             } else 
                             if (params.op === "editar_lancamento") {
@@ -771,6 +774,8 @@ function salvarControleEventoMensal(id, us) {
                                 var i_linha = document.getElementById("linha_" + referencia);
                                 var colunas = i_linha.getElementsByTagName('td');
 
+                                $('#tipo_lancamento').val(data.form[0].tipo_lancamento);
+                                
                                 colunas[1].firstChild.nodeValue = $('#id_unid_gestora option:selected').text();
                                 colunas[2].firstChild.nodeValue = $('#id_unid_orcament option:selected').text();
                                 colunas[3].firstChild.nodeValue = data.form[0].rubrica;
@@ -781,6 +786,7 @@ function salvarControleEventoMensal(id, us) {
 
                                 $('#controle_' + referencia).val( params.controle );
                                 $('#id_cliente_' + referencia).val( params.id_cliente );
+                                $('#tipo_lancamento_' + referencia).val( data.form[0].tipo_lancamento );
                                 $('#id_unid_gestora_' + referencia).val( params.id_unid_gestora );
                                 $('#id_unid_orcament_' + referencia).val( params.id_unid_orcament );
                                 $('#id_evento_' + referencia).val( params.id_evento );

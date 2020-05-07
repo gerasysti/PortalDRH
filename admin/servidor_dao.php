@@ -183,6 +183,7 @@
                             . "    s.* "
                             . "  , coalesce(g.descricao, '* UG. NÃO INFORMADA')          as undade_gestora "
                             . "  , coalesce(o.descricao, '* UO. NÃO INFORMADA')          as undade_orcamentaria "
+                            . "  , coalesce(b.descricao, '* SUB UO. NÃO INFORMADA')      as subundade_orcamentaria "
                             . "  , coalesce(l.descricao, '* LOTAÇÃO NÃO INFORMADA')      as undade_lotacao "
                             . "  , coalesce(f.descricao, '* CARGO/FUNÇÃO NÃO INFORMADO') as cargo_funcao   "
                             . "from REMUN_SERVIDOR s "
@@ -191,6 +192,7 @@
                             . "  left join ADM_USUARIO_UNID_LOTACAO y on (y.id_cliente = s.id_cliente and y.id_unid_lotacao = s.id_unid_lotacao and y.id_usuario = {$user_id} and y.acesso = 1) "
                             . "  left join REMUN_UNID_GESTORA g on (g.id_cliente = s.id_cliente and g.id = s.id_unid_gestora) "
                             . "  left join REMUN_UNID_ORCAMENT o on (o.id_cliente = s.id_cliente and o.id = s.id_unid_orcament) "
+                            . "  left join REMUN_SUBUNID_ORCAMENT b on (b.id_cliente = s.id_cliente and b.id = s.id_subunid_orcament) "
                             . "  left join REMUN_UNID_LOTACAO l on (l.id_cliente = s.id_cliente and l.id_lotacao = s.id_unid_lotacao) "
                             . "where (s.id_cliente = {$to}) "
                             . "  and (s.id_unid_gestora = {$ug}) "
@@ -216,6 +218,7 @@
                             $unid_lota  = (!empty($obj->id_unid_lotacao)?$obj->id_unid_lotacao:"0");
                             $cargo_funcao = (!empty($obj->cargo_funcao)?$obj->cargo_funcao:"&nbsp;");
                             $cargo_atual  = (!empty($obj->id_cargo_atual)?$obj->id_cargo_atual:"0");
+                            $subundade_orcamentaria = (!empty($obj->subundade_orcamentaria)?$obj->subundade_orcamentaria:"&nbsp;");
                             $situacao     = intval("0" . $obj->situacao);
                             
                             $style = "padding-left: 1px; padding-right: 1px; padding-top: 1px; padding-bottom: 1px; margin: 1px;";
@@ -234,6 +237,7 @@
                                 . "<input type='hidden' id='id_unid_lotacao_{$referencia}' value='{$unid_lota}'>"
                                 . "<input type='hidden' id='id_cargo_atual_{$referencia}' value='{$cargo_atual}'>"
                                 . "<input type='hidden' id='cargo_funcao_{$referencia}' value='{$cargo_funcao}'>"
+                                . "<input type='hidden' id='subundade_orcamentaria_{$referencia}' value='{$subundade_orcamentaria}'>"
                                 . "<input type='hidden' id='situacao_{$referencia}' value='{$situacao}'>";
                             
                             //$icon_ed = "<button id='selecionar_professor_{$referencia}' class='btn btn-round btn-primary' title='Selecionar Servidor' onclick='selecionar_professor(this.id)' style='{$style}'><i class='glyph-icon icon-check-square-o'></i></button>";
