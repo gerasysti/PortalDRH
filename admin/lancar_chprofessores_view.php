@@ -440,7 +440,13 @@ where (s.id_cliente = 15019)
                                                 </div>
                                                 
                                                 <div class="form-group" style="margin: 2px;">
-                                                    <label for="qtde_falta" class="col-sm-2 control-label padding-label">Faltas</label>
+                                                    <!--<label for="qtde_falta" class="col-sm-2 control-label padding-label">Faltas</label>-->
+                                                    <div class="col-sm-2 padding-field">
+                                                        <select class="form-control chosen-select" id="tipo_falta" style="width: 100%;">
+                                                            <option value="0" class="optionChild">Falta H/A</option>
+                                                            <option value="1" class="optionChild">Falta Dia</option>
+                                                        </select>
+                                                    </div>
                                                     <div class="col-sm-2 padding-field">
                                                         <input type="text" class="form-control text lg-text text-right proximo_campo" maxlength="10" id="qtde_falta" onkeypress="return somente_numero(event);" value="0">
                                                     </div>
@@ -675,6 +681,7 @@ where (s.id_cliente = 15019)
                                     $('#qtde_hora_aula_normal').val("0");
                                     $('#qtde_hora_aula_subst').val("0");
                                     $('#qtde_hora_aula_outras').val("0");
+                                    $('#tipo_falta').val("0");
                                     $('#qtde_falta').val("0");
                                     $('#observacao').val("");
                                     $('#calc_grat_series_iniciais').prop('checked', false).uniform();
@@ -682,6 +689,7 @@ where (s.id_cliente = 15019)
                                     $('#calc_grat_dificio_acesso').prop('checked', false).uniform();
                                     $('#calc_grat_multi_serie').prop('checked', false).uniform();
                                     
+                                    $('#tipo_falta').trigger('chosen:updated');
                                     $('#box_servidor').trigger("click");
                                 }
                             } else {
@@ -746,6 +754,7 @@ where (s.id_cliente = 15019)
                                                         $('#qtde_hora_aula_normal').val("0");
                                                         $('#qtde_hora_aula_subst').val("0");
                                                         $('#qtde_hora_aula_outras').val("0");
+                                                        $('#tipo_falta').val("0");
                                                         $('#qtde_falta').val("0");
                                                         $('#observacao').val("");
                                                         $('#calc_grat_series_iniciais').prop('checked', false).uniform();
@@ -753,6 +762,7 @@ where (s.id_cliente = 15019)
                                                         $('#calc_grat_dificio_acesso').prop('checked', false).uniform();
                                                         $('#calc_grat_multi_serie').prop('checked', false).uniform();
 
+                                                        $('#tipo_falta').trigger('chosen:updated');
                                                         $('#id_servidor').focus();
                                                     }
                                                 });

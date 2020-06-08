@@ -328,7 +328,8 @@
                             . "  , lc.qtd_h_aula_normal \n"
                             . "  , lc.qtd_h_aula_substituicao \n"
                             . "  , lc.qtd_h_aula_outra \n"
-                            . "  , lc.qtd_falta \n"
+                            . "  , lc.qtd_falta  \n"
+                            . "  , lc.tipo_falta \n"
                             . "  , lc.observacao \n"
                             . "  , lc.calc_grat_series_iniciais \n"
                             . "  , lc.calc_grat_dificil_acesso \n"
@@ -389,6 +390,7 @@
                                 . "value='" . number_format($obj->qtd_falta, 0, ',' , '.') . "' "
                                 . "style='text-align: right; margin: 0px; border: 0; background-color:transparent; width: 100%; height: 50px; {$readonly}'>";
                             */
+                            $tipo_ft = (int)(isset($obj->tipo_falta)?$obj->tipo_falta:"0");
                             $icon_ex = "<button id='excluir_professor_lancamento_{$referencia}' class='btn btn-sm btn-round btn-primary excluir_professor' title='Excluir Registro' onclick='excluir_professor_lancamento(this.id)' style='{$style}'><i class='glyph-icon icon-trash'></i></button>";
                             
                             $tabela .= "    <tr class='custom-font-size-10' id='linha_professor_{$referencia}'>";
@@ -403,7 +405,7 @@
                             $tabela .= "        <td style='text-align: right;'>" . number_format($obj->qtd_h_aula_normal, 0, ',' , '.') . "</td>";
                             $tabela .= "        <td style='text-align: right;'>" . number_format($obj->qtd_h_aula_substituicao, 0, ',' , '.') . "</td>";
                             $tabela .= "        <td style='text-align: right;'>" . number_format($obj->qtd_h_aula_outra, 0, ',' , '.') . "</td>";
-                            $tabela .= "        <td style='text-align: right;'>" . number_format($obj->qtd_falta, 0, ',' , '.') . "</td>";
+                            $tabela .= "        <td style='text-align: right;'>" . number_format($obj->qtd_falta, 0, ',' , '.') . ($tipo_ft === 0?"H/A":"D") . "</td>";
                             $tabela .= "        <td style='text-align: center;' style='{$style}'>{$icon_ex}{$input}</td>";
                             $tabela .= "    </tr>";
                             
@@ -579,6 +581,7 @@
                         $qtde_hora_aula_normal     = preg_replace("/[^0-9]/", "", trim(filter_input(INPUT_POST, 'qtde_hora_aula_normal')) );
                         $qtde_hora_aula_subst      = preg_replace("/[^0-9]/", "", trim(filter_input(INPUT_POST, 'qtde_hora_aula_subst')) );
                         $qtde_hora_aula_outras     = preg_replace("/[^0-9]/", "", trim(filter_input(INPUT_POST, 'qtde_hora_aula_outras')) );
+                        $tipo_falta                = preg_replace("/[^0-9]/", "", trim(filter_input(INPUT_POST, 'tipo_falta')) );
                         $qtde_falta                = preg_replace("/[^0-9]/", "", trim(filter_input(INPUT_POST, 'qtde_falta')) );
                         $calc_grat_series_iniciais = strip_tags( trim(filter_input(INPUT_POST, 'calc_grat_series_iniciais')) );
                         $calc_grat_ensino_esp      = strip_tags( trim(filter_input(INPUT_POST, 'calc_grat_ensino_esp')) );
@@ -611,6 +614,7 @@
                                 . "  , :qtde_ch_substituicao "
                                 . "  , :qtde_ch_outras "
                                 . "  , :qtde_faltas    "
+                                . "  , :tipo_faltas    "
                                 . "  , :observacao     "
                                 . "  , :calc_grat_series_iniciais "
                                 . "  , :calc_grat_dificil_acesso  "
@@ -627,6 +631,7 @@
                                 , ':qtde_ch_substituicao' => $qtde_hora_aula_subst
                                 , ':qtde_ch_outras'       => $qtde_hora_aula_outras
                                 , ':qtde_faltas'          => $qtde_falta
+                                , ':tipo_faltas'          => $tipo_falta
                                 , ':observacao'           => $observacao
                                 , ':calc_grat_series_iniciais' => $calc_grat_series_iniciais
                                 , ':calc_grat_dificil_acesso'  => $calc_grat_dificio_acesso
@@ -666,7 +671,7 @@
                         $tr_table .= "        <td style='text-align: right;'>" . number_format($servidor->qtd_h_aula_normal, 0, ',' , '.') . "</td>";
                         $tr_table .= "        <td style='text-align: right;'>" . number_format($servidor->qtd_h_aula_substituicao, 0, ',' , '.') . "</td>";
                         $tr_table .= "        <td style='text-align: right;'>" . number_format($servidor->qtd_h_aula_outra, 0, ',' , '.') . "</td>";
-                        $tr_table .= "        <td style='text-align: right;'>" . number_format($servidor->qtd_falta, 0, ',' , '.') . "</td>";
+                        $tr_table .= "        <td style='text-align: right;'>" . number_format($servidor->qtd_falta, 0, ',' , '.') . ((int)$tipo_falta === 0?"H/A":"D") . "</td>";
                         $tr_table .= "        <td style='text-align: center;' style='{$style}'>{$icon_ex}{$input}</td>";
                         $tr_table .= "    </tr>";
                         

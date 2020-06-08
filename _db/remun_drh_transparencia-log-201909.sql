@@ -518,3 +518,63 @@ Token unknown - line 1, column 10.
 first.
 
 */
+
+
+/*------ GERASYS.TI 08/06/2020 20:07:46 --------*/
+
+ALTER TABLE REMUN_LANCTO_CH_PROF
+    ADD TIPO_FALTA DMN_SMALLINT_NN DEFAULT 0;
+
+COMMENT ON COLUMN REMUN_LANCTO_CH_PROF.TIPO_FALTA IS
+'Tipo da falta:
+0 - Hora/Aula
+1 - Dia';
+
+alter table REMUN_LANCTO_CH_PROF
+alter ID_LANCTO_PROF position 1;
+
+alter table REMUN_LANCTO_CH_PROF
+alter ID_LANCTO position 2;
+
+alter table REMUN_LANCTO_CH_PROF
+alter ID_CLIENTE position 3;
+
+alter table REMUN_LANCTO_CH_PROF
+alter ID_SERVIDOR position 4;
+
+alter table REMUN_LANCTO_CH_PROF
+alter ID_UNID_LOTACAO position 5;
+
+alter table REMUN_LANCTO_CH_PROF
+alter ANO_MES position 6;
+
+alter table REMUN_LANCTO_CH_PROF
+alter QTD_H_AULA_NORMAL position 7;
+
+alter table REMUN_LANCTO_CH_PROF
+alter QTD_H_AULA_SUBSTITUICAO position 8;
+
+alter table REMUN_LANCTO_CH_PROF
+alter QTD_H_AULA_OUTRA position 9;
+
+alter table REMUN_LANCTO_CH_PROF
+alter QTD_FALTA position 10;
+
+alter table REMUN_LANCTO_CH_PROF
+alter TIPO_FALTA position 11;
+
+alter table REMUN_LANCTO_CH_PROF
+alter OBSERVACAO position 12;
+
+alter table REMUN_LANCTO_CH_PROF
+alter CALC_GRAT_SERIES_INICIAIS position 13;
+
+alter table REMUN_LANCTO_CH_PROF
+alter CALC_GRAT_DIFICIL_ACESSO position 14;
+
+alter table REMUN_LANCTO_CH_PROF
+alter CALC_GRAT_ENSINO_ESPEC position 15;
+
+alter table REMUN_LANCTO_CH_PROF
+alter CALC_GRAT_MULTI_SERIE position 16;
+

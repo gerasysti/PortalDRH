@@ -615,8 +615,10 @@ Usuário para teste:
                 $sql = 
                      "Select     "
                     ."    u.id   "
-                    ."  , u.nome "
-                    ."  , u.cnpj "
+//                    ."  , u.nome "
+//                    ."  , u.cnpj "
+                    ."  , case when coalesce(g.dados_ug_ccheque, 'N') = 'S' then g.razao_social else u.nome end as nome "
+                    ."  , case when coalesce(g.dados_ug_ccheque, 'N') = 'S' then g.cnpj else u.cnpj end as cnpj "
                     ."  , u.municipio_nome "
                     ."  , u.municipio_uf   "
                     ."  , coalesce(u.margem_consignavel, 0) as margem_consignavel "
@@ -627,6 +629,9 @@ Usuário para teste:
                     ."  , coalesce(u.ender_bairro, '...') as bairro "
                     ."  , coalesce(u.ender_cep,    '00000000') as cep " 
                     ."from ADM_CLIENTE u "
+                    ."  inner join REMUN_SERVIDOR s on (s.id_cliente = u.id) "
+                    ."  left join REMUN_UNID_GESTORA g on (g.id_cliente = s.id_cliente and g.id = s.id_unid_gestora) "
+                    ."where (s.id_servidor = {$id_ser}) "
                     ."order by "
                     ."    trim(coalesce(u.titulo_portal, u.nome))";
 
