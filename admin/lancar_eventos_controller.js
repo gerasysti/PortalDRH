@@ -825,6 +825,10 @@ function salvarControleEventoMensal(id, us) {
     }
 }
 
+function imprimir_evento_lancamentos(controle, callback) {
+    ;
+}
+
 (function($) {
     AddTableRowLancamentoEvento = function(table_tr) {
 

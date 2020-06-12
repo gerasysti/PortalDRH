@@ -441,6 +441,9 @@
                                     <a href="javascript:void(0);" class="icon-separator remove-button" data-animation="flipOutX" title="Inserir Servidores" onclick="adicionar_servidor()">
                                         <i class="glyph-icon icon-plus"></i>
                                     </a>
+                                    <a href="javascript:void(0);" class="icon-separator remove-button" data-animation="flipOutX" title="Imprimir Lançamentos" onclick="imprimir_servidor_evento()">
+                                        <i class="glyph-icon icon-print"></i>
+                                    </a>
                                     <!--
                                     <a href="javascript:void(0);" class="icon-separator remove-button" data-animation="flipOutX" title="Salvar Lançamentos" onclick="salvar_lancamentos()">
                                         <i class="glyph-icon icon-save"></i>
@@ -1028,6 +1031,16 @@
                             });
                         }
                         
+                        function imprimir_servidor_evento() {
+                            if ( parseInt($('#situacao').val()) === 1 ) {
+                                mensagem_informe("Função em desenvolvimento....");
+//                                imprimir_evento_lancamentos($('#situacao').val(), function (retorno) {
+//                                    mensagem_informe(retorno);
+//                                });
+                            } else {
+                                mensagem_alerta("Apenas lançamentos finalizados podem ser impressos.");
+                            }
+                        }
                     </script>
                 </div>
         
