@@ -458,6 +458,24 @@
                         </div>
                     </div>
                     
+                    <div class="col-md-12" id="panel_impressao">
+                        <div class="content-box">
+                            <h3 class="content-box-header bg-default">
+                                <i class="glyph-icon icon-"></i>
+                                Visualização da Impressão
+                                <span class="header-buttons-separator">
+                                    <a href="javascript:void(0);" class="icon-separator remove-button" data-animation="flipOutX" title="Fechar Impressão" onclick="fechar_visualizacao_impressao_evento()">
+                                        <i class="glyph-icon icon-close"></i>
+                                    </a>
+                                </span>
+                            </h3>
+                            <div class="content-box-wrapper" id="visualizacao-panel_impressao" style="margin: 0px; padding: 0px;">
+                                <!-- Carregar aqui o arquivo PDF gerado no servidor -->
+                                <embed src='../downloads/empty.pdf' width='100%' height='100%' type='application/pdf' title='<Sem dados para visualização>'>
+                            </div>
+                        </div>
+                    </div>
+                    
                     <div class="modal fade bs-example-modal box_servidor" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
                         <div class="modal-dialog modal-lg"><!--modal-lg-->
                             <div class="modal-content">
@@ -663,7 +681,8 @@
                         
                         function fechar_lancamentos() {
                             fechar_cadastro();
-                            document.getElementById("panel_lancamentos").style.display  = 'none';
+                            document.getElementById("panel_lancamentos").style.display = 'none';
+                            document.getElementById("panel_impressao").style.display   = 'none';
                             var i_linha = document.getElementById("linha_" + parseInt($('#controle').val()));
                             if (i_linha !== null) {
                                 var qtde_servidores = parseInt($('#qtde_servidores').val());
@@ -762,7 +781,7 @@
                                                 "<li>Sub-unidade Orçamentária : <strong>" + data.form[0].subunidade_orcamentaria + "</strong></li>" + 
                                                 "<li>Cargo/Função : <strong>" + data.form[0].cargo_funcao + "</strong></li></ul>");
                                         } else
-                                        if ( parseInt("0" + data.form[0].situacao) !== 1 ) {
+                                        if ( parseInt("0" + data.form[0].status) === 3 ) {
                                             $('#nm_servidor').val("");
                                             $('#dt_admissao').val("");
                                             $('#cargo_funcao').val("");
@@ -1033,13 +1052,22 @@
                         
                         function imprimir_servidor_evento() {
                             if ( parseInt($('#situacao').val()) === 1 ) {
-                                mensagem_informe("Função em desenvolvimento....");
 //                                imprimir_evento_lancamentos($('#situacao').val(), function (retorno) {
 //                                    mensagem_informe(retorno);
 //                                });
+
+                                $('#visualizacao-panel_impressao').height( $(window).height() );
+                                $('#panel_lancamentos').fadeOut("slow");
+                                $('#panel_impressao').fadeIn("slow");
+                                mensagem_informe("Função em desenvolvimento....");
                             } else {
                                 mensagem_alerta("Apenas lançamentos finalizados podem ser impressos.");
                             }
+                        }
+                        
+                        function fechar_visualizacao_impressao_evento() {
+                                $('#panel_lancamentos').fadeIn("slow");
+                                $('#panel_impressao').fadeOut("slow");
                         }
                     </script>
                 </div>

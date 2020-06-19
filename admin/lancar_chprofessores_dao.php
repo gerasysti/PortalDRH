@@ -369,43 +369,50 @@
                                 . "<input type='hidden' id='calc_grat_dificil_acesso_{$referencia}'  value='{$obj->calc_grat_dificil_acesso}'>"
                                 . "<input type='hidden' id='calc_grat_ensino_espec_{$referencia}'    value='{$obj->calc_grat_ensino_espec}'>"
                                 . "<input type='hidden' id='calc_grat_multi_serie_{$referencia}'     value='{$obj->calc_grat_multi_serie}'>";
-                            /*    
+
                             $readonly  = ((int)$obj->situacao !== 0?"readonly":"");
                             $proximo   = ((int)$obj->situacao !== 0?"":"proximo_campo");
                             
+                            $tipo_ft = (int)(isset($obj->tipo_falta)?$obj->tipo_falta:"0");
+                            $icon_ex = "<button id='excluir_professor_lancamento_{$referencia}' class='btn btn-sm btn-round btn-primary excluir_professor' title='Excluir Registro' onclick='excluir_professor_lancamento(this.id)' style='{$style}'><i class='glyph-icon icon-trash'></i></button>";
+                            
                             $chn = 
-                                  "<input type='text' class='form-control text lg-text {$proximo}' maxlength='10' id='qtd_h_aula_normal_{$referencia}' onchange='salvar_lancamento_professor(this.id, 0)' "
+                                  "<input type='text' class='form-control text lg-text {$proximo}' maxlength='10' id='qtd_h_aula_normal_{$referencia}' onchange='salvar_lancamento_professor(this.id, 1)' "
                                 . "value='" . number_format($obj->qtd_h_aula_normal, 0, ',' , '.') . "' "
                                 . "style='text-align: right; margin: 0px; border: 0; background-color:transparent; width: 100%; height: 50px; {$readonly}'>";
                             $chs = 
-                                  "<input type='text' class='form-control text lg-text {$proximo}' maxlength='10' id='qtd_h_aula_substituicao_{$referencia}' onchange='salvar_lancamento_professor(this.id, 0)' "
+                                  "<input type='text' class='form-control text lg-text {$proximo}' maxlength='10' id='qtd_h_aula_substituicao_{$referencia}' onchange='salvar_lancamento_professor(this.id, 2)' "
                                 . "value='" . number_format($obj->qtd_h_aula_substituicao, 0, ',' , '.') . "' "
                                 . "style='text-align: right; margin: 0px; border: 0; background-color:transparent; width: 100%; height: 50px; {$readonly}'>";
                             $cho = 
-                                  "<input type='text' class='form-control text lg-text {$proximo}' maxlength='10' id='qtd_h_aula_outra_{$referencia}' onchange='salvar_lancamento_professor(this.id, 0)' "
+                                  "<input type='text' class='form-control text lg-text {$proximo}' maxlength='10' id='qtd_h_aula_outra_{$referencia}' onchange='salvar_lancamento_professor(this.id, 3)' "
                                 . "value='" . number_format($obj->qtd_h_aula_outra, 0, ',' , '.') . "' "
                                 . "style='text-align: right; margin: 0px; border: 0; background-color:transparent; width: 100%; height: 50px; {$readonly}'>";
+//                            $qtf = 
+//                                  "<input type='text' class='form-control text lg-text {$proximo}' maxlength='10' id='qtd_falta_{$referencia}' onchange='salvar_lancamento_professor(this.id, 0)' "
+//                                . "value='" . number_format($obj->qtd_falta, 0, ',' , '.') . "' "
+//                                . "style='text-align: right; margin: 0px; border: 0; background-color:transparent; width: 100%; height: 50px; {$readonly}'>";
                             $qtf = 
-                                  "<input type='text' class='form-control text lg-text {$proximo}' maxlength='10' id='qtd_falta_{$referencia}' onchange='salvar_lancamento_professor(this.id, 0)' "
-                                . "value='" . number_format($obj->qtd_falta, 0, ',' , '.') . "' "
-                                . "style='text-align: right; margin: 0px; border: 0; background-color:transparent; width: 100%; height: 50px; {$readonly}'>";
-                            */
-                            $tipo_ft = (int)(isset($obj->tipo_falta)?$obj->tipo_falta:"0");
-                            $icon_ex = "<button id='excluir_professor_lancamento_{$referencia}' class='btn btn-sm btn-round btn-primary excluir_professor' title='Excluir Registro' onclick='excluir_professor_lancamento(this.id)' style='{$style}'><i class='glyph-icon icon-trash'></i></button>";
+                                  "<div class='form-group' style='margin: 0px; border: 0; background-color:transparent; width: 100%; height: 50px;'>"
+                                . "  <input type='text' class='form-control text lg-text {$proximo}' maxlength='10' id='qtd_falta_{$referencia}' onchange='salvar_lancamento_professor(this.id, 4)' "
+                                . "    value='" . number_format($obj->qtd_falta, 0, ',' , '.') . "' "
+                                . "    style='text-align: right; margin: 0px; border: 0; background-color:transparent; width: 70%; height: 50px; {$readonly}'>"
+                                . "  <label for='qtd_falta_{$referencia}' style='width: 25%; text-align: left;'>" . ($tipo_ft === 0?"H/A":"D") . "</label>"
+                                . "</div>";
                             
                             $tabela .= "    <tr class='custom-font-size-10' id='linha_professor_{$referencia}'>";
                             $tabela .= "        <td style='text-align: center;'>{$qtde_professores}</td>";
                             $tabela .= "        <td style='text-align: center;'>" . str_pad($obj->id_servidor, 7, "0", STR_PAD_LEFT) . "</td>";
                             $tabela .= "        <td>{$obj->nome}</td>";
                             $tabela .= "        <td>{$obj->cargo_funcao}</td>";
-//                            $tabela .= "        <td style='text-align: right; margin: 0px; padding: 0px;'>{$chn}</td>";
-//                            $tabela .= "        <td style='text-align: right; margin: 0px; padding: 0px;'>{$chs}</td>";
-//                            $tabela .= "        <td style='text-align: right; margin: 0px; padding: 0px;'>{$cho}</td>";
-//                            $tabela .= "        <td style='text-align: right; margin: 0px; padding: 0px;'>{$qtf}</td>";
-                            $tabela .= "        <td style='text-align: right;'>" . number_format($obj->qtd_h_aula_normal, 0, ',' , '.') . "</td>";
-                            $tabela .= "        <td style='text-align: right;'>" . number_format($obj->qtd_h_aula_substituicao, 0, ',' , '.') . "</td>";
-                            $tabela .= "        <td style='text-align: right;'>" . number_format($obj->qtd_h_aula_outra, 0, ',' , '.') . "</td>";
-                            $tabela .= "        <td style='text-align: right;'>" . number_format($obj->qtd_falta, 0, ',' , '.') . ($tipo_ft === 0?"H/A":"D") . "</td>";
+                            $tabela .= "        <td style='text-align: right; margin: 0px; padding: 0px;'>{$chn}</td>";
+                            $tabela .= "        <td style='text-align: right; margin: 0px; padding: 0px;'>{$chs}</td>";
+                            $tabela .= "        <td style='text-align: right; margin: 0px; padding: 0px;'>{$cho}</td>";
+                            $tabela .= "        <td style='text-align: right; margin: 0px; padding: 0px;'>{$qtf}</td>";
+                            //$tabela .= "        <td style='text-align: right;'>" . number_format($obj->qtd_h_aula_normal, 0, ',' , '.') . "</td>";
+                            //$tabela .= "        <td style='text-align: right;'>" . number_format($obj->qtd_h_aula_substituicao, 0, ',' , '.') . "</td>";
+                            //$tabela .= "        <td style='text-align: right;'>" . number_format($obj->qtd_h_aula_outra, 0, ',' , '.') . "</td>";
+                            //$tabela .= "        <td style='text-align: right;'>" . number_format($obj->qtd_falta, 0, ',' , '.') . ($tipo_ft === 0?"H/A":"D") . "</td>";
                             $tabela .= "        <td style='text-align: center;' style='{$style}'>{$icon_ex}{$input}</td>";
                             $tabela .= "    </tr>";
                             
@@ -685,6 +692,50 @@
                         $json = json_encode($registros);
                         file_put_contents($file, $json);
                         
+                        echo "OK";
+                    } catch (Exception $ex) {
+                        echo $ex . "<br><br>" . $ex->getMessage();
+                    }
+                } break;
+
+                case 'grava_edicao_lancamento_ch_servidor' : {
+                    try {
+                        $hs = trim(filter_input(INPUT_POST, 'hs'));
+                        $id = trim(filter_input(INPUT_POST, 'id'));
+                        
+                        $id_lancto   = strip_tags( trim(filter_input(INPUT_POST, 'id_lancto')) );
+                        $controle    = floatval( preg_replace("/[^0-9]/", "", "0" . trim(filter_input(INPUT_POST, 'controle'))) );
+                        $id_cliente  = intval( preg_replace("/[^0-9]/", "", "0" . trim(filter_input(INPUT_POST, 'id_cliente'))) );
+                        $id_servidor = floatval( preg_replace("/[^0-9]/", "", "0" . trim(filter_input(INPUT_POST, 'id_servidor'))) );
+                        $id_escola   = intval( preg_replace("/[^0-9]/", "", "0" . trim(filter_input(INPUT_POST, 'id_escola'))) );
+                        $ano_mes     = strip_tags( trim(filter_input(INPUT_POST, 'ano_mes')) );
+                        $referencia  = strip_tags( trim(filter_input(INPUT_POST, 'referencia')) );
+                        $valor       = intval( preg_replace("/[^0-9]/", "", "0" . trim(filter_input(INPUT_POST, 'valor'))) );
+                        
+                        $cnf = Configuracao::getInstancia();
+                        $pdo = $cnf->db('', '');
+                        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+                        
+                        $campo = str_replace("_" . substr($referencia, strlen($referencia) - 36, 36), "", $referencia);
+                        $id_lancto_prof = "{" . substr($referencia, strlen($referencia) - 36, 36) . "}"; // id_lancto_prof
+                        
+                        if ($hs !== $hash) {
+                            echo "Acesso Inválido";
+                        } else {
+                            $stm = $pdo->prepare(
+                                  "Update REMUN_LANCTO_CH_PROF Set "
+                                . "    {$campo} = :valor "
+                                . "where (id_lancto_prof = :id_lancto_prof)");                        
+                            $stm->execute(array(
+                                  ':id_lancto_prof' => $id_lancto_prof
+                                , ':valor'          => $valor
+                            ));
+                            $pdo->commit();
+                        }
+                        
+                        // Fechar conexão PDO
+                        unset($pdo);
+
                         echo "OK";
                     } catch (Exception $ex) {
                         echo $ex . "<br><br>" . $ex->getMessage();

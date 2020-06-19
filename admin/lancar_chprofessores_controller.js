@@ -754,6 +754,55 @@ function salvar_lancamentos_chprofessores(id, us) {
     }
 }
 
+function salvar_edicao_lancamento_professor(referencia, valor, callback) {
+    var id   = $('#id_sessao').val();
+    var hash = id.split("_");
+    var params = {
+        'ac' : 'grava_edicao_lancamento_ch_servidor',
+        'id' : hash[1],
+        'hs' : $('#hs').val(),
+        'to' : $('#cliente').val(),
+        'id_lancto'  : $('#id_lancto').val(),
+        'controle'   : $('#controle').val(),
+        'id_cliente' : $('#id_cliente').val(),
+        'id_escola'  : $('#id_escola').val(),
+        'ano_mes'    : $('#ano_mes').val(),
+        'referencia' : referencia,
+        'valor'      : valor
+    };
+
+    // Iniciamos o Ajax 
+    $.ajax({
+        // Definimos a url
+        url : './lancar_chprofessores_dao.php',
+        // Definimos o tipo de requisição
+        type: 'post',
+        // Definimos o tipo de retorno
+        dataType : 'html',
+        // Dolocamos os valores a serem enviados
+        data: params,
+        // Antes de enviar ele alerta para esperar
+        beforeSend : function(){
+            ;
+        },
+        // Colocamos o retorno na tela
+        success : function(data){
+            var retorno = data;
+            if (retorno === "OK") {
+                if(callback && typeof(callback) === "function") {
+                    callback(retorno);
+                }
+            } else {
+                mensagem_erro(retorno);
+            }
+        },
+        error: function (request, status, error) {
+            mensagem_erro("Erro tentar gravar o dado informado!<br> (" + status + ")" + request.responseText + "<br><strong>Error : </strong>" + error.toString());
+        }
+    });  
+    // Finalizamos o Ajax
+}
+
 (function($) {
     AddTableRowLancamentoEvento = function(table_tr) {
 

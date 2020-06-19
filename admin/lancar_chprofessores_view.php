@@ -635,7 +635,7 @@ where (s.id_cliente = 15019)
                                 if (id_servidor > 0) {
                                     var id_cliente = parseInt("0" + $('#id_cliente').val());
                                     carregar_registro_servidor(id_cliente, id_servidor, "0", function (data) {
-                                        if ( parseInt("0" + data.form[0].situacao) !== 1 ) {
+                                        if ( parseInt("0" + data.form[0].status) === 3 ) {
                                             $('#nm_servidor').val("");
                                             $('#dt_admissao').val("");
                                             $('#cargo_funcao').val("");
@@ -776,31 +776,29 @@ where (s.id_cliente = 15019)
                             }
                         }
                         
-                        function salvar_lancamento_servidor(id, tipo_lanc) {
+                        function salvar_lancamento_professor(id, campo) {
                             var referencia  = id;
-                            var quant = null;
-                            var valor = null;
+                            var valor = "0";
+                            var field = "";
                             
-                            if (tipo_lanc === 0) { // Lançamento pela Quantidade
-                                referencia = referencia.replace("quant_", "");
-                                quant      = parseFloat("0" + $('#' + id).val());
+                            if (campo === 1) {
+                                field = "qtd_h_aula_normal";
                             } else
-                            if (tipo_lanc === 1) { // Lançamento pela Valor (R$)
-                                referencia = referencia.replace("valor_", "");
-                                valor      = parseFloat("0" + $('#' + id).val());
+                            if (campo === 2) {
+                                field = "qtd_h_aula_substituicao";
+                            } else
+                            if (campo === 3) {
+                                field = "qtd_h_aula_outra";
+                            } else
+                            if (campo === 4) {
+                                field = "qtd_falta";
                             }
-                        
-                            //var controle   = $('#controle_' + referencia).val();
-                            var sequencia  = $('#sequencia_' + referencia).val();
-                            //var id_cliente = $('#id_cliente_' + referencia).val();
-                            //var id_unid_gestora = $('#id_unid_gestora_' + referencia).val();
-                            //var id_unid_lotacao = $('#id_unid_lotacao_' + referencia).val();
-                            //var id_evento   = $('#id_evento_' + referencia).val();
-                            //var ano_mes     = $('#ano_mes_' + referencia).val();
-                            var id_servidor = $('#id_servidor_' + referencia).val();
                             
-                            //salvarServidorLancamento(controle, sequencia, id_cliente, id_unid_gestora, id_unid_lotacao, id_evento, ano_mes, id_servidor, quant, valor, function(retorno){
-                            salvarServidorLancamento(sequencia, id_servidor, quant, valor, "", function(retorno){
+                            referencia = referencia.replace(field + "_", "");
+                            valor      = parseInt("0" + $('#' + id).val());
+                            
+                            // Salvar valor na base
+                            salvar_edicao_lancamento_professor(id, valor, function(retorno){
                                 if (retorno !== "OK") {
                                     $('#' + id).focus();
                                 }

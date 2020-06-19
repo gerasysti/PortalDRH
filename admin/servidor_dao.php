@@ -84,7 +84,8 @@
                             . $servidor
                             . "  " . ($id_unidade !== 0?"and (s.id_unid_gestora = {$id_unidade})":"")
                             . "  " . ($id_lotacao !== 0?"and (s.id_unid_lotacao = {$id_lotacao})":"")
-                            . "  " . (($id_unidade === 0) && ($id_lotacao === 0)?"and (s.situacao = 1)":"") . " "
+                            //. "  " . (($id_unidade === 0) && ($id_lotacao === 0)?"and (s.situacao = 1)":"") . " "
+                            . "  " . (($id_unidade === 0) && ($id_lotacao === 0)?"and (s.status <> '3')":"") . " " // STATUS: '1' - Ativo, '2' - Afastado temporariamente, '3' - Desativado
                             . "order by   "
                             . "    s.nome "; 
                         //echo $sql . "<br><br>";
@@ -196,8 +197,8 @@
                             . "  left join REMUN_UNID_LOTACAO l on (l.id_cliente = s.id_cliente and l.id_lotacao = s.id_unid_lotacao) "
                             . "where (s.id_cliente = {$to}) "
                             . "  and (s.id_unid_gestora = {$ug}) "
-                            . "  and (s.situacao = 1)   "
-                            //. "  and (f.tipo_sal = '2') " // TIPO SALÁRIO: 2 - Hora/aula
+                            //. "  and (s.situacao = 1)   "
+                            . "  and (s.status <> '3') " // STATUS: '1' - Ativo, '2' - Afastado temporariamente, '3' - Desativado
                             . "order by   "
                             . "    s.nome "; 
                         
@@ -305,8 +306,8 @@
                             . "  left join REMUN_UNID_GESTORA g on (g.id_cliente = s.id_cliente and g.id = s.id_unid_gestora) "
                             . "  left join REMUN_UNID_LOTACAO l on (l.id_cliente = s.id_cliente and l.id_lotacao = s.id_unid_lotacao) "
                             . "where (s.id_cliente = {$to}) "
-                            //. "  and (s.id_unid_gestora = {$ug})   "
-                            . "  and (s.situacao = 1)   "
+                            //. "  and (s.situacao = 1)   "
+                            . "  and (s.status  <> '3') " // STATUS: '1' - Ativo, '2' - Afastado temporariamente, '3' - Desativado
                             . "  and (f.tipo_sal = '2') " // TIPO SALÁRIO: 2 - Hora/aula
                             . "order by   "
                             . "    s.nome "; 
@@ -328,6 +329,7 @@
                             $cargo_funcao = (!empty($obj->cargo_funcao)?$obj->cargo_funcao:"&nbsp;");
                             $cargo_atual  = (!empty($obj->id_cargo_atual)?$obj->id_cargo_atual:"0");
                             $situacao     = intval("0" . $obj->situacao);
+                            $status       = intval("0" . $obj->status);
                             
                             $style = "padding-left: 1px; padding-right: 1px; padding-top: 1px; padding-bottom: 1px; margin: 1px;";
                             $input = 
@@ -344,12 +346,14 @@
                                 . "<input type='hidden' id='id_unid_lotacao_{$referencia}' value='{$unid_lota}'>"
                                 . "<input type='hidden' id='id_cargo_atual_{$referencia}' value='{$cargo_atual}'>"
                                 . "<input type='hidden' id='cargo_funcao_{$referencia}' value='{$cargo_funcao}'>"
-                                . "<input type='hidden' id='situacao_{$referencia}' value='{$situacao}'>";
+                                . "<input type='hidden' id='situacao_{$referencia}' value='{$situacao}'>"
+                                . "<input type='hidden' id='status_{$referencia}' value='{$status}'>";
                             
                             //$icon_ed = "<button id='selecionar_professor_{$referencia}' class='btn btn-round btn-primary' title='Selecionar Servidor' onclick='selecionar_professor(this.id)' style='{$style}'><i class='glyph-icon icon-check-square-o'></i></button>";
                             $icon_ed = "<button id='selecionar_professor_{$referencia}' class='btn btn-round btn-default' title='Selecionar Servidor' onclick='selecionar_professor(this.id)' style='{$style}'><i class='glyph-icon icon-check'></i></button>";
                             
-                            if ($situacao === 1) {
+                            //if ($situacao === 1) {
+                            if ($status !== 3) { // 3. Desativado
                                 $icon_st = "<i class='glyph-icon icon-check-square-o'></i>";
                             } else {
                                 $icon_st = "<i class='glyph-icon icon-square-o'></i>";
@@ -390,6 +394,12 @@
                             $sql = 
                                   "Select "
                                 . "    s.* "
+                                . "  , Case s.status "
+                                . "      when '1' then 'Ativo' "
+                                . "      when '2' then 'Afastado temporariamente' "
+                                . "      when '3' then 'Desativado' "
+                                . "               else '* SEM INFORMAÇÃO' "
+                                . "    end as status_descricao "
                                 . "  , coalesce(g.descricao, '* UG. NÃO INFORMADA')     as unidade_gestora "
                                 . "  , coalesce(o.descricao, '* UO. NÃO INFORMADA')     as unidade_orcamentaria "
                                 . "  , coalesce(l.descricao, '* LOTAÇÃO NÃO INFORMADA') as unidade_lotacao "
@@ -426,6 +436,8 @@
                                 $unid_lota  = (!empty($obj->id_unid_lotacao)?$obj->id_unid_lotacao:"0");
                                 $cargo_atual  = (!empty($obj->id_cargo_atual)?$obj->id_cargo_atual:"0");
                                 $situacao     = intval("0" . $obj->situacao);
+                                $status       = intval("0" . $obj->status);
+                                $status_descricao = (!empty($obj->status_descricao)?$obj->status_descricao:"* SEM INFORMAÇÃO");
 
                                 // formatarTexto('###.###.###-##', $cpf)
                                 $registros = array('form' => array());
@@ -436,14 +448,16 @@
                                 $registros['form'][0]['nome']        = $nome;
                                 $registros['form'][0]['cpf']         = $cpf;
                                 $registros['form'][0]['rg']          = $rg;
-                                $registros['form'][0]['cpf_formatado']   = formatarTexto('###.###.###-##', $cpf);
-                                $registros['form'][0]['dt_admissao']     = $dt_admissao;
-                                $registros['form'][0]['dt_nascimento']   = $dt_nascimento;
-                                $registros['form'][0]['unid_gest']       = $unid_gest;
-                                $registros['form'][0]['unid_lota']       = $unid_lota;
-                                $registros['form'][0]['cargo_atual']     = $cargo_atual;
-                                $registros['form'][0]['situacao']        = $situacao;
-                                $registros['form'][0]['unidade_gestora'] = $obj->unidade_gestora;
+                                $registros['form'][0]['cpf_formatado']    = formatarTexto('###.###.###-##', $cpf);
+                                $registros['form'][0]['dt_admissao']      = $dt_admissao;
+                                $registros['form'][0]['dt_nascimento']    = $dt_nascimento;
+                                $registros['form'][0]['unid_gest']        = $unid_gest;
+                                $registros['form'][0]['unid_lota']        = $unid_lota;
+                                $registros['form'][0]['cargo_atual']      = $cargo_atual;
+                                $registros['form'][0]['situacao']         = $situacao;
+                                $registros['form'][0]['status']           = $status;
+                                $registros['form'][0]['status_descricao'] = $status_descricao;
+                                $registros['form'][0]['unidade_gestora']  = $obj->unidade_gestora;
                                 $registros['form'][0]['unidade_orcamentaria']    = $obj->unidade_orcamentaria;
                                 $registros['form'][0]['subunidade_orcamentaria'] = $obj->subunidade_orcamentaria;
                                 $registros['form'][0]['unidade_lotacao'] = $obj->unidade_lotacao;
