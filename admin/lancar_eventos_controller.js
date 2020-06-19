@@ -574,6 +574,10 @@ function situacao_lancamento_evento(situacao) {
         mensagem_confirmar(pergunta, function(){
             var link = document.getElementById("btnC_confirma_msg");
             link.onclick = function() {
+                var agora = new Date();
+                var _data = zero_esquerda(agora.getDate(), 2)  + "/" + zero_esquerda(agora.getMonth()+1, 2) + "/" + agora.getFullYear();
+                var _hora = zero_esquerda(agora.getHours(), 2) + ":" + zero_esquerda(agora.getMinutes(), 2) + ":" + zero_esquerda(agora.getSeconds(), 2);
+                
                 var params = {
                     'ac' : 'situacao_lancamento_evento',
                     'hs' : $('#hs').val(),
@@ -583,7 +587,9 @@ function situacao_lancamento_evento(situacao) {
                     'ev' : $('#id_evento').val(),
                     'cp' : $('#ano_mes').val(),
                     'id' : $('#controle').val(),
-                    'st' : situacao
+                    'st' : situacao,
+                    'data' : _data,
+                    'hora' : _hora
                 };
 
                 // Iniciamos o Ajax 
@@ -826,7 +832,41 @@ function salvarControleEventoMensal(id, us) {
 }
 
 function imprimir_evento_lancamentos(controle, callback) {
-    ;
+    var id   = $('#id_sessao').val();
+    var hash = id.split("_");
+    var params = {
+        'ac' : 'print',
+        'id' : hash[1],
+        'hs' : $('#hs').val(),
+        'to' : $('#cliente').val(),
+        'controle' : controle
+    };
+
+    // Iniciamos o Ajax 
+    $.ajax({
+        // Definimos a url
+        url : './lancar_eventos_print.php',
+        // Definimos o tipo de requisição
+        type: 'post',
+        // Definimos o tipo de retorno
+        dataType : 'html',
+        // Dolocamos os valores a serem enviados
+        data: params,
+        // Antes de enviar ele alerta para esperar
+        beforeSend : function(){
+            ;
+        },
+        // Colocamos o retorno na tela
+        success : function(data){
+            if(callback && typeof(callback) === "function") {
+                callback();
+            }
+        },
+        error: function (request, status, error) {
+            mensagem_erro("Erro na execução da pesquisa!<br> (" + status + ")" + request.responseText + "<br><strong>Error : </strong>" + error.toString());
+        }
+    });  
+    // Finalizamos o Ajax
 }
 
 (function($) {

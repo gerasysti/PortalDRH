@@ -14,6 +14,9 @@
     error_reporting(E_ALL);
     
     $id = md5(date('d/m/Y'));
+    $token = strip_tags( trim(filter_input(INPUT_POST, 'hs')) );
+    $controle = (float)preg_replace("/[^0-9]/", "", "0" . strip_tags( trim(filter_input(INPUT_POST, 'controle')) ));
+            
     $cliente = null;
     $evento  = null;
     
@@ -23,7 +26,8 @@
     
     $sql = 
           "Select     "
-        . "    a.id_cliente "
+        . "    a.controle   "
+        . "  , a.id_cliente "
         . "  , a.id_unid_gestora "
         . "  , g.descricao as nm_unid_gestora "
         . "  , a.id_unid_orcament "
@@ -34,8 +38,8 @@
         . "  , a.ano_mes "
         . "  , substring(a.ano_mes from 5 for 2) || '/' || substring(a.ano_mes from 1 for 4) as competencia "
         . "  , a.controle "
-        . "  , a.data "
-        . "  , a.hora "
+        . "  , coalesce(a.data_finalizacao, a.data) as data "
+        . "  , coalesce(a.hora_finalizacao, a.hora) as hora "
         . "  , a.usuario  as responsavel_id "
         . "  , u.nome     as responsavel_nome "
         . "  , u.e_mail   as responsavel_email "
@@ -60,7 +64,7 @@
 
     $stm = $pdo->prepare($sql);
     $res = $stm->execute(array(
-        ':controle' => 19
+        ':controle' => $controle
     ));
     $evento = $stm->fetch(PDO::FETCH_OBJ);
     
@@ -94,8 +98,12 @@
     $cliente = $stm->fetch(PDO::FETCH_OBJ);
 
     // Fechar conexão PDO
-    unset($qry);
+    unset($stm);
     unset($pdo);
+    
+    // Hora
+    $temp = date('H:i:s', strtotime($evento->hora) );
+    $hora_gravacao = substr($temp, 0, 2) . "h" . substr($temp, 3, 2);
 ?>
 <html ng-app="monarchApp" lang="pt">
     <head>
@@ -110,6 +118,43 @@
             .td_align_left   { text-align: left; }
             .td_align_center { text-align: center; }
             .td_align_justify{ text-align: justify; }
+            
+            .td_height_21  { height: 21px; }
+            .td_height_25  { height: 25px; }
+            
+            .td_padding_1 {
+                padding-left: 1px;
+                padding-right: 1px;
+            }
+            
+            .td_padding_5 {
+                padding-left: 5px;
+                padding-right: 5px;
+            }
+            
+            .fundoCinzaEscuro { background-color: grey; }
+            .fundoCinzaClaro { background-color: #E8E8E8; }
+            .fundoBranco { background-color: #FFFFFF; }
+            
+            /*** ELEMENTOS ***/ 
+            .no-border { 
+                border:0px solid #000; 
+            }
+            .border { 
+                border:1px solid #000; 
+            }
+            .borderRight { 
+                border-right:1px solid #000; 
+            }
+            .borderLeft { 
+                border-left:1px solid #000; 
+            }
+            .borderTop { 
+                border-top:1px solid #000; 
+            }
+            .borderBottom { 
+                border-bottom:1px solid #000; 
+            }
         </style>
         <meta charset="UTF-8">
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -132,7 +177,7 @@
             <div class="row">
                 <div class="col-sm-3">
                     <div class="col-xs-1"> <!-- dummy-logo -->
-                        <img src="<?php echo $cliente->brasao;?>" height="60" alt="Brasão da Unidade/Órgão"/>
+                        <img src="<?php echo $cliente->brasao;?>" height="70" alt="Brasão da Unidade/Órgão"/>
                     </div>
                     <div class="col-sm-11 font-size-12">
                         <p><b><?php echo $cliente->nome_cliente;?></b></p>
@@ -214,11 +259,11 @@
                         </tr>
                         <tr>
                             <td height="21">Evento &nbsp;&nbsp;</td>
-                            <td>: <?php echo $evento->cd_evento . " - " . $evento->nm_evento;?></td>
+                            <td>: <b><?php echo $evento->cd_evento . " - " . $evento->nm_evento;?></b></td>
                         </tr>
                         <tr>
                             <td>Competência &nbsp;&nbsp;</td>
-                            <td>: <?php echo $evento->competencia;?></td>
+                            <td>: <b><?php echo $evento->competencia;?></b></td>
                         </tr>
                     </table>
                 </div>
@@ -234,33 +279,79 @@
             </div>
             
             
-Select
-    a.controle
-  , b.*
-  , s.nome
-  , s.matricula
-  , s.cpf
-  , s.rg
-  , s.pis_pasep
-  , s.dt_admissao
-  , s.situacao
-  , s.status
-from REMUN_EVENTO_AVULSO a
-  inner join REMUN_EVENTO_AVULSO_ITEM b on (
-        b.id_cliente       = a.id_cliente
-    and b.id_unid_gestora  = a.id_unid_gestora
-    and b.id_unid_orcament = a.id_unid_orcament
-    and b.id_evento = a.id_evento
-    and b.ano_mes   = a.ano_mes)
-  inner join REMUN_SERVIDOR s on (s.id_cliente = b.id_cliente and s.id_servidor = b.id_servidor)
+            <table border="0" width="100%" class="font-size-12">
+                <thead>
+                    <tr class="fundoCinzaEscuro">
+                        <th class='td_height_21 td_padding_5 td_align_center' style="color: white;">#</th>
+                        <th class='td_height_21 td_padding_5' style="color: white;">Matrícula</th>
+                        <th class='td_height_21 td_padding_5' style="color: white;">Servidor</th>
+                        <th class='td_height_21 td_padding_5' style="color: white;">Cargo/Função</th>
+                        <th class='td_height_21 td_padding_5 td_align_right' style="color: white;">Qtde</th>
+                        <th class='td_height_21 td_padding_5 td_align_right' style="color: white;">Valor (R$)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php
 
---where (a.controle = 19)
+                        $cnf = Configuracao::getInstancia();
+                        $pdo = $cnf->db('', '');
+                        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-order by
-    s.nome
+                        $sql = 
+                              "Select           \n"
+                            . "    a.controle   \n"
+                            . "  , s.nome       \n"
+                            . "  , s.matricula  \n"
+                            . "  , s.cpf        \n"
+                            . "  , s.rg         \n"
+                            . "  , coalesce(f.descricao, '* CARGO/FUNÇÃO NÃO INFORMADO') as cargo_funcao   \n"
+                            . "  , s.pis_pasep      \n"
+                            . "  , s.dt_admissao    \n"
+                            . "  , s.situacao       \n"
+                            . "  , s.status     \n"
+                            . "  , coalesce(b.quant,   0) as quant  \n"
+                            . "  , coalesce(b.valor, 0.0) as valor  \n"
+                            . "  , coalesce(b.obs,    '') as obs    \n"
+                            . "from REMUN_EVENTO_AVULSO a   \n"
+                            . "  inner join REMUN_EVENTO_AVULSO_ITEM b on (     \n"
+                            . "        b.id_cliente       = a.id_cliente        \n"
+                            . "    and b.id_unid_gestora  = a.id_unid_gestora   \n"
+                            . "    and b.id_unid_orcament = a.id_unid_orcament  \n"
+                            . "    and b.id_evento = a.id_evento    \n"
+                            . "    and b.ano_mes   = a.ano_mes)     \n"
+                            . "  inner join REMUN_SERVIDOR s on (s.id_cliente = b.id_cliente and s.id_servidor = b.id_servidor)     \n"
+                            . "  left join REMUN_CARGO_FUNCAO f on (f.id_cliente = s.id_cliente and f.id_cargo = s.id_cargo_atual)  \n"
+                            . "   \n"
+                            . "where (a.controle = {$evento->controle}) \n"
+                            . "   \n"
+                            . "order by     \n"
+                            . "    s.nome   \n";
 
-            
-            <table border="1" width="100%" class="font-size-12">
+                        $res = $pdo->query($sql);
+                        $i = 0;
+                        while (($obj = $res->fetch(PDO::FETCH_OBJ)) !== false) {
+                            $i += 1;
+                            
+                            $quant = number_format( $obj->quant, 0, ',', '.');
+                            $valor = number_format( $obj->valor, 2, ',', '.');
+                            $cor = ($i & 1?"fundoCinzaClaro":"fundoBranco");
+                            
+                            echo
+                                  "<tr> "
+                                . "    <td class='td_padding_5 td_height_25 td_align_center {$cor}'>{$i}</td> "
+                                . "    <td class='td_padding_5 td_height_25 {$cor}'>{$obj->matricula}</td> "
+                                . "    <td class='td_padding_5 td_height_25 {$cor}'>{$obj->nome}</td> "
+                                . "    <td class='td_padding_5 td_height_25 {$cor}'>{$obj->cargo_funcao}</td> "
+                                . "    <td class='td_padding_5 td_height_25 td_align_right {$cor}'>{$quant}</td> "
+                                . "    <td class='td_padding_5 td_height_25 td_align_right {$cor}'>{$valor}</td> " 
+                                . "</tr>    \n";
+                        }
+                        
+                        // Fechar conexão PDO
+                        unset($res);
+                        unset($pdo);
+                    ?>    
+                </tbody>
                 
             </table>
             
@@ -318,23 +409,51 @@ order by
                 </tbody>
             </table>
             -->
-            <div class="divider"></div>
             
             <div class="row">
+                &nbsp;
+            </div>
+            
+            <div class="content-box">
                 <div class="col-md-12">
-                    <p>Os servidores relacionados aqui tiveram seus lançamentos, para o evento XXX, realizados no portal XXX.</p>
+                    <p class="text-justify">Os servidores relacionados aqui tiveram seus lançamentos, para o evento 
+                        <b><?php echo $evento->cd_evento . " - " . $evento->nm_evento;?></b> na competência de <b><?php echo $evento->competencia;?></b>, 
+                        realizados no portal <b>Remuneratu$Web</b> pelo usuário <b><?php echo $evento->responsavel_nome;?></b> no dia 
+                        <b><?php echo (!empty($evento->data)?date('d/m/Y', strtotime($evento->data) ):"&nbsp;");?></b> às 
+                        <b><?php echo $hora_gravacao;?></b>.</p>
                 </div>
             </div>
-            <div class="row">
-                <div class="col-md-4">
-                    1
-                </div>
-                <div class="col-md-4">
-                    2
-                </div>
-                <div class="col-md-4">
-                    3
-                </div>
+            
+            <div class="col-sm-12">
+                <table border="0" width="50%" class="font-size-12" align="center">
+                    <tr width="100%" >
+                        <td>&nbsp;</td>
+                    </tr>
+                    <tr>
+                        <td>&nbsp;</td>
+                    </tr>
+                    <tr>
+                        <td>&nbsp;</td>
+                    </tr>
+                    <tr>
+                        <td>&nbsp;</td>
+                    </tr>
+                    <tr>
+                        <td>&nbsp;</td>
+                    </tr>
+                    <tr>
+                        <td>&nbsp;</td>
+                    </tr>
+                    <tr>
+                        <td class=" borderTop">&nbsp;</td>
+                    </tr>
+                    <tr>
+                        <td class="text-center"><?php echo $cliente->nome;?></td>
+                    </tr>
+                    <tr>
+                        <td class="text-center">CNPJ : <?php echo formatarTexto('##.###.###/####-##', $cliente->cnpj_cliente);?></td>
+                    </tr>
+                </table>
             </div>
         </div>
         
@@ -348,15 +467,13 @@ order by
     error_reporting(0);
     $html = ob_get_clean(); 
 
-    //$filename = "../downloads/{$token}.pdf";
-    $filename = "./lancar_eventos_print.pdf";
+    $filename = "../downloads/{$token}.pdf";
     
     $mpdf = new mPDF('utf-8', 'A4');    
     $mpdf->SetDisplayMode('fullpage');
     $mpdf->SetFooter('Página {PAGENO}/{nbpg}');
 
     $mpdf->WriteHTML($html);
-    //$mpdf->Output($filename, 'F');
-    $mpdf->Output($filename, 'I');
+    $mpdf->Output($filename, 'F');
 ?>
 

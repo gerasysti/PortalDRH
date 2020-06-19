@@ -1052,14 +1052,15 @@
                         
                         function imprimir_servidor_evento() {
                             if ( parseInt($('#situacao').val()) === 1 ) {
-//                                imprimir_evento_lancamentos($('#situacao').val(), function (retorno) {
-//                                    mensagem_informe(retorno);
-//                                });
-
-                                $('#visualizacao-panel_impressao').height( $(window).height() );
-                                $('#panel_lancamentos').fadeOut("slow");
-                                $('#panel_impressao').fadeIn("slow");
-                                mensagem_informe("Função em desenvolvimento....");
+                                imprimir_evento_lancamentos($('#controle').val(), function () {
+                                    var arquivo = "../downloads/" + $('#hs').val() + ".pdf";
+                                    
+                                    $('#visualizacao-panel_impressao').html("<embed src='" + arquivo + "' width='100%' height='100%' type='application/pdf' title='<Sem dados para visualização>'>");
+                                    
+                                    $('#visualizacao-panel_impressao').height( $(window).height() );
+                                    $('#panel_lancamentos').fadeOut("slow");
+                                    $('#panel_impressao').fadeIn("slow");
+                                });
                             } else {
                                 mensagem_alerta("Apenas lançamentos finalizados podem ser impressos.");
                             }

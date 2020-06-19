@@ -1131,6 +1131,10 @@
                         $st = strip_tags( preg_replace("/[^0-9]/", "", trim(filter_input(INPUT_POST, 'st'))) );
                         $hs = trim(filter_input(INPUT_POST, 'hs'));
                         
+                        $temp = explode("/", strip_tags( trim(filter_input(INPUT_POST, 'data')) ));
+                        $data = $temp[2] . "-" . $temp[1] . "-" . $temp[0];
+                        $hora = strip_tags( trim(filter_input(INPUT_POST, 'hora')) );
+                        
                         $obj = getRegistro($to, $cp, $id);
                         if ($ev === "") {
                             echo "Evento de lançamento não identificado!";
@@ -1164,6 +1168,25 @@
                                     , ':ano_mes'          => $cp
                                 ));
                                 $pdo->commit();
+                                
+                                if ((int)$st === 1) {
+                                    $stm = $pdo->prepare(
+                                          "Update REMUN_EVENTO_AVULSO a Set "
+                                        . "    a.data_finalizacao    = cast('{$data}' as date)"
+                                        . "  , a.hora_finalizacao    = cast('{$hora}' as time)"
+                                        . "where (a.id_cliente       = :id_cliente)"
+                                        . "  and (a.id_unid_gestora  = :id_unid_gestora) "
+                                        . "  and (a.id_unid_orcament = :id_unid_orcament)"
+                                        . "  and (a.id_evento        = :id_evento)"
+                                        . "  and (a.ano_mes          = :ano_mes) ");
+                                    $stm->execute(array(
+                                          ':id_cliente'       => $to
+                                        , ':id_unid_gestora'  => $ug
+                                        , ':id_unid_orcament' => $uo
+                                        , ':id_evento'        => $ev
+                                        , ':ano_mes'          => $cp
+                                    ));
+                                }
                                 
                                 // Fechar conexão PDO
                                 unset($stm);
