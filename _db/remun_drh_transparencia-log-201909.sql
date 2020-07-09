@@ -578,3 +578,224 @@ alter CALC_GRAT_ENSINO_ESPEC position 15;
 alter table REMUN_LANCTO_CH_PROF
 alter CALC_GRAT_MULTI_SERIE position 16;
 
+
+
+
+/*------ GERASYS.TI 09/07/2020 16:22:00 --------*/
+
+SET TERM ^ ;
+
+create or alter procedure SP_DUPLICAR_LACTO_CH (
+    ID_LANCTO_ORIGEM DMN_GUID,
+    ID_LOTACAO_DESTINO DMN_INTEGER,
+    ID_COMPETENCIA_DESTINO DMN_CHAR06,
+    DATA DMN_DATE,
+    HORA DMN_TIME,
+    USUARIO DMN_INTEGER)
+as
+declare variable ID_CONTROLE DMN_BIGINT;
+declare variable ID_LANCTO DMN_GUID;
+begin
+  Select
+      g.hex_uuid_format
+    , gen_id(GEN_LANCTO_CH, 1)
+  from GET_GUID_UUID_HEX g
+  Into
+      id_lancto
+    , id_controle;
+
+  -- Gerar cabecalho
+  Insert Into REMUN_LANCTO_CH (
+      id_lancto
+    , id_cliente
+    , id_unid_lotacao
+    , controle
+    , ano_mes
+    , data
+    , hora
+    , usuario
+    , situacao
+    , importado
+  ) Select
+        :id_lancto
+      , a.id_cliente
+      , :id_lotacao_destino
+      , :id_controle
+      , :id_competencia_destino
+      , :data
+      , :hora
+      , :usuario
+      , 0
+      , 0
+    from REMUN_LANCTO_CH a
+    where (a.id_lancto = :id_lancto_origem);
+
+  -- Gerar lancamentos detalhes
+  Insert Into REMUN_LANCTO_CH_PROF (
+      id_lancto_prof
+    , id_lancto
+    , id_cliente
+    , id_servidor
+    , id_unid_lotacao
+    , ano_mes
+    , qtd_h_aula_normal
+    , qtd_h_aula_substituicao
+    , qtd_h_aula_outra
+    , qtd_falta
+    , tipo_falta
+    , observacao
+    , calc_grat_series_iniciais
+    , calc_grat_dificil_acesso
+    , calc_grat_ensino_espec
+    , calc_grat_multi_serie
+  ) Select
+        (Select first 1 x.hex_uuid_format from GET_GUID_UUID_HEX x) as id_lancto_prof
+      , :id_lancto
+      , b.id_cliente
+      , b.id_servidor
+      , :id_lotacao_destino
+      , :id_competencia_destino
+      , b.qtd_h_aula_normal
+      , b.qtd_h_aula_substituicao
+      , b.qtd_h_aula_outra
+      , null
+      , 0
+      , b.observacao
+      , b.calc_grat_series_iniciais
+      , b.calc_grat_dificil_acesso
+      , b.calc_grat_ensino_espec
+      , b.calc_grat_multi_serie
+    from REMUN_LANCTO_CH_PROF b
+    where (b.id_lancto = :id_lancto_origem);
+end
+
+^
+
+SET TERM ; ^
+
+GRANT EXECUTE ON PROCEDURE SP_DUPLICAR_LACTO_CH TO "PUBLIC";
+
+
+
+/*------ GERASYS.TI 09/07/2020 16:24:21 --------*/
+
+SET TERM ^ ;
+
+CREATE OR ALTER procedure SP_DUPLICAR_LACTO_CH (
+    ID_LANCTO_ORIGEM DMN_GUID,
+    ID_LOTACAO_DESTINO DMN_INTEGER,
+    ID_COMPETENCIA_DESTINO DMN_CHAR06,
+    DATA DMN_DATE,
+    HORA DMN_TIME,
+    USUARIO DMN_INTEGER)
+as
+declare variable ID_CONTROLE DMN_BIGINT;
+declare variable ID_LANCTO DMN_GUID;
+begin
+  Select
+      g.hex_uuid_format
+    , gen_id(GEN_LANCTO_CH, 1)
+  from GET_GUID_UUID_HEX g
+  Into
+      id_lancto
+    , id_controle;
+
+  -- Gerar cabecalho
+  Insert Into REMUN_LANCTO_CH (
+      id_lancto
+    , id_cliente
+    , id_unid_lotacao
+    , controle
+    , ano_mes
+    , data
+    , hora
+    , usuario
+    , situacao
+    , importado
+  ) Select
+        :id_lancto
+      , a.id_cliente
+      , :id_lotacao_destino
+      , :id_controle
+      , :id_competencia_destino
+      , :data
+      , :hora
+      , :usuario
+      , 0
+      , 0
+    from REMUN_LANCTO_CH a
+    where (a.id_lancto = :id_lancto_origem);
+
+  -- Gerar lancamentos detalhes
+  Insert Into REMUN_LANCTO_CH_PROF (
+      id_lancto_prof
+    , id_lancto
+    , id_cliente
+    , id_servidor
+    , id_unid_lotacao
+    , ano_mes
+    , qtd_h_aula_normal
+    , qtd_h_aula_substituicao
+    , qtd_h_aula_outra
+    , qtd_falta
+    , tipo_falta
+    , observacao
+    , calc_grat_series_iniciais
+    , calc_grat_dificil_acesso
+    , calc_grat_ensino_espec
+    , calc_grat_multi_serie
+  ) Select
+        (Select first 1 x.hex_uuid_format from GET_GUID_UUID_HEX x) as id_lancto_prof
+      , :id_lancto
+      , b.id_cliente
+      , b.id_servidor
+      , :id_lotacao_destino
+      , :id_competencia_destino
+      , b.qtd_h_aula_normal
+      , b.qtd_h_aula_substituicao
+      , b.qtd_h_aula_outra
+      , null
+      , 0
+      , b.observacao
+      , b.calc_grat_series_iniciais
+      , b.calc_grat_dificil_acesso
+      , b.calc_grat_ensino_espec
+      , b.calc_grat_multi_serie
+    from REMUN_LANCTO_CH_PROF b
+    where (b.id_lancto = :id_lancto_origem);
+end
+
+^
+
+SET TERM ; ^
+
+COMMENT ON PROCEDURE SP_DUPLICAR_LACTO_CH IS 'Procedure DUPLICAR LANCAMENTOS DE CARGA HORARIA.
+
+    Autor   :   Isaque M. Ribeiro
+    Data    :   09/07/2020
+
+Stored procedure responsavel por gerar novos lancamentos de cargas horarios para
+professores com base em outro lancamento previamente existente.';
+
+
+
+/*------ GERASYS.TI 09/07/2020 16:55:37 --------*/
+
+/*!!! Error occured !!!
+Arithmetic overflow or division by zero has occurred.
+arithmetic exception, numeric overflow, or string truncation.
+string right truncation.
+
+*/
+
+/*------ GERASYS.TI 09/07/2020 16:55:59 --------*/
+
+/*!!! Error occured !!!
+Column does not belong to referenced table.
+Dynamic SQL Error.
+SQL error code = -206.
+Column unknown.
+U.NOME.
+At line 6, column 16.
+
+*/

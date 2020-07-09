@@ -346,6 +346,7 @@ where (s.id_cliente = 15019)
                         <button class="btn btn-default" data-toggle="modal" data-target=".box_alerta"   id="box_alerta"></button>
                         <button class="btn btn-default" data-toggle="modal" data-target=".box_erro"     id="box_erro"></button>
                         <button class="btn btn-default" data-toggle="modal" data-target=".box_pesquisa" id="box_pesquisa"></button>
+                        <button class="btn btn-default" data-toggle="modal" data-target=".box_duplicar" id="box_duplicar"></button>
                     </div>
 
                     <div class="col-md-12" id="panel_lancamentos">
@@ -527,6 +528,63 @@ where (s.id_cliente = 15019)
                         </div>
                     </div>
                     
+                    <div class="modal fade bs-example-modal box_duplicar" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+                        <div class="modal-dialog"><!--modal-lg-->
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                    <h4 class="modal-title">Duplicar Lançamentos</h4>
+                                </div>
+                                <div class="modal-body" id="box_duplicar_msg">
+                                    <div class="form-horizontal bordered-row">
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="form-group" style="margin: 2px;">
+                                                    <label for="controle_copia" class="col-sm-3 control-label padding-label">Origem</label>
+                                                    <div class="col-sm-2 padding-field">
+                                                        <input type="hidden" id="id_origem">
+                                                        <input type="text" class="form-control text lg-text" maxlength="10" id="controle_copia" readonly>
+                                                    </div>
+                                                    <label for="data_copia" class="col-sm-3 control-label padding-label">Data</label>
+                                                    <div class="col-sm-3 padding-field">
+                                                        <input type="text" class="form-control text lg-text" maxlength="11" id="data_copia" readonly>
+                                                        <input type="hidden" id="hora_copia">
+                                                    </div>
+                                                </div>
+                                                
+                                                <div class="form-group" style="margin: 2px;">
+                                                    <label for="id_lotacao_copia" class="col-sm-3 control-label padding-label">Lotação</label>
+                                                    <div class="col-sm-8 padding-field">
+                                                        <div class="input-group">
+                                                            <select class="form-control chosen-select" id="id_lotacao_copia" style="width: 100%;" disabled>
+                                                                <option value="0" class="optionChild">Selecione Unidades de Lotação</option>
+                                                                <?php echo $lista_lotacoes;?>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                
+                                                <div class="form-group" style="margin: 2px;">
+                                                    <label for="ano_mes_copia" class="col-sm-3 control-label padding-label">Competência de destino</label>
+                                                    <div class="col-sm-8 padding-field">
+                                                        <select class="form-control chosen-select" id="ano_mes_copia">
+                                                            <option value="0" class="optionChild">Selecione a Competência</option>
+                                                            <?php echo $lista_anomes;?>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-default" data-dismiss="modal" id="btnF_duplicar_msg">Fechar</button>
+                                    <button type="button" class="btn btn-primary" id="btnC_duplicar_msg" onclick="confirmar_copia()">Confirmar</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
                     <script type="text/javascript">
                         /* Ao pressionar uma tecla em um campo que seja de class="proximo_campo" */ 
                         $('#tabela-lancamento_professores, .box_servidor, .box_pesquisa').on('keyup', '.proximo_campo', function(e) {
@@ -576,6 +634,7 @@ where (s.id_cliente = 15019)
                         $('#box_alerta').fadeOut();
                         $('#box_erro').fadeOut();
                         $('#box_pesquisa').fadeOut();
+                        $('#box_duplicar').fadeOut();
                         
                         $(".input-mask").inputmask();
                         $('input[type="checkbox"].custom-checkbox').uniform();
@@ -908,6 +967,53 @@ where (s.id_cliente = 15019)
                             
                             $('#btn_pesquisa_fechar').trigger("click");
                             $('#qtde_hora_aula_normal').focus();
+                        }
+                        
+                        function iniciar_copia(id) {
+                            var referencia = id.replace("copiar_lancamento_ch_", "");
+                            if ( parseInt($('#situacao_' + referencia).val()) === 0 ) {
+                                mensagem_alerta("Lançamentos abertos não podem ser copiados.");
+                            } else {
+                                var agora = new Date();
+                                $('#data_copia').val(zero_esquerda(agora.getDate(), 2)  + "/" + zero_esquerda(agora.getMonth()+1, 2) + "/" + agora.getFullYear());
+                                $('#hora_copia').val(zero_esquerda(agora.getHours(), 2) + ":" + zero_esquerda(agora.getMinutes(), 2) + ":" + zero_esquerda(agora.getSeconds(), 2));
+                                
+                                $('#id_origem').val( referencia );
+                                $('#controle_copia').val( $('#controle_' + referencia).val() );
+                                $('#id_lotacao_copia').val( $('#id_unid_lotacao_' + referencia).val() );
+                                $('#ano_mes_copia').val( $('#competencia_atual').val());
+                                //$('#ano_mes_copia').val("0");
+
+                                $('#id_lotacao_copia').trigger('chosen:updated');
+                                $('#ano_mes_copia').trigger('chosen:updated');
+                                $('#box_duplicar').trigger("click");
+                            }
+                        }
+                        
+                        function confirmar_copia() {
+                            var competencia = parseInt($('#ano_mes_copia').val());
+                            if (competencia === 0) {
+                                mensagem_alerta("Selecione a <strong>competência</strong> de destino para a cópia dos lançamentos.");
+                            } else {
+                                // Executar cópia
+                                var origem  = $('#id_origem').val();
+                                var lotacao = $('#id_lotacao_copia').val();
+                                var competencia = $('#ano_mes_copia').val();
+                                var data_   = $('#data_copia').val();
+                                var hora_   = $('#hora_copia').val();
+                                gerar_copia_lancamento_chp(origem, lotacao, competencia, data_, hora_, function(retorno){
+                                    if (retorno === "OK") {
+                                        $('#ano_mes_pesquisa').val( $('#ano_mes_copia').val() );
+                                        $('#id_lotacao').val( $('#id_lotacao_copia').val() );
+
+                                        $('#ano_mes_pesquisa').trigger('chosen:updated');
+                                        $('#id_lotacao').trigger('chosen:updated');
+                                        
+                                        $('#btnF_duplicar_msg').trigger("click");
+                                        $('#btn_consultar').trigger("click");
+                                    }
+                                });
+                            }
                         }
                     </script>
                 </div>

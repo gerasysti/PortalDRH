@@ -50,7 +50,8 @@
             . "<input type='hidden' id='situacao_{$referencia}' value='{$situacao}'>"
             . "<input type='hidden' id='importado_{$referencia}' value='{$importado}'>";
 
-        $icon_ed = "<button id='editar_lancamento_ch_{$referencia}'  class='btn btn-round btn-primary' title='Editar Registro'  onclick='editarLancamentoCH(this.id)'  style='{$style}'><i class='glyph-icon icon-edit'></i></button>";
+        $icon_ed = "<button id='editar_lancamento_ch_{$referencia}'  class='btn btn-round btn-primary' title='Editar Registro' onclick='editarLancamentoCH(this.id)'  style='{$style}'><i class='glyph-icon icon-edit'></i></button>";
+        $icon_cp = "<button id='copiar_lancamento_ch_{$referencia}'  class='btn btn-round btn-primary' title='Duplicar Lançamentos' onclick='iniciar_copia(this.id)'  style='{$style}'><i class='glyph-icon icon-copy'></i></button>";
         $icon_ex = "<button id='excluir_lancamento_ch_{$referencia}' class='btn btn-round btn-primary' title='Excluir Registro' onclick='excluirLancamentoCH(this.id)' style='{$style}'><i class='glyph-icon icon-trash'></i></button>";
         $icon_st = "";
 
@@ -70,7 +71,7 @@
         $tabela .= "        <td class='numeric' style='text-align: center;'>{$total_ch_outra}</td>";
         $tabela .= "        <td class='numeric' style='text-align: center;'>{$total_faltas}</td>";
         $tabela .= "        <td style='text-align: center;'>{$icon_st}</td>";
-        $tabela .= "        <td class='numeric' style='text-align: center;' style='{$style}'>{$icon_ed}&nbsp;{$icon_ex}{$input}</td>";
+        $tabela .= "        <td class='numeric' style='text-align: center;' style='{$style}'>{$icon_ed}&nbsp;{$icon_cp}&nbsp;{$icon_ex}{$input}</td>";
         $tabela .= "    </tr>";
         
         return $tabela;
@@ -930,6 +931,76 @@
                     }
                 } break;
                 
+                case 'gerar_copia_lancamento_chp' : {
+                    try {
+                        $id = strip_tags( preg_replace("/[^0-9]/", "", trim(filter_input(INPUT_POST, 'id'))) );
+                        $hs = trim(filter_input(INPUT_POST, 'hs'));
+                        $to = strip_tags( preg_replace("/[^0-9]/", "", trim(filter_input(INPUT_POST, 'to'))) );
+                        $id_origem = "{" . strip_tags( trim(filter_input(INPUT_POST, 'origem')) ) . "}";
+                        
+                        $id_lotacao     = strip_tags( preg_replace("/[^0-9]/", "", trim(filter_input(INPUT_POST, 'lotacao'))) );
+                        $id_competencia = strip_tags( preg_replace("/[^0-9]/", "", trim(filter_input(INPUT_POST, 'competencia'))) );
+                        $dt_lancamento  = strip_tags( trim(filter_input(INPUT_POST, 'data')) );
+                        $hr_lancamento  = strip_tags( trim(filter_input(INPUT_POST, 'hora')) );
+
+                        if ($hs !== $hash) {
+                            echo "Acesso Inválido";
+                        } else {
+                            $cnf = Configuracao::getInstancia();
+                            $pdo = $cnf->db('', '');
+                            $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+                            
+                            $sql = 
+                                  "Select "
+                                . "    a.id_lancto "
+                                . "  , a.controle "
+                                . "  , a.data "
+                                . "  , substring(cast(a.hora as varchar(20)) from 1 for 8) as hora "
+                                . "  , coalesce(u.nome, 'SISTEMA WEB') as usuario "
+                                . "from REMUN_LANCTO_CH a "
+                                . "  left join ADM_USUARIO u on (u.id = a.usuario) "
+                                . "where (a.id_cliente = {$to}) "
+                                . "  and (a.id_unid_lotacao = {$id_lotacao}) "
+                                . "  and (a.ano_mes = '{$id_competencia}') "
+                                . "  and (a.situacao = 0) ";
+                            
+                            $res = $pdo->query($sql);
+                            if (($obj = $res->fetch(PDO::FETCH_OBJ)) !== false) {
+                                $controle = str_pad($obj->controle, 5, "0", STR_PAD_LEFT);
+                                $data_lancto = (!empty($obj->data)?date('d/m/Y', strtotime($obj->data) ):"&nbsp;");
+                                $hora_lancto = (!empty($obj->hora)?$obj->hora:"&nbsp;");
+                                echo "Já existe o lançamento de número <strong>{$controle}</strong>, feito no dia <strong>{$data_lancto}</strong>, às <strong>{$hora_lancto}</strong>, pelo usuário <strong>{$obj->usuario}</strong>.";
+                            } else {
+                                $stm = $pdo->prepare(
+                                      "Execute Procedure SP_DUPLICAR_LACTO_CH ( "
+                                    . "    :id_origem   "
+                                    . "  , :lotacao     "
+                                    . "  , :competencia "
+                                    . "  , current_date "
+                                    . "  , current_time "
+                                    . "  , :usuario     "
+                                    . ") "
+                                );
+                                $stm->execute(array(
+                                      ':id_origem'   => $id_origem
+                                    , ':lotacao'     => $id_lotacao
+                                    , ':competencia' => $id_competencia
+                                    , ':usuario'     => $user_id
+                                ));
+
+                                $pdo->commit();
+
+                                // Fechar conexão PDO
+                                unset($stm);
+                                unset($pdo);
+
+                                echo "OK";
+                            }
+                        }
+                    } catch (Exception $ex) {
+                        echo $ex . "<br><br>" . $ex->getMessage();
+                    }
+                } break;
             }
         } else {
             echo "Erro ao tentar identificar ação requistada!";

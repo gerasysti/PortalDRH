@@ -35,7 +35,7 @@ function configurarTabelaCHLancadas(){
             { "width": "10px" },   // 5. CH Outras
             { "width": "10px" },   // 6. Faltas
             { "width": "10px" },   // 7. Importado
-            { "width": "130px" }   // 8. Controles
+            { "width": "195px" }   // 8. Controles
         ],
         "columnDefs": [
             {"orderable": false, "targets": 0}, // #
@@ -219,6 +219,11 @@ function carregar_lancamento_professores() {
         success : function(data){
             $('#tabela-lancamento_professores').html(data);
             $('.excluir_servidor').blur();
+            /*
+            The blur event occurs when an element loses focus.
+            The blur() method triggers the blur event, or attaches a function to run when a blur event occurs.
+            Tip: This method is often used together with the focus() method.
+            */
             configurarTabelaProfessoresLancados();
         },
         error: function (request, status, error) {
@@ -802,6 +807,54 @@ function salvar_edicao_lancamento_professor(referencia, valor, callback) {
     });  
     // Finalizamos o Ajax
 }
+
+function gerar_copia_lancamento_chp(origem, lotacao, competencia, data_, hora_, callback) {
+    var id   = $('#id_sessao').val();
+    var hash = id.split("_");
+    var params = {
+        'ac' : 'gerar_copia_lancamento_chp',
+        'id' : hash[1],
+        'hs' : hash[1],
+        'to' : $('#cliente').val(),
+        'origem' : origem, // GUID ID
+        'lotacao': lotacao,
+        'competencia': competencia,
+        'data'   : data_,
+        'hora'   : hora_
+    };
+
+    // Iniciamos o Ajax 
+    $.ajax({
+        // Definimos a url
+        url : './lancar_chprofessores_dao.php',
+        // Definimos o tipo de requisição
+        type: 'post',
+        // Definimos o tipo de retorno
+        dataType : 'html',
+        // Dolocamos os valores a serem enviados
+        data: params,
+        // Antes de enviar ele alerta para esperar
+        beforeSend : function(){
+            ;
+        },
+        // Colocamos o retorno na tela
+        success : function(data){
+            var retorno = data;
+            if (retorno === "OK") {
+                if(callback && typeof(callback) === "function") {
+                    callback(retorno);
+                }
+            } else {
+                mensagem_erro(retorno);
+            }
+        },
+        error: function (request, status, error) {
+            mensagem_erro("Erro na duplicação do lançamento!<br> (" + status + ")" + request.responseText + "<br><strong>Error : </strong>" + error.toString());
+        }
+    });  
+    // Finalizamos o Ajax
+}
+
 
 (function($) {
     AddTableRowLancamentoEvento = function(table_tr) {
