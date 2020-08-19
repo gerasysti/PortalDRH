@@ -317,7 +317,7 @@
         
         <footer>
             <div class="container">
-                <p class="text-left col-md-12">© 2015, 2016. GeraSys TI. Todos os direitos reservados. | Desenvolvido pela <a href="mailto:isaque.ribeiro@agilsoftwares.com.br">Ágil Soluções em Softwares</a></p>
+                <p class="text-left col-md-12">© 2015-2020. GeraSys TI. Todos os direitos reservados. | Desenvolvido pela <a href="mailto:isaque.ribeiro@agilsoftwares.com.br">Ágil Soluções em Softwares</a></p>
             </div>
         </footer>
         

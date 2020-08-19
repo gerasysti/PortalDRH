@@ -10,8 +10,6 @@
     //ini_set('memory_limit', '512M');
     include("../lib/mpdf60/mpdf.php");
     
-    ob_start();
-    
     require_once '../lib/classes/configuracao.php';
     require_once '../lib/Constantes.php';
     require_once '../lib/funcoes.php';
@@ -20,6 +18,7 @@
     $nr_mes = preg_replace("/[^0-9]/", "", trim(filter_input(INPUT_GET, 'mes')));
     $nr_par = preg_replace("/[^0-9]/", "", trim(filter_input(INPUT_GET, 'par')));
     $id_vin = preg_replace("/[^0-9]/", "", trim(filter_input(INPUT_GET, 'vin')));
+    $hash   = trim(filter_input(INPUT_GET, 'hs'));
     $ds_vin = "";
     
     $unidade     = "0";
@@ -28,7 +27,11 @@
     $md5_unidade = trim(filter_input(INPUT_GET, 'un')); 
     $des_unidade = "Título da Unidade no Portal";
     $inf_unidade = "Informações da Unidade";
+//    
+//    echo "Hash: " . $hash;
+//    exit;
     
+    ob_start();
 ?>
 <html>
     <head>
@@ -352,12 +355,26 @@
     $pdf->render();
     $pdf->stream("Remuneracao_Servidor_{$md5_unidade}.pdf");
     */
-    $filename = "Remuneracao_Servidor_{$md5_unidade}.pdf";
+    $filename    = "Remuneracao_Servidor_{$md5_unidade}.pdf";
+    $arquivo_pdf = "../downloads/{$hash}.pdf";
+    
     $mpdf = new mPDF('utf-8', 'A4-L');    
     $mpdf->SetDisplayMode('fullpage');
     $mpdf->SetFooter('Página {PAGENO}/{nbpg}');
     //$stylesheet = file_get_contents('../lib/mpdf60/examples/mpdfstyleA4.css');
     //$mpdf->WriteHTML($stylesheet, 1);
-    $mpdf->WriteHTML($html);
-    $mpdf->Output($filename, 'I');
+    
+    if ($hash === "") {
+        $mpdf->WriteHTML($html);
+        $mpdf->Output($filename, 'I'); // Gerar arquivo PDF em memória
+    } else {
+        if (file_exists($arquivo_pdf)) {
+            unlink($arquivo_pdf);
+        }
+        
+        $mpdf->WriteHTML($html);
+        $mpdf->Output($arquivo_pdf, 'F'); // Gerar arquivo PDF em disco
+        
+        echo "OK";
+    }
 ?>

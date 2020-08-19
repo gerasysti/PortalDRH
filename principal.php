@@ -235,6 +235,7 @@
             .custom-font-size-12 {
                 font-size: 12px;
             }
+            
             /* Centralizar na verticação as células de tabelas renderizadas pela classe "dataTable()"*/
             table.dataTable tbody td {
                 vertical-align: middle;
@@ -249,6 +250,8 @@
         <?php
             include './page_head_links.php';
         ?>
+        <!-- DRH -->
+        <link rel="stylesheet" type="text/css" href="./admin/controle.css">
    </head>
 
     <body ng-controller="indexController">
