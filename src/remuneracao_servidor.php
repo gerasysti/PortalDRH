@@ -126,8 +126,24 @@
                                                 <select class="form-control chosen-select" id="id_vinculo">
                                                     <option value='0' selected>(Todos)</option>
                                                     <?php
-//                                                        echo "<optgroup label='ANTES DE 2020'>";
-//                                                        
+                                                        echo "<optgroup label='A PARTIR DE JAN/2020'>";
+                                                        
+                                                        $sql = 
+                                                             "Select "
+                                                            ."    s.id "
+                                                            ."  , s.descricao "
+                                                            ."from REMUN_SITUACAO_TCM2020 s "
+                                                            ."order by "
+                                                            ."    s.id ";
+
+                                                        $res = $pdo->query($sql);
+                                                        while (($obj = $res->fetch(PDO::FETCH_OBJ)) !== false) {
+                                                            echo "<option class='optionChild' value='{$obj->id}'>{$obj->descricao}</option>";
+                                                        }
+                                                        
+                                                        echo "</optgroup>";
+                                                        echo "<optgroup label='ANTES DE 2020'>";
+                                                        
                                                         $cnf = Configuracao::getInstancia();
                                                         $pdo = $cnf->db('', '');
                                                         $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
@@ -145,23 +161,7 @@
                                                             echo "<option class='optionChild' value='{$obj->id}'>{$obj->descricao}</option>";
                                                         }
                                                         
-//                                                        echo "</optgroup>";
-//                                                        echo "<optgroup label='A PARTIR DE JAN/2020'>";
-//                                                        
-//                                                        $sql = 
-//                                                             "Select "
-//                                                            ."    s.id "
-//                                                            ."  , s.descricao "
-//                                                            ."from REMUN_SITUACAO_TCM s "
-//                                                            ."order by "
-//                                                            ."    s.id ";
-//
-//                                                        $res = $pdo->query($sql);
-//                                                        while (($obj = $res->fetch(PDO::FETCH_OBJ)) !== false) {
-//                                                            echo "<option class='optionChild' value='{$obj->id}'>{$obj->descricao}</option>";
-//                                                        }
-//                                                        
-//                                                        echo "</optgroup>";
+                                                        echo "</optgroup>";
                                                     ?>
                                                 </select>
                                                 <div>&nbsp;</div>
