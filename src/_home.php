@@ -39,6 +39,7 @@ and open the template in the editor.
     $inf_unidade = "Informações da Unidade";
     
     $ano_mes = date('Ym');
+    $parcela = "0";
     
     $cnf = Configuracao::getInstancia();
     $pdo = $cnf->db('', '');
@@ -64,7 +65,7 @@ and open the template in the editor.
         . "      , max(x.ano_mes) as ano_mes "
         . "    from REMUN_BASE_CALC_MES x "
         . "    where (x.id_cliente = {$_REQUEST['id']}) "
-        . "      and (x.parcela    = '0') "
+        . "      and (x.parcela    = '{$parcela}') "
         . "    group by "
         . "        x.id_cliente "
         . "  ) x on (x.id_cliente = u.id) "
@@ -112,7 +113,7 @@ and open the template in the editor.
         . "      , max(x.ano_mes) as ano_mes "
         . "    from REMUN_BASE_CALC_MES x    "
         . "    where (x.id_cliente = {$id})  "
-        . "      and (x.parcela    = 'XXXXXX')    "
+        . "      and (x.parcela    = '{$parcela}')    "
         . "      and (x.tot_venctos > 0)     "
         . "    group by "
         . "        x.parcela "
@@ -122,19 +123,7 @@ and open the template in the editor.
         . "where (s.tot_venctos > 0) "
         . "group by "
         . "    x.ano_mes ";
-    /*    
-    $sql = 
-          "Select "
-        . "    '{$ano_mes}' as ano_mes "
-        . "  , substring('{$ano_mes}' from 5 for 2) || '/' || substring('{$ano_mes}' from 1 for 4) as ds_competencia "
-        . "  , count(r.R_MATRIC)      as qt_registros    "
-        . "  , count(r.R_MATRIC)      as qt_servidores   "
-        . "  , sum(r.R_VENCTO_BASE)   as vencimento_base "
-        . "  , sum(r.R_TOT_VENCTOS)   as tot_venctos "
-        . "  , sum(r.R_TOT_DESCONTOS) as tot_descontos "
-        . "  , sum(r.R_SAL_LIQUIDO)   as tot_salarios "
-        . "from SP_FOLHA_TRANSPARENCIA({$id}, '{$ano}', '{$mes}', '0', 0) r ";
-    */
+
     $qry = $pdo->query($sql);    
     $dados   = $qry->fetchAll(PDO::FETCH_ASSOC);
     $valores = null;
@@ -160,9 +149,9 @@ and open the template in the editor.
         . "          , (sum( s.sal_liquido )   / 1000000.0) as tot_salarios "
         . "        from REMUN_BASE_CALC_MES s "
         . "        where (s.id_cliente = {$id}) "
+        . "          and (s.ano_mes    < '{$ano_mes}') "
+        . "          and (s.parcela    = '{$parcela}') "
         . "          and (substring(s.ano_mes from 1 for 4) = '{$ano}') "
-        . "          and (s.ano_mes < '{$ano_mes}') "
-        . "          and (s.parcela     = 'XXXXXX') "
         . "          and (s.tot_venctos > 0)     "
         . "        group by "
         . "            s.ano_mes "

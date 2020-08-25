@@ -21,6 +21,7 @@
     session_destroy();
     
     $unidade     = "0";
+    $parcela     = "0";
     $md5_unidade = md5("0000000");
     $des_unidade = "Título da Unidade no Portal";
     $inf_unidade = "Informações da Unidade";
@@ -102,11 +103,14 @@
         . "      , max(x.ano_mes) as ano_mes "
         . "    from REMUN_BASE_CALC_MES x "
         . "    where (x.id_cliente = {$unidade}) "
+        . "      and (x.parcela    = '{$parcela}')    "
+        . "      and (x.tot_venctos > 0)     "
         . "    group by "
         . "        x.parcela "
         . "      , x.id_cliente "
         . ") x "
         . "  inner join REMUN_BASE_CALC_MES s on (s.id_cliente = x.id_cliente and s.ano_mes = x.ano_mes and s.parcela = x.parcela) "
+        . "where (s.tot_venctos > 0) "
         . "group by "
         . "    x.ano_mes ";
         

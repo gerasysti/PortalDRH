@@ -67,7 +67,6 @@
                     <div class="col-md-12">
                     
                         <div class="panel">
-
                             <div class="panel-body">
                                 <h3 class="title-hero">
                                     Favor selecionar os filtros necessário para pesquisa
@@ -78,7 +77,7 @@
                                         <div class="form-group">
                                             <label class="col-sm-1 control-label padding-label">Competência</label>
                                             <div class="col-sm-1 padding-field">
-                                                <select class="form-control chosen-select" id="nr_ano">
+                                                <select class="form-control chosen-select" id="nr_ano" onchange="montar_lista_vinculo()">
                                                     <?php
                                                         echo "<option value='0'>Exercício</option>";
 
@@ -122,8 +121,8 @@
                                             </div>
                                             
                                             <label class="col-sm-1 control-label padding-label">Vínculo Empregatício</label>
-                                            <div class="col-sm-3 padding-field">
-                                                <select class="form-control chosen-select" id="id_vinculo">
+                                            <div class="col-sm-3 padding-field" id="vinculo">
+                                                <select class='form-control chosen-select' id='id_vinculo'>
                                                     <option value='0' selected>(Todos)</option>
                                                     <?php
                                                         echo "<optgroup label='A PARTIR DE JAN/2020'>";
@@ -187,9 +186,7 @@
                         <div class="panel">
                             <div class="panel-body">
                                 <div id="page-wait">
-                                    <a href="#" class="btn btn-md btn-default overlay-button hide" data-style="dark" data-theme="bg-default" data-opacity="60" id="link_wait">
-
-                                    </a>
+                                    <a href="#" class="btn btn-md btn-default overlay-button hide" data-style="dark" data-theme="bg-default" data-opacity="60" id="link_wait"></a>
                                 </div>
                                 <div class="box-wrapper" id="tabela-servidores">
                                     
@@ -197,6 +194,68 @@
                             </div>
                         </div>
                     </div>
+                    
+                    <div class="col-md-12" id="panel_cadastro">
+                        <a href="#" class="btn btn-md btn-black overlay-button hide" data-style="light" data-theme="bg-black" data-opacity="60" id="link_overlay"></a>
+                    </div>
+                    
+                    <script type="text/javascript">
+                        // Função "overlay" extraída do arquivo "overlay.js"
+                        $('.overlay-button').click(function(){
+                            var loadertheme = $(this).attr('data-theme');
+                            var loaderopacity = $(this).attr('data-opacity');
+                            var loaderstyle = $(this).attr('data-style');
+
+                            var loader = '<div id="loader-overlay" class="ui-front loader ui-widget-overlay ' + loadertheme + ' opacity-' + loaderopacity + '"><img src="./assets/images/spinner/loader-' + loaderstyle + '.gif" alt="" /></div>';
+
+                            if ( $('#loader-overlay').length ) {
+                                $('#loader-overlay').remove();
+                            }
+
+                            $('body').append(loader);
+                        });
+                        
+                        function montar_lista_vinculo() {
+                            var exercicio = $('#nr_ano').val();
+                            if ( parseInt("0" + exercicio) > 0 ) {
+                                var params = {
+                                    'ac'  : 'chosen-select-vinculos',
+                                    'ano' : exercicio
+                                };
+
+                                // Iniciamos o Ajax 
+                                $.ajax({
+                                    // Definimos a url
+                                    url : 'src/chosen-select_dao.php',
+                                    // Definimos o tipo de requisição
+                                    type: 'post',
+                                    // Definimos o tipo de retorno
+                                    dataType : 'html',
+                                    // Dolocamos os valores a serem enviados
+                                    data: params,
+                                    // Antes de enviar ele alerta para esperar
+                                    beforeSend : function(){
+                                        ;
+                                    },
+                                    // Colocamos o retorno na tela
+                                    success : function(data){
+                                        $('#vinculo').html(data);
+                                        // Refazer o estilo do controle
+                                        $("#vinculo .chosen-select").chosen();
+                                        $("#vinculo .chosen-search").append('<i class="glyph-icon icon-search"></i>');
+                                        $("#vinculo .chosen-single div").html('<i class="glyph-icon icon-caret-down"></i>');
+
+                                        $('#id_vinculo').val("0");
+                                        $('#id_vinculo').trigger('chosen:updated');
+                                    },
+                                    error: function (request, status, error) {
+                                        ;
+                                    }
+                                });  
+                                // Finalizamos o Ajax
+                            }
+                        }
+                    </script>
                 </div>
         
     </body>

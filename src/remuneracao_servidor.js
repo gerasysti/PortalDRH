@@ -29,6 +29,7 @@ function consultarRemuneracaoServidor(hash, id) {
         data: params,
         // Antes de enviar ele alerta para esperar
         beforeSend : function(){
+            //$('#link_overlay').trigger("click");
             $('#page-wait').html( loading_spinner() );
             $('#tabela-servidores').html("");
             
@@ -130,6 +131,7 @@ function imprimir_remuneracao_servidor(hash, id) {
         data: params,
         // Antes de enviar ele alerta para esperar
         beforeSend : function(){
+            $('#link_overlay').trigger("click");
             $('#page-wait').html( loading_spinner() );
         },
         // Colocamos o retorno na tela

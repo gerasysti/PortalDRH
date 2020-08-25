@@ -25,6 +25,19 @@
             </bookmark>
         </file>
         <file>
+            <url>admin/lancar_eventos_controller.js</url>
+            <bookmark id="12">
+                <name/>
+                <line>449</line>
+                <key/>
+            </bookmark>
+            <bookmark id="4">
+                <name/>
+                <line>615</line>
+                <key/>
+            </bookmark>
+        </file>
+        <file>
             <url>admin/lancar_eventos_view.php</url>
             <bookmark id="1">
                 <name/>
@@ -53,19 +66,6 @@
             </bookmark>
         </file>
         <file>
-            <url>admin/lancar_eventos_controller.js</url>
-            <bookmark id="12">
-                <name/>
-                <line>449</line>
-                <key/>
-            </bookmark>
-            <bookmark id="4">
-                <name/>
-                <line>615</line>
-                <key/>
-            </bookmark>
-        </file>
-        <file>
             <url>admin/lancar_chprofessores_dao.php</url>
             <bookmark id="22">
                 <name/>
@@ -89,14 +89,6 @@
             </bookmark>
         </file>
         <file>
-            <url>admin/controle.php</url>
-            <bookmark id="13">
-                <name/>
-                <line>217</line>
-                <key/>
-            </bookmark>
-        </file>
-        <file>
             <url>admin/lancar_eventos_dao.php</url>
             <bookmark id="3">
                 <name/>
@@ -106,6 +98,14 @@
             <bookmark id="11">
                 <name/>
                 <line>969</line>
+                <key/>
+            </bookmark>
+        </file>
+        <file>
+            <url>admin/controle.php</url>
+            <bookmark id="13">
+                <name/>
+                <line>217</line>
                 <key/>
             </bookmark>
         </file>
