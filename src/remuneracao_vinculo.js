@@ -102,6 +102,48 @@ function configurarTabelaVinculo(){
     });  
 }
 
+function imprimir_remuneracao_vinculo(hash, id) {
+    var params = {
+        'ac' : 'imprimir_remuneracao_vinculo',
+        'un' : hash,
+        'id' : id,
+        'hs' : $('#hash_arquivo').val(),
+        'nr_ano' : $('#nr_ano').val(),
+        'nr_mes' : $('#nr_mes').val(),
+        'id_crg' : $('#id_cargo').val()
+    };
+    
+    // Iniciamos o Ajax 
+    $.ajax({
+        // Definimos a url
+        url : 'src/remuneracao_vinculo_print.php',
+        // Definimos o tipo de requisição
+        type: 'get',
+        // Definimos o tipo de retorno
+        dataType : 'html',
+        // Dolocamos os valores a serem enviados
+        data: params,
+        // Antes de enviar ele alerta para esperar
+        beforeSend : function(){
+            $('#link_overlay').trigger("click");
+            $('#page-wait').html( loading_spinner() );
+        },
+        // Colocamos o retorno na tela
+        success : function(data){
+            $('#page-wait').html("");
+            if (data.indexOf("OK") !== -1) {
+                window.open("../downloads/" + params.hs + ".pdf", "_blank");
+            } else {
+                $('#page-wait').html("<p><strong>Erro ao tentar gerar arquivo PDF</strong> <br><br>" + data + "</p>");
+            }
+        },
+        error: function (request, status, error) {
+            $('#page-wait').html( "<p><strong>Erro ao tentar gerar o arquivo pdf!</strong> <br><br>(" + status + ")" + request.responseText + "<br><strong>Error : </strong>" + error.toString());
+        }
+    });  
+    // Finalizamos o Ajax
+}
+
 function imprimirRemuneracaoVinculo(hash, id) {
     var unidade = id.split("_");
     var params = {

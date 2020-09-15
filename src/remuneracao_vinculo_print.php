@@ -19,6 +19,7 @@
     $nr_ano = preg_replace("/[^0-9]/", "", trim(filter_input(INPUT_GET, 'ano')));
     $nr_mes = preg_replace("/[^0-9]/", "", trim(filter_input(INPUT_GET, 'mes')));
     $id_crg = preg_replace("/[^0-9]/", "", trim(filter_input(INPUT_GET, 'crg')));
+    $hash   = trim(filter_input(INPUT_GET, 'hs'));
     $ds_crg = "";
     
     $unidade     = "0";
@@ -220,6 +221,10 @@
         <br>
         <?php
             echo $tabela;
+            
+            // Para no novo modelo de geração do arquivo PDF os dados devem ser
+            // consultados e montados aqui....
+            
         ?>
     </body>
 </html>
@@ -235,11 +240,25 @@
     $pdf->stream("Remuneracao_Vinculo_{$md5_unidade}.pdf");
     */
     $filename = "Remuneracao_Vinculo_{$md5_unidade}.pdf";
+    $arquivo_pdf = "../downloads/{$hash}.pdf";
+    
     $mpdf = new mPDF('A4');    
     $mpdf->SetDisplayMode('fullpage');
     $mpdf->SetFooter('Página {PAGENO}/{nbpg}');
     //$stylesheet = file_get_contents('../lib/mpdf60/examples/mpdfstyleA4.css');
     //$mpdf->WriteHTML($stylesheet, 1);
-    $mpdf->WriteHTML($html);
-    $mpdf->Output($filename, 'I');
+    
+    if ($hash === "") {
+        $mpdf->WriteHTML($html);
+        $mpdf->Output($filename, 'I'); // Gerar arquivo PDF em memória
+    } else {
+        if (file_exists($arquivo_pdf)) {
+            unlink($arquivo_pdf);
+        }
+        
+        $mpdf->WriteHTML($html);
+        $mpdf->Output($arquivo_pdf, 'F'); // Gerar arquivo PDF em disco
+        
+        echo "OK";
+    }
 ?>

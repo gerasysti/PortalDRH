@@ -74,19 +74,19 @@
 
                         $ln  = "";
                         $sql = 
-                             "Select "
-                            ."    r.R_DESCR_VINCULO   as vinculo "
-                            ."  , count(r.R_MATRIC)   as servidores "
-                            ."  , sum(r.R_VENCTO_BASE)   as vencimento_base "
-                            ."  , sum(r.R_TOT_VENCTOS)   as total_vencimento "
-                            ."  , sum(r.R_TOT_DESCONTOS) as total_descontos "
-                            ."  , sum(r.R_SAL_LIQUIDO)   as total_liquido "
-                            ."from SP_FOLHA_TRANSPARENCIA({$id_cliente}, '{$nr_ano}', '{$nr_mes}', '{$nr_par}', 0) r "
-                            . ($id_crg === 0?"":"where r.R_ID_CARGO_FUNCAO = " . $id_crg)
-                            ."group by "
-                            ."    r.R_DESCR_VINCULO "
-                            ."order by "
-                            ."    r.R_DESCR_VINCULO "; 
+                             "Select    \n"
+                            ."    r.R_DESCR_VINCULO   as vinculo    \n"
+                            ."  , count(r.R_MATRIC)   as servidores \n"
+                            ."  , sum(r.R_VENCTO_BASE)   as vencimento_base     \n"
+                            ."  , sum(r.R_TOT_VENCTOS)   as total_vencimento    \n"
+                            ."  , sum(r.R_TOT_DESCONTOS) as total_descontos     \n"
+                            ."  , sum(r.R_SAL_LIQUIDO)   as total_liquido       \n"
+                            ."from SP_FOLHA_TRANSPARENCIA({$id_cliente}, '{$nr_ano}', '{$nr_mes}', '{$nr_par}', 0) r    \n"
+                            . ($id_crg === 0?"":"where r.R_ID_CARGO_FUNCAO = " . $id_crg) . "   \n"
+                            ."group by              \n"
+                            ."    r.R_DESCR_VINCULO \n"
+                            ."order by              \n"
+                            ."    r.R_DESCR_VINCULO \n"; 
 
                         $total_servidores = 0;
                         $total_bases      = 0.0;

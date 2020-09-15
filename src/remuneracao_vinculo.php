@@ -12,6 +12,8 @@
     $id_und = (int)preg_replace("/[^0-9]/", "", "0".trim(filter_input(INPUT_POST, 'un')));
     $nr_ano = date("Y");
     $nr_mes = date("m");
+    $hash_sessao = md5($id_und . $nr_ano . $nr_mes . date("H:i:s"));
+
     
     $meses = [
         "01" => 'JANEIRO',
@@ -33,10 +35,31 @@
 ?>
     <body>
         
+                <style>
+                    .optionGroup {
+                        font-weight: bold;
+                        font-style: italic;
+                        font-variant:small-caps;
+                    }                
+                    .optionChild {
+                        padding-left: 15px;
+                    }                    
+                    .lg-text {
+                        height: 40px;
+                        margin: 0 auto;
+                    }
+                    .lg-button {
+                        width : 40px;
+                        height: 40px;
+                        margin: 0 auto;
+                    }
+                </style>
+                
                 <div id="page-content">
                     
                     <div class="col-md-12">
                         <div id="page-title">
+                            <input type="hidden" id="hash_arquivo" value="<?php echo $hash_sessao;?>">
                             <h2><strong>Consolidado de Remuneração por Vínculos</strong></h2>
                             <p><strong>Dados disponibilizados de acordo com a Lei de Acesso à Informação - <b>Lei Nº 12.527, de 18 de Novembro de 2011.</b></strong></p>
                         </div>
@@ -51,11 +74,11 @@
                                     Favor selecionar os filtros necessário para pesquisa
                                 </h3>
 
-                                <div class="box-wrapper">
+                                <div class="box-wrapper form-horizontal">
                                     <div class="col-md-12">
                                         <div class="form-group">
-                                            <label class="col-sm-1 control-label">Competência</label>
-                                            <div class="col-sm-1">
+                                            <label class="col-sm-1 control-label padding-label">Competência</label>
+                                            <div class="col-sm-1 padding-field">
                                                 <select class="form-control chosen-select" id="nr_ano">
                                                     <?php
                                                         echo "<option value='0'>Exercício</option>";
@@ -79,7 +102,7 @@
                                                 <div>&nbsp;</div>
                                             </div>
 
-                                            <div class="col-sm-2">
+                                            <div class="col-sm-2 padding-field">
                                                 <select class="form-control chosen-select" id="nr_mes">
                                                     <?php
                                                         echo "<option value='0'>Mês</option>";
@@ -92,15 +115,15 @@
                                             </div>
 
                                             <!--<label class="col-sm-1 control-label">Parcela</label>-->
-                                            <div class="col-sm-2">
+                                            <div class="col-sm-2 padding-field">
                                                 <select class="form-control chosen-select" id="nr_par">
                                                     <option value="0" selected>NORMAL</option>
                                                     <option value="1">COMPLEMENTAR</option>
                                                 </select>
                                             </div>
                                             
-                                            <label class="col-sm-1 control-label">Cargo / Função</label>
-                                            <div class="col-sm-3">
+                                            <label class="col-sm-1 control-label padding-label">Cargo / Função</label>
+                                            <div class="col-sm-3 padding-field">
                                                 <select class="form-control chosen-select" id="id_cargo">
                                                     <?php
                                                         echo "<option value='0' selected>(Todos)</option>";
@@ -127,10 +150,10 @@
                                                 <div>&nbsp;</div>
                                             </div>
 
-                                            <div class="col-sm-2">
-                                                <button id="btn_consultar" class="btn ra-round btn-primary" onclick="consultarRemuneracaoVinculo('<?php echo md5($id_und);?>', '<?php echo 'unidade_' . $id_und?>')" title="Executar Consulta"><i class="glyph-icon icon-search"></i></button>
-                                                <button id="btn_imprimir"  class="btn ra-round btn-primary" onclick="imprimirRemuneracaoVinculo ('<?php echo md5($id_und);?>', '<?php echo 'unidade_' . $id_und?>')"  title="Baixar Consulta em PDF" disabled><i class="glyph-icon icon-file-pdf-o"></i></button>
-                                                <button id="btn_exportar"  class="btn ra-round btn-primary" onclick="exportarRemuneracaoVinculo ('<?php echo md5($id_und);?>', '<?php echo 'unidade_' . $id_und?>', 'arquivo_txt')"  title="Baixar Consulta em Arquivo TXT" disabled><i class="glyph-icon icon-file-text-o"></i></button>
+                                            <div class="col-sm-2 padding-field">
+                                                <button id="btn_consultar" class="btn ra-round btn-primary lg-text" onclick="consultarRemuneracaoVinculo('<?php echo md5($id_und);?>', '<?php echo 'unidade_' . $id_und?>')" title="Executar Consulta"><i class="glyph-icon icon-search"></i></button>
+                                                <button id="btn_imprimir"  class="btn ra-round btn-primary lg-text" onclick="imprimirRemuneracaoVinculo('<?php echo md5($id_und);?>', '<?php echo 'unidade_' . $id_und?>')"  title="Baixar Consulta em PDF" disabled><i class="glyph-icon icon-file-pdf-o"></i></button>
+                                                <button id="btn_exportar"  class="btn ra-round btn-primary lg-text" onclick="exportarRemuneracaoVinculo ('<?php echo md5($id_und);?>', '<?php echo 'unidade_' . $id_und?>', 'arquivo_txt')"  title="Baixar Consulta em Arquivo TXT" disabled><i class="glyph-icon icon-file-text-o"></i></button>
                                             </div>
                                         </div>
                                     </div>
