@@ -266,6 +266,79 @@
             </div>
         </div>
         
+        <!--<div class="modal fade bs-example-modal-lg box_confirme" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">-->
+        <div class="modal fade bs-example-modal box_confirme" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+            <div class="modal-dialog"><!--modal-lg-->
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <h4 class="modal-title">Confirme</h4>
+                    </div>
+                    <div class="modal-body" id="box_confirme_msg">
+                        <p>Large modal content here ...</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal" id="btnF_confirma_msg">Fechar</button>
+                        <button type="button" class="btn btn-primary" id="btnC_confirma_msg">Confirmar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!--<div class="modal fade bs-example-modal-lg box_alerta" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">-->
+        <div class="modal fade bs-example-modal box_informe" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+            <div class="modal-dialog"><!--modal-lg-->
+                <div class="modal-content">
+                    <div class="modal-header bg-primary">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <h4 class="modal-title">Informação</h4>
+                    </div>
+                    <div class="modal-body" id="box_informe_msg">
+                        <p>Large modal content here ...</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!--<div class="modal fade bs-example-modal-lg box_alerta" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">-->
+        <div class="modal fade bs-example-modal box_alerta" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+            <div class="modal-dialog"><!--modal-lg-->
+                <div class="modal-content">
+                    <div class="modal-header bg-warning">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <h4 class="modal-title">Alerta</h4>
+                    </div>
+                    <div class="modal-body" id="box_alerta_msg">
+                        <p>Large modal content here ...</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!--<div class="modal fade bs-example-modal-lg box_erro" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">-->
+        <div class="modal fade bs-example-modal box_erro" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+            <div class="modal-dialog"><!--modal-lg-->
+                <div class="modal-content">
+                    <div class="modal-header bg-danger">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <h4 class="modal-title">Erro</h4>
+                    </div>
+                    <div class="modal-body" id="box_erro_msg">
+                        <p>Large modal content here ...</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <?php
             include './page_script_gerais.php';
         ?>
@@ -286,6 +359,18 @@
             setNomeServidor('<?php echo $nm_servidor;?>');
             setCpfServidor ('<?php echo $cp_servidor;?>');
             setAdmissaoServidor('<?php echo $ad_servidor;?>');
+            
+            // Montar animação "Carregando..."
+            var loadertheme = $(this).attr('data-theme');
+            var loaderopacity = $(this).attr('data-opacity');
+            var loaderstyle = $(this).attr('data-style');
+
+            var loader = '<div id="loader-overlay" class="ui-front loader ui-widget-overlay ' + loadertheme + ' opacity-' + loaderopacity + '"><img src="../../assets/images/spinner/loader-' + loaderstyle + '.gif" alt="" /></div>';
+            if ( $('#loader-overlay').length ) {
+                    $('#loader-overlay').remove();
+            }
+
+            $('body').append(loader);
         </script>
 
 		<!-- BEGIN JIVOSITE CODE -->

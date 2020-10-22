@@ -100,11 +100,11 @@
                                     Favor selecionar os filtros necessário para pesquisa
                                 </h3>
 
-                                <div class="box-wrapper">
+                                <div class="box-wrapper form-horizontal">
                                     <div class="col-md-12">
                                         <div class="form-group">
-                                            <label class="col-sm-1 control-label">Exercício</label>
-                                            <div class="col-sm-2">
+                                            <label for="nr_ano" class="col-sm-1 control-label padding-label">Exercício</label>
+                                            <div class="col-sm-2 padding-field">
                                                 <select class="form-control chosen-select" id="nr_ano">
                                                     <?php
 //                                                        echo "<option value='0'>Exercício</option>";
@@ -141,7 +141,7 @@
                                                 </select>
                                             </div>-->
 
-                                            <div class="col-sm-3">
+                                            <div class="col-sm-4 padding-field">
                                                 <select class="form-control chosen-select" id="id_servidor">
                                                     <option value="0">Automático</option>
                                                     <?php
@@ -168,7 +168,7 @@
                                             </div>
 
                                             <!--<label class="col-sm-1 control-label">Parcela</label>-->
-                                            <div class="col-sm-2">
+                                            <div class="col-sm-3 padding-field">
                                                 <select class="form-control chosen-select" id="nr_par">
                                                     <option value="0" selected>NORMAL</option>
                                                     <option value="1">COMPLEMENTAR</option>
@@ -203,7 +203,7 @@
                                                 <div>&nbsp;</div>
                                             </div>-->
 
-                                            <div class="col-sm-2">
+                                            <div class="col-sm-2 padding-field">
                                                 <button id="btn_consultar" class="btn ra-round btn-primary lg-text" onclick="consultarContraCheque('<?php echo md5($id_und);?>', '<?php echo 'unidade_' . $id_und?>', '<?php echo 'servidor_' . $id_ser?>')" title="Executar Consulta"><i class="glyph-icon icon-search"></i></button>
                                                 <!--<button id="btn_imprimir"  class="btn ra-round btn-primary" onclick="imprimirRemuneracaoVinculo ('<?php echo md5($id_und);?>', '<?php echo 'unidade_' . $id_und?>')"  title="Baixar Consulta em PDF" disabled><i class="glyph-icon icon-file-pdf-o"></i></button>-->
                                                 <!--<button id="btn_exportar"  class="btn ra-round btn-primary" onclick="exportarRemuneracaoVinculo ('<?php echo md5($id_und);?>', '<?php echo 'unidade_' . $id_und?>', 'arquivo_txt')"  title="Baixar Consulta em Arquivo TXT" disabled><i class="glyph-icon icon-file-text-o"></i></button>-->
@@ -233,7 +233,18 @@
                             </div>
                         </div>
                     </div>
+                    
+                    <button class="btn btn-default" data-toggle="modal" data-target=".box_confirme" id="box_confirme"></button>
+                    <button class="btn btn-default" data-toggle="modal" data-target=".box_alerta"   id="box_alerta"></button>
+                    <button class="btn btn-default" data-toggle="modal" data-target=".box_erro"     id="box_erro"></button>
                 </div>
         
+                <script type="text/javascript">
+                    $('#link_overlay').fadeOut();
+
+                    $('#box_confirme').fadeOut();
+                    $('#box_alerta').fadeOut();
+                    $('#box_erro').fadeOut();
+                </script>
     <!--</body>-->
         

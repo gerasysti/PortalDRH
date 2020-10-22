@@ -176,7 +176,31 @@ function loading_spinner() {
     
     return str;
 }
-                
+  
+function main_mensagem_confirmar(mensagem, callback) {
+    $('#box_confirme_msg').html(mensagem);
+    $('#box_confirme').trigger("click");
+    // verifica se o parâmetro callback é realmente uma função antes de executá-lo
+    if(callback && typeof(callback) === "function") {
+        callback();
+    }
+}
+
+function main_mensagem_informe(mensagem) {
+    $('#box_informe_msg').html(mensagem);
+    $('#box_informe').trigger("click");
+}
+
+function main_mensagem_alerta(mensagem) {
+    $('#box_alerta_msg').html(mensagem);
+    $('#box_alerta').trigger("click");
+}
+
+function main_mensagem_erro(mensagem) {
+    $('#box_erro_msg').html(mensagem);
+    $('#box_erro').trigger("click");
+}
+  
 function cargos_salarios(id) {
     var unidade = id.split("_");
     var params = {

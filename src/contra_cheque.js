@@ -17,7 +17,6 @@ function consultarContraCheque(hash, id, sv) {
         'nr_mes' : $('#nr_mes').val(),
         'nr_par' : $('#nr_par').val()
     };
-    var nm_arquivo = "CCH_" + params.sv + params.nr_ano + params.nr_mes + params.nr_par + "_" + hash + ".txt";
     
     // Iniciamos o Ajax 
     $.ajax({
@@ -31,30 +30,26 @@ function consultarContraCheque(hash, id, sv) {
         data: params,
         // Antes de enviar ele alerta para esperar
         beforeSend : function(){
-            $('#page-wait').html( loading_spinner() );
-            $('#tabela-contracheques').html("");
+            $('#link_overlay').trigger("click");
+            if (typeof($('#loader-overlay')) !== 'undefined') $('#loader-overlay').fadeIn('fast');
             
             $('#btn_consultar').attr('disabled', true);
-//            $('#btn_imprimir').attr ('disabled', true);
-//            $('#btn_exportar').attr ('disabled', true);
         },
         // Colocamos o retorno na tela
         success : function(data){
             $('#page-wait').html("");
+            if (typeof($('#loader-overlay')) !== 'undefined') $('#loader-overlay').fadeOut('fast');
             $('#tabela-contracheques').html(data);
             
             $('#btn_consultar').attr('disabled', false);
-//            $('#btn_imprimir').attr ('disabled', false);
-//            $('#btn_exportar').attr ('disabled', false);
             configurarTabelaContraCheque();
         },
         error: function (request, status, error) {
             $('#page-wait').html("");
+            if (typeof($('#loader-overlay')) !== 'undefined') $('#loader-overlay').fadeOut('fast');
             $('#tabela-contracheques').html("Erro na execução da pesquisa!<br> (" + status + ")" + request.responseText + "<br><strong>Error : </strong>" + error.toString());
             
             $('#btn_consultar').attr('disabled', false);
-//            $('#btn_imprimir').attr ('disabled', true);
-//            $('#btn_exportar').attr ('disabled', true);
         }
     });  
     // Finalizamos o Ajax
@@ -122,7 +117,6 @@ function pdfContraCheque(obj) {
         "&mes=" + params.nr_mes +
         "&par=" + params.nr_par;
     
-    //window.open("src/contra_cheque_print.php" + str, "_blank");
     window.open("src/contra_cheque_pdf.php" + str, "_blank");
 }
 
@@ -145,4 +139,53 @@ function pdfContraChequeNovo(obj) {
         "&par=" + params.nr_par;
     
     window.open("src/contra_cheque_pdf.php" + str, "_blank");
+}
+
+function DownloadContraCheque(obj) {
+    var parametros  = obj.split("_");
+    var params = {
+        'ac'  : 'pdf_contra_cheque',
+        'un'  : parametros[0]      ,
+        'ser' : parametros[2]      ,
+        'ano' : parametros[3]  ,
+        'mes' : parametros[4]  ,
+        'par' : parametros[5]  ,
+        'download' : 'S'
+    };
+    
+    // Iniciamos o Ajax 
+    $.ajax({
+        // Definimos a url
+        url : 'src/contra_cheque_pdf.php',
+        // Definimos o tipo de requisição
+        type: 'get',
+        // Definimos o tipo de retorno
+        dataType : 'html',
+        // Dolocamos os valores a serem enviados
+        data: params,
+        // Antes de enviar ele alerta para esperar
+        beforeSend : function(){
+            $('#link_overlay').trigger("click");
+            if (typeof($('#loader-overlay')) !== 'undefined') $('#loader-overlay').fadeIn('fast');
+        },
+        // Colocamos o retorno na tela
+        success : function(data){
+            $('#page-wait').html("");
+            if (typeof($('#loader-overlay')) !== 'undefined') $('#loader-overlay').fadeOut('fast');
+            
+            var retorno = data;
+            if (retorno.indexOf("OK") !== -1) {
+                var filename = "../downloads/CCH_" + params.ser + params.ano + params.mes + params.par + "_" + params.un + ".pdf";
+                window.open(filename.replace(" ", ""), "_blank");
+            } else {
+                main_mensagem_erro( "<p><strong>Erro ao tentar gerar arquivo PDF para download:</strong> <br><br>" + retorno + "</p>" );
+            }
+        },
+        error: function (request, status, error) {
+            $('#page-wait').html("");
+            if (typeof($('#loader-overlay')) !== 'undefined') $('#loader-overlay').fadeOut('fast');
+            main_mensagem_erro("<p>Erro na execução da pesquisa!<br> (" + status + ")" + request.responseText + "<br><strong>Error : </strong>" + error.toString() + "</p>");
+        }
+    });  
+    // Finalizamos o Ajax
 }

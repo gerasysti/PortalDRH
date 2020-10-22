@@ -3,8 +3,8 @@
 /*
 Usuário para teste:
  * Cliente      : PRIFEITURA MINUCIPAL DE DOM ELISEU
- * Matrícula    :   10613
- * Senha        :   Aguiar866
+ * Matrícula    : 10613
+ * Senha        : Aguiar866
 */
     //ini_set('memory_limit', '512M');
     include("../lib/mpdf60/mpdf.php");
@@ -15,10 +15,11 @@ Usuário para teste:
     require_once '../lib/Constantes.php';
     require_once '../lib/funcoes.php';
 
-    $id_ser = preg_replace("/[^0-9]/", "", trim(filter_input(INPUT_GET, 'ser')));
-    $nr_ano = preg_replace("/[^0-9]/", "", trim(filter_input(INPUT_GET, 'ano')));
-    $nr_mes = preg_replace("/[^0-9]/", "", trim(filter_input(INPUT_GET, 'mes')));
-    $nr_par = preg_replace("/[^0-9]/", "", trim(filter_input(INPUT_GET, 'par')));
+    $id_ser   = filter_var(filter_input(INPUT_GET, 'ser'), FILTER_SANITIZE_NUMBER_INT, "0");
+    $nr_ano   = filter_var(filter_input(INPUT_GET, 'ano'), FILTER_SANITIZE_NUMBER_INT, "0");
+    $nr_mes   = filter_var(filter_input(INPUT_GET, 'mes'), FILTER_SANITIZE_NUMBER_INT, "0");
+    $nr_par   = filter_var(filter_input(INPUT_GET, 'par'), FILTER_SANITIZE_NUMBER_INT, "0");
+    $download = filter_var(filter_input(INPUT_GET, 'download'), FILTER_SANITIZE_STRING, "N");
     
     $unidade     = "0";
     $brasao_unid = "../dist/img/remuneratus_logo.png";
@@ -76,6 +77,10 @@ Usuário para teste:
         $dados['bc_mrg_consig']    = number_format( $dados['bc_mrg_consig'],   2,',','.' );
         $dados['val_mrg_consig']   = number_format( $dados['val_mrg_consig'],   2,',','.' );
         $dados['saldo_mrg_consig'] = number_format( $dados['saldo_mrg_consig'],   2,',','.' );
+        
+        if (strtoupper($dados['efetivo']) === "S") {
+            
+        }
         
         return $dados;
     }
@@ -686,17 +691,39 @@ Usuário para teste:
                 
                 // Carregar dados de Valores
                 $stm = $pdo->prepare(
-                     "Select "
-                    ."    c.* "
-                    ."  , coalesce(o.descricao, '...') as desc_cargo_origem "
-                    ."  , coalesce(a.descricao, '...') as desc_cargo_atual "
-                    ."from REMUN_BASE_CALC_MES c "
-                    ."  left join REMUN_CARGO_FUNCAO o on (o.id_cliente = c.id_cliente and o.id_cargo = c.id_cargo_origem) "
-                    ."  left join REMUN_CARGO_FUNCAO a on (a.id_cliente = c.id_cliente and a.id_cargo = c.id_cargo_atual) "
-                    ."where c.id_cliente  = :id_cliente  " 
-                    ."  and c.id_servidor = :id_servidor "
-                    ."  and c.ano_mes     = :ano_mes "
-                    ."  and c.parcela     = :parcela "
+                      "Select "
+                    . "    c.* "
+                    . "  , coalesce(o.descricao, '...') as desc_cargo_origem "
+                    . "  , coalesce(a.descricao, '...') as desc_cargo_atual "
+                    . "  "
+                    . "  , coalesce(vn.descricao, 'OUTROS') as descr_vinculo "
+                    . "  , case when (c.ano_mes < '202001') "
+                    . "      then "
+                    . "        Case "
+                    . "          when ((c.id_situacao_tcm = 20) and (c.vinculo_suo = 8)) then 'AUXÍLIOS DOENÇAS' "
+                    . "          when ((c.id_situacao_tcm = 10) and (c.efetivo = 'S'))   then 'COMISSIONADOS / EFETIVOS' "
+                    . "          when ((c.id_situacao_tcm = 10) and (c.efetivo <> 'S'))  then 'COMISSIONADOS / TEMPORARIOS' "
+                    . "          else coalesce(vn.descricao, 'OUTROS') "
+                    . "        end "
+                    . "      else "
+                    . "        Case "
+                    . "          when ((c.tipo_cargo_tcm2 = 1) and (c.efetivo = 'S'))  then 'COMISSIONADOS / EFETIVOS' "
+                    . "          when ((c.tipo_cargo_tcm2 = 1) and (c.efetivo <> 'S')) then 'COMISSIONADOS / TEMPORARIOS' "
+                    . "          else coalesce(c.descr_situac_tcm, v2.descricao) "
+                    . "        end "
+                    . "    end as descr_situac_tcm_2020 "
+                    . "from REMUN_BASE_CALC_MES c "
+                    . "  left join REMUN_CARGO_FUNCAO o on (o.id_cliente = c.id_cliente and o.id_cargo = c.id_cargo_origem) "
+                    . "  left join REMUN_CARGO_FUNCAO a on (a.id_cliente = c.id_cliente and a.id_cargo = c.id_cargo_atual) "
+                    . "  "
+                    . "  left join REMUN_SITUACAO_TCM v1 on (v1.id = c.id_situacao_tcm) "
+                    . "  left join REMUN_VINCULO vn on (vn.id = v1.id_vinculo) "
+                    . "  left join REMUN_SITUACAO_TCM2020 v2 on (v2.id = c.tipo_cargo_tcm2) "
+                    . "  "
+                    . "where c.id_cliente  = :id_cliente  " 
+                    . "  and c.id_servidor = :id_servidor "
+                    . "  and c.ano_mes     = :ano_mes "
+                    . "  and c.parcela     = :parcela "
                 );
                 
                 $stm->execute(array(
@@ -827,7 +854,7 @@ Usuário para teste:
                     <td class="espacoCelula3"><span class="fonteTamanho5">CPF</span><br><b><?php echo $dados['cpf'];?></b></td>
                     <td class="espacoCelula3"><span class="fonteTamanho5">RG</span><br><b><?php echo $dados['rg'];?></b></td>
                     <td class="espacoCelula3"><span class="fonteTamanho5">PIS/PASEP</span><br><b><?php echo $dados['pis_pasep'];?></b></td>
-                    <td class="espacoCelula3"><span class="fonteTamanho5"><?php echo strtoupper($dados['descr_situac_tcm']);?></span><br><b><?php echo $dados['descr_est_funcional'];?></b></td>
+                    <td class="espacoCelula3"><span class="fonteTamanho5"><?php echo strtoupper($dados['descr_situac_tcm_2020']);?></span><br><b><?php echo $dados['descr_est_funcional'];?></b></td>
                 </tr>
             </table>
 
@@ -969,17 +996,40 @@ Usuário para teste:
                 </tr>
             </table>
         </div>
+        
+        <?php
+//            var_dump($download);
+//            var_dump($id_ser);
+//            var_dump($nr_ano);
+//            var_dump($nr_mes);
+//            var_dump($nr_par);
+        ?>
     </body>
 </html>
 <?php
     ini_set("display_errors", 0);
-    $html = ob_get_clean(); 
-
+    error_reporting(0);
+    $html = ob_get_clean();
+    
     $filename = "CCH_{$id_ser}{$nr_ano}{$nr_mes}{$nr_par}_{$md5_unidade}.pdf";
+    
+    if ($download === "S") {
+        $filename = str_replace(";", "", str_replace(" ", "", "../downloads/{$filename}"));
+        if (file_exists($filename)) {
+            unlink($filename);
+        }
+    }
+    
     $mpdf = new mPDF('A4');    
     //$mpdf = new mPDF('utf-8', 'A4-L');
     $mpdf->SetDisplayMode('fullpage');
 
     $mpdf->WriteHTML($html);
-    $mpdf->Output($filename, 'I'); 
+    
+    if ($download === "S") {
+        $mpdf->Output($filename, 'F');
+        echo "OK";
+    } else {
+        $mpdf->Output($filename, 'I');
+    }
 ?>;

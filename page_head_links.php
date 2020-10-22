@@ -180,4 +180,7 @@
 
     <!-- Data tables -->
     <link rel="stylesheet" type="text/css" href="./assets/widgets/datatable/datatable.css">
+
+    <!-- Styles próprios -->
+    <link rel="stylesheet" type="text/css" href="./servidor.css">
     

@@ -119,9 +119,18 @@
                             $total_desc    = number_format($obj->tot_descontos, 2, ',' , '.');
                             $total_liquido = number_format($obj->sal_liquido,   2, ',' , '.');
 
-                            $id_link = trim(md5($id_cliente) . "_" . $id_cliente . "_" . $id_servidor_automativo . "_" . $nr_ano . "_" . str_replace($nr_ano, "", $obj->ano_mes) . "_" . $nr_par);
+                            $id_link = 
+                                  trim(md5($id_cliente) 
+                                . "_" . $id_cliente 
+                                . "_" . $id_servidor_automativo 
+                                . "_" . $nr_ano 
+                                . "_" . str_replace(" ", "", str_replace($nr_ano, "", $obj->ano_mes)) 
+                                . "_" . $nr_par);
+                            
                             $ds_mes  = substr($obj->ano_mes, 4, 2) . ". " . get_nome_mes(substr($obj->ano_mes, 4, 2));
-                            $onclick = "onclick='pdfContraChequeNovo(this.id)'";
+                            
+                            //$onclick = "onclick='pdfContraChequeNovo(this.id)'";
+                            $onclick = "onclick='DownloadContraCheque(this.id)'";
                             
                             // Gerar linha de registro da Consulta em página
                             $tabela .= "    <tr>";
