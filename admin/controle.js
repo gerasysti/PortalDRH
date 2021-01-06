@@ -209,6 +209,8 @@ function controle_usuario(id, us) {
             $(".chosen-select").chosen();
             $(".chosen-search").append('<i class="glyph-icon icon-search"></i>');
             $(".chosen-single div").html('<i class="glyph-icon icon-caret-down"></i>');
+            
+            consultarUsuario(id, us);
         },
         error: function (request, status, error) {
             $('#page-wait').html("");
@@ -250,6 +252,8 @@ function controle_cliente(id, us) {
             $(".chosen-select").chosen();
             $(".chosen-search").append('<i class="glyph-icon icon-search"></i>');
             $(".chosen-single div").html('<i class="glyph-icon icon-caret-down"></i>');
+            
+            consultarCliente(id, us);
         },
         error: function (request, status, error) {
             $('#page-wait').html("");

@@ -140,11 +140,11 @@ function imprimir_remuneracao_servidor(hash, id) {
             if (data.indexOf("OK") !== -1) {
                 window.open("../downloads/" + params.hs + ".pdf", "_blank");
             } else {
-                $('#page-wait').html("<p><strong>Erro ao tentar gerar arquivo PDF</strong> <br><br>" + data + "</p>");
+                $('#page-wait').html("<p><strong>Erro ao tentar gerar arquivo PDF...</strong> <br><br>" + data + "</p>");
             }
         },
         error: function (request, status, error) {
-            $('#page-wait').html( "<p><strong>Erro ao tentar gerar o arquivo pdf!</strong> <br><br>(" + status + ")" + request.responseText + "<br><strong>Error : </strong>" + error.toString());
+            $('#page-wait').html( "<p><strong>Erro ao tentar gerar o arquivo pdf!</strong> <br><br>(" + $(status).serialize() + ")" + request.responseText + "<br><strong>Error : </strong>" + error.toString());
         }
     });  
     // Finalizamos o Ajax

@@ -1,5 +1,15 @@
 <!DOCTYPE html>
 <?php
+    // Tratamentos necessários para que o buffer do servidor possa suportar
+    // a geração de páginas com muito conteúdo para impressão.
+    // (Início)
+    ini_set('upload_max_filesize', '4096M');
+    ini_set('post_max_size', '4096M');
+    ini_set('memory_limit', '4096M');
+    ini_set('max_input_time', 360);
+    ini_set('max_execution_time', 360);
+    // (Final)
+
     // Importa arquivo de config da classe DOMPDF
     /**
      * Armazena saída do HTML em buffer
@@ -339,8 +349,7 @@
     </body>
 </html>
 <?php
-    error_reporting(0);
-    set_time_limit(90);
+    error_reporting(1);
     $html = ob_get_clean(); 
     /**
      *  Função ob_get_clean obtém conteúdo que está no buffer

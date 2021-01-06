@@ -120,9 +120,10 @@ where (s.id_cliente = 15019)
     unset($qry);
     unset($pdo);
     
-    $ano = date("Y");
-    $inicio_data = strtotime("{$ano}/01/01");
-    $final_data  = strtotime("{$ano}/12/01");
+    $ano_inicial = intval(date("Y")) - 1;
+    $ano_final   = date("Y");
+    $inicio_data = strtotime("{$ano_inicial}/01/01");
+    $final_data  = strtotime("{$ano_final}/12/01");
     $data_corrente = $inicio_data;
     while ($data_corrente <= $final_data) {
         $nr_mes_ano = date('Ym',    $data_corrente);
@@ -259,6 +260,7 @@ where (s.id_cliente = 15019)
                         <input type="hidden" id="hoje" value="<?php echo date('d/m/Y');?>">
                         <input type="hidden" id="cliente" value="<?php echo $_SESSION['acesso']['id_cliente'];?>">
                         <input type="hidden" id="competencia_atual" value="<?php echo $competencia_atual;?>">
+                        <input type="hidden" id="finalizar_ch_professores" value="<?php echo $usuario['finalizar_ch_professores'];?>">
                         
                         <div class="content-box">
                             <h3 class="content-box-header bg-default">

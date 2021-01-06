@@ -62,7 +62,9 @@
                             ."  , u.exe_ano "
                             ."  , u.administrar_portal "
                             ."  , u.lancar_eventos     "
-                            ."  , u.lancar_ch_professores "
+                            ."  , u.finalizar_eventos  "
+                            ."  , u.lancar_ch_professores    "
+                            ."  , u.finalizar_ch_professores "
                             ."  , coalesce(u.situacao, 0) as situacao "
                             ."  , case when coalesce(trim(u.senha), '') = '' then 0 else 1 end senha "
                             ."  , coalesce(c.nome, 'Administração do Sistema') as cliente_nome "
@@ -94,7 +96,9 @@
                                 . "<input type='hidden' id='ultimo_acesso_{$id}' value='{$ultimo_acdesso}'>"
                                 . "<input type='hidden' id='administrar_portal_{$id}' value='{$obj->administrar_portal}'>"
                                 . "<input type='hidden' id='lancar_eventos_{$id}' value='{$obj->lancar_eventos}'>"
+                                . "<input type='hidden' id='finalizar_eventos_{$id}' value='{$obj->finalizar_eventos}'>"
                                 . "<input type='hidden' id='lancar_ch_professores_{$id}' value='{$obj->lancar_ch_professores}'>"
+                                . "<input type='hidden' id='finalizar_ch_professores_{$id}' value='{$obj->finalizar_ch_professores}'>"
                                 . "<input type='hidden' id='situacao_{$id}' value='{$situacao}'>";
                             
                             
@@ -754,8 +758,10 @@
                         $senha_confirme = trim(filter_input(INPUT_POST, 'senha_confirme'));
                         $situacao = trim(filter_input(INPUT_POST, 'situacao'));
                         $administrar_portal = (int)preg_replace("/[^0-9]/", "", "0" . trim(filter_input(INPUT_POST, 'administrar_portal')) );
-                        $lancar_eventos = (int)preg_replace("/[^0-9]/", "", "0" . trim(filter_input(INPUT_POST, 'lancar_eventos')) );
-                        $lancar_ch_professores = (int)preg_replace("/[^0-9]/", "", "0" . trim(filter_input(INPUT_POST, 'lancar_ch_professores')) );
+                        $lancar_eventos    = (int)preg_replace("/[^0-9]/", "", "0" . trim(filter_input(INPUT_POST, 'lancar_eventos')) );
+                        $finalizar_eventos = (int)preg_replace("/[^0-9]/", "", "0" . trim(filter_input(INPUT_POST, 'finalizar_eventos')) );
+                        $lancar_ch_professores    = (int)preg_replace("/[^0-9]/", "", "0" . trim(filter_input(INPUT_POST, 'lancar_ch_professores')) );
+                        $finalizar_ch_professores = (int)preg_replace("/[^0-9]/", "", "0" . trim(filter_input(INPUT_POST, 'finalizar_ch_professores')) );
                         
                         $file = '../downloads/user_' . $hs . '.json';
                         if (file_exists($file)) {
@@ -786,7 +792,9 @@
                                     . "  , situacao   "
                                     . "  , administrar_portal "
                                     . "  , lancar_eventos     "
-                                    . "  , lancar_ch_professores "
+                                    . "  , finalizar_eventos  "
+                                    . "  , lancar_ch_professores    "
+                                    . "  , finalizar_ch_professores "
                                     . ") values ("
                                     . "    :id         "
                                     . "  , :id_cliente "
@@ -797,7 +805,9 @@
                                     . "  , :situacao   "
                                     . "  , :administrar_portal "
                                     . "  , :lancar_eventos     "
-                                    . "  , :lancar_ch_professores "
+                                    . "  , :finalizar_eventos  "
+                                    . "  , :lancar_ch_professores    "
+                                    . "  , :finalizar_ch_professores "
                                     . ")");
                                 $stm->execute(array(
                                     ':id'         => $id,
@@ -808,7 +818,9 @@
                                     ':situacao'   => $situacao,
                                     ':administrar_portal' => $administrar_portal,
                                     ':lancar_eventos'     => $lancar_eventos,
-                                    ':lancar_ch_professores' => $lancar_ch_professores
+                                    ':finalizar_eventos'  => $finalizar_eventos,
+                                    ':lancar_ch_professores'    => $lancar_ch_professores,
+                                    ':finalizar_ch_professores' => $finalizar_ch_professores
                                 ));
                             } else
                             if ($op === "editar_usuario") {
@@ -818,8 +830,10 @@
                                     . "  , u.e_mail     = :email "
                                     . "  , u.situacao   = :situacao "
                                     . "  , u.administrar_portal = :administrar_portal "
-                                    . "  , u.lancar_eventos     = :lancar_eventos "
-                                    . "  , u.lancar_ch_professores = :lancar_ch_professores "
+                                    . "  , u.lancar_eventos     = :lancar_eventos     "
+                                    . "  , u.finalizar_eventos  = :finalizar_eventos  "
+                                    . "  , u.lancar_ch_professores    = :lancar_ch_professores    "
+                                    . "  , u.finalizar_ch_professores = :finalizar_ch_professores "
                                     . "  , u.id_cliente = :id_cliente "
                                     . "where u.id = :id   ");
                                 $stm->execute(array(
@@ -828,7 +842,9 @@
                                     ':situacao'   => $situacao,
                                     ':administrar_portal' => $administrar_portal,
                                     ':lancar_eventos'     => $lancar_eventos,
-                                    ':lancar_ch_professores' => $lancar_ch_professores,
+                                    ':finalizar_eventos'  => $finalizar_eventos,
+                                    ':lancar_ch_professores'    => $lancar_ch_professores,
+                                    ':finalizar_ch_professores' => $finalizar_ch_professores,
                                     ':id_cliente' => $id_cliente,
                                     ':id'         => $id
                                 ));

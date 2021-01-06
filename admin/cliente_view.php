@@ -124,7 +124,7 @@
                                     <div class="col-md-12">
                                         <div class="form-group">
                                             <label class="col-sm-1 control-label padding-label">Tipo de pesquisa</label>
-                                            <div class="col-sm-2 padding-field">
+                                            <div class="col-sm-3 padding-field">
                                                 <select class="form-control chosen-select" id="tipo"> <!--style="width: 150px;"-->
                                                     <optgroup label="Tipo">
                                                         <!-- Este teste de agrupamento de dados funciona perfeiramente:-->
@@ -137,7 +137,7 @@
                                                 <div>&nbsp;</div>
                                             </div>
                                             
-                                            <div class="col-sm-3 padding-field">
+                                            <div class="col-sm-8 padding-field">
                                                 <div class="input-group">
                                                     <input type="text" class="form-control text lg-text" id="pesquisa" value=""/>
                                                     <div class="input-group-addon" style="padding: 0px; padding-left : 4px;">
@@ -521,6 +521,7 @@
                     </div>
 
                     <script type="text/javascript">
+                        $.fn.dataTable.moment('DD/MM/YYYY HH:mm:ss');
                         $('#link_overlay').fadeOut();
                         
                         $('#box_confirme').fadeOut();

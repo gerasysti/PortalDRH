@@ -72,6 +72,7 @@ function configurarTabelaEventosLancados(){
     });
     
     $('.dataTables_filter input').attr("placeholder", "Localizar...");
+    $('.dataTables_filter input').focus();
 }
 
 function configurarTabelaServidoresLancados(){
@@ -641,25 +642,35 @@ function situacao_lancamento_evento(situacao) {
 }
 
 function finalizar_lancamento() {
-    var controle = parseFloat("0" + $('#controle').val());
-    if (controle === 0.0) {
-        mensagem_alerta("Salve, primeiramente, os dados de controle do Evento Mensal.");
+    var permitido = $('#finalizar_eventos').val();
+    if (permitido !== "1") {
+        mensagem_alerta("Você não tem permissão para esta tarefa<br>Notifique ao seu gestor.");
     } else {
-        if ($('#situacao').val() === "0") {
-            situacao_lancamento_evento("1");
+        var controle = parseFloat("0" + $('#controle').val());
+        if (controle === 0.0) {
+            mensagem_alerta("Salve, primeiramente, os dados de controle do Evento Mensal.");
+        } else {
+            if ($('#situacao').val() === "0") {
+                situacao_lancamento_evento("1");
+            }
         }
     }
 }
 
 function reabrir_lancamento() {
-    var controle = parseFloat("0" + $('#controle').val());
-    if (controle === 0.0) {
-        mensagem_alerta("O Conrole de Evento Mensal não está pronto para esta operação.");
+    var permitido = $('#finalizar_eventos').val();
+    if (permitido !== "1") {
+        mensagem_alerta("Você não tem permissão para esta tarefa<br>Notifique ao seu gestor.");
     } else {
-        if ($('#situacao').val() === "1") {
-            situacao_lancamento_evento("0");
+        var controle = parseFloat("0" + $('#controle').val());
+        if (controle === 0.0) {
+            mensagem_alerta("O Conrole de Evento Mensal não está pronto para esta operação.");
+        } else {
+            if ($('#situacao').val() === "1") {
+                situacao_lancamento_evento("0");
+            }
         }
-    }
+    }    
 }
 
 function lancarEventos(id, us) {

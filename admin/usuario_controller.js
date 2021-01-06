@@ -46,14 +46,19 @@ function configurarTabelaUsuario(){
         "autoWidth": true,
         "processing": true,
         "columns": [
-            null, // ID
-            null, // Nome
-            null, // E-mail
-            null, // Cliente
-            null, // CNPJ
-            null, // Último acesso
-            null, // Senha
-            { "width": "120px" }  // Controles
+            null, // 0. ID
+            null, // 1. Nome
+            null, // 2. E-mail
+            null, // 3. Cliente
+            null, // 4. CNPJ
+            null, // 5. Último acesso
+            null, // 6. Senha
+            { "width": "120px" }  // 7. Controles
+        ],
+        "columnDefs": [
+            {"orderable": false, "targets": 5}, 
+            {"orderable": false, "targets": 6}, 
+            {"orderable": false, "targets": 7}  
         ],
         "order": [[1, 'asc']], // "order": [] <-- Ordenação indefinida
         "language": {
@@ -244,25 +249,18 @@ function consultarUsuario(id, us) {
         // Antes de enviar ele alerta para esperar
         beforeSend : function(){
             $('#link_overlay').trigger("click");
-            //$('#page-wait').html( loading_spinner() );
-            //$('#tabela-usuarios').html("");
-            
             $('#btn_consultar').attr('disabled', true);
             if (typeof($('#loader-overlay')) !== 'undefined') $('#loader-overlay').fadeIn('fast');
         },
         // Colocamos o retorno na tela
         success : function(data){
-            //$('#page-wait').html("");
             $('#tabela-usuarios').html(data);
-            
             $('#btn_consultar').attr('disabled', false);
             if (typeof($('#loader-overlay')) !== 'undefined') $('#loader-overlay').fadeOut('fast');
             configurarTabelaUsuario();
         },
         error: function (request, status, error) {
-            //$('#page-wait').html("");
             $('#tabela-usuarios').html("Erro na execução da pesquisa!<br> (" + status + ")" + request.responseText + "<br><strong>Error : </strong>" + error.toString());
-            
             $('#btn_consultar').attr('disabled', false);
             if (typeof($('#loader-overlay')) !== 'undefined') $('#loader-overlay').fadeOut('fast');
         }
@@ -287,7 +285,9 @@ function editarUsuario(id) {
     
     $('#administrar_portal').prop('checked', ($('#administrar_portal_' + id_usuario).val() === '1')).uniform();
     $('#lancar_eventos').prop('checked', ($('#lancar_eventos_' + id_usuario).val() === '1')).uniform();
+    $('#finalizar_eventos').prop('checked', ($('#finalizar_eventos_' + id_usuario).val() === '1')).uniform();
     $('#lancar_ch_professores').prop('checked', ($('#lancar_ch_professores_' + id_usuario).val() === '1')).uniform();
+    $('#finalizar_ch_professores').prop('checked', ($('#finalizar_ch_professores_' + id_usuario).val() === '1')).uniform();
     
     $('#senha').val("");
     $('#senha_confirme').val("");
@@ -351,7 +351,9 @@ function inserirUsuario(id, us) {
 
     $('#administrar_portal').prop('checked', false);
     $('#lancar_eventos').prop('checked', false);
+    $('#finalizar_eventos').prop('checked', false);
     $('#lancar_ch_professores').prop('checked', false);
+    $('#finalizar_ch_professores').prop('checked', false);
     
     $('#id_cliente').trigger('chosen:updated');
     $('#situacao').trigger('chosen:updated');
@@ -428,7 +430,9 @@ function salvarUsuario() {
             'senha_confirme' : $('#senha_confirme').val(),
             'administrar_portal' : '0',
             'lancar_eventos'     : '0',
-            'lancar_ch_professores' : '0',
+            'finalizar_eventos'  : '0',
+            'lancar_ch_professores'    : '0',
+            'finalizar_ch_professores' : '0',
             'situacao' : $('#situacao').val()
         };
         // alert( JSON.stringify(params) );
@@ -437,7 +441,9 @@ function salvarUsuario() {
         
         if ( $('#administrar_portal').is(":checked") ) params.administrar_portal = $('#administrar_portal').val();
         if ( $('#lancar_eventos').is(":checked") ) params.lancar_eventos = $('#lancar_eventos').val();
+        if ( $('#finalizar_eventos').is(":checked") ) params.finalizar_eventos = $('#finalizar_eventos').val();
         if ( $('#lancar_ch_professores').is(":checked") ) params.lancar_ch_professores = $('#lancar_ch_professores').val();
+        if ( $('#finalizar_ch_professores').is(":checked") ) params.finalizar_ch_professores = $('#finalizar_ch_professores').val();
         
         var msg = "";
         var mrc = "<i class='glyph-icon icon-edit'></i>&nbsp;";
@@ -495,7 +501,9 @@ function salvarUsuario() {
                             $('#situacao_' + params.id).val( params.situacao );
                             $('#administrar_portal_' + params.id).val( params.administrar_portal );
                             $('#lancar_eventos_' + params.id).val( params.lancar_eventos );
+                            $('#finalizar_eventos_' + params.id).val( params.finalizar_eventos );
                             $('#lancar_ch_professores_' + params.id).val( params.lancar_ch_professores );
+                            $('#finalizar_ch_professores_' + params.id).val( params.finalizar_ch_professores );
                         }
                         
                         $('#btn_form_fechar').attr('disabled', false);
@@ -913,9 +921,11 @@ function gravar_permissao_ulo(cliente, unidade, usuario, permissao) {
     
     var administrar_portal = "0";
     var lancar_eventos     = "0";
+    var finalizar_eventos  = "0";
 
     if ( $('#administrar_portal').is(":checked") ) administrar_portal = $('#administrar_portal').val();
     if ( $('#lancar_eventos').is(":checked") ) lancar_eventos = $('#lancar_eventos').val();
+    if ( $('#finalizar_eventos').is(":checked") ) finalizar_eventos = $('#finalizar_eventos').val();
 
     // Verifica se exite tabela para exibição nos dados na página atual,
     // e caso não exista, construí-la.
@@ -952,6 +962,7 @@ function gravar_permissao_ulo(cliente, unidade, usuario, permissao) {
         + "<input type='hidden' id='ultimo_acesso_" + referencia + "' value='&nbsp;'>"
         + "<input type='hidden' id='administrar_portal_" + referencia + "' value='" + administrar_portal + "'>"
         + "<input type='hidden' id='lancar_eventos_"     + referencia + "' value='" + lancar_eventos + "'>"
+        + "<input type='hidden' id='finalizar_eventos_"  + referencia + "' value='" + finalizar_eventos + "'>"
         + "<input type='hidden' id='situacao_"      + referencia + "' value='" + $('#situacao').val() + "'>";
     
     var icon_ed = "<button id='editar_usuario_"  + referencia + "' class='btn btn-round btn-primary' title='Editar Registro'  onclick='editarUsuario(this.id)'><i class='glyph-icon icon-edit'></i></button>";

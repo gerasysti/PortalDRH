@@ -71,6 +71,7 @@ function configurarTabelaCHLancadas(){
     });
     
     $('.dataTables_filter input').attr("placeholder", "Localizar...");
+    $('.dataTables_filter input').focus();
 }
 
 function configurarTabelaProfessoresLancados(){
@@ -581,23 +582,33 @@ function situacao_lancamento_chprof(situacao) {
 }
 
 function finalizar_lancamento_chprof() {
-    var controle = parseFloat("0" + $('#controle').val());
-    if (controle === 0.0) {
-        mensagem_alerta("Salve, primeiramente, os dados inciais do Lançamento da Carga Horária.");
+    var permitido = $('#finalizar_ch_professores').val();
+    if (permitido !== "1") {
+        mensagem_alerta("Você não tem permissão para esta tarefa<br>Notifique ao seu gestor.");
     } else {
-        if ($('#situacao').val() === "0") {
-            situacao_lancamento_chprof("1");
+        var controle = parseFloat("0" + $('#controle').val());
+        if (controle === 0.0) {
+            mensagem_alerta("Salve, primeiramente, os dados inciais do Lançamento da Carga Horária.");
+        } else {
+            if ($('#situacao').val() === "0") {
+                situacao_lancamento_chprof("1");
+            }
         }
     }
 }
 
 function reabrir_lancamento_chprof() {
-    var controle = parseFloat("0" + $('#controle').val());
-    if (controle === 0.0) {
-        mensagem_alerta("O Lançamento da Carga Horária não está pronto para esta operação.");
+    var permitido = $('#finalizar_ch_professores').val();
+    if (permitido !== "1") {
+        mensagem_alerta("Você não tem permissão para esta tarefa<br>Notifique ao seu gestor.");
     } else {
-        if ($('#situacao').val() === "1") {
-            situacao_lancamento_chprof("0");
+        var controle = parseFloat("0" + $('#controle').val());
+        if (controle === 0.0) {
+            mensagem_alerta("O Lançamento da Carga Horária não está pronto para esta operação.");
+        } else {
+            if ($('#situacao').val() === "1") {
+                situacao_lancamento_chprof("0");
+            }
         }
     }
 }

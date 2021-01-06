@@ -46,14 +46,18 @@ function configurarTabelaCliente(){
         "autoWidth": true,
         "processing": true,
         "columns": [
-            null, // ID
-            null, // Nome
-            null, // CNPJ
-            null, // Município
-            null, // UF
-            null, // Servidores
-            null, // Atualização
-            { "width": "120px" }  // Controles
+            null, // 0. ID
+            null, // 1. Nome
+            null, // 2. CNPJ
+            null, // 3. Município
+            null, // 4. UF
+            null, // 5. Servidores
+            null, // 6. Atualização
+            { "width": "120px" }  // 7. Controles
+        ],
+        "columnDefs": [
+            {"orderable": false, "targets": 6}, 
+            {"orderable": false, "targets": 7}  
         ],
         "order": [[1, 'asc']], // "order": [] <-- Ordenação indefinida
         "language": {

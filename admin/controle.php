@@ -468,6 +468,10 @@
         <script src="../js/jquery.aSimpleTour.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-scrollTo/2.1.2/jquery.scrollTo.js"></script>
         
+        <!-- Necessários à ordenação do campo Data/Hora nos DataTables -->
+        <script type="text/javascript" language="javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.8.4/moment.min.js"></script>
+        <script type="text/javascript" language="javascript" src="https://cdn.datatables.net/plug-ins/1.10.10/sorting/datetime-moment.js"></script>
+        
         <script type="text/javascript">
             body_sizer_controle();
             // Função "overlay" extraída do arquivo "overlay.js"
