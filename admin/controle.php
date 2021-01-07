@@ -243,6 +243,12 @@
                         <i class="glyph-icon icon-arrows-alt"></i>
                     </a>
                     -->
+                    <div class="pull-left" id="system_version">
+                        <b>Versão</b> 1.0.0<br>
+                        <strong>Copyright &copy; 2020 GeraSys TI.</strong><br>
+                        Todos os direitos reservados. &nbsp;&nbsp;&nbsp;
+                    </div>
+                    
                     <a href="javascript:void(0);" class="header-btn" id="toor-btn" title="Ajuda">
                         <i class="glyph-icon icon-question"></i>
                     </a>
@@ -345,6 +351,16 @@
                             </a>
                         </li>
                     </ul><!-- #sidebar-menu -->
+                
+                    <!--
+                    <div class="bottom-right">
+                        <div class="pull-right hidden-xs">
+                          <b>Versão</b> 1.0.0
+                        </div>
+                        <strong>Copyright &copy; 2020 <a href='www.gerasysti.com.br' target="_blank">GeraSys TI.</a></strong> 
+                        Todos os direitos reservados.
+                    </div>
+                    -->
                 </div>
             </div>
 
@@ -352,14 +368,14 @@
                 <div id="page-content">
                     <div class="col-md-12">
                         <div id="page-title">
-<!--                            <h2><strong><?php echo $des_unidade;?></strong></h2>
-                            <p><strong><?php echo $inf_unidade;?></strong></p>-->
+<!--                            <h2><strong><?php // echo $des_unidade;?></strong></h2>
+                            <p><strong><?php // echo $inf_unidade;?></strong></p>-->
                             <h2><strong><?php echo "";?></strong></h2>
                             <p><strong> <?php echo "";?></strong></p>
                             <br>
-<!--                            <h2><strong><?php echo $nm_servidor;?></strong></h2>
-                            <p><strong><?php echo $cp_servidor;?></strong></p>
-                            <p><strong><?php echo $ad_servidor;?></strong></p>-->
+<!--                            <h2><strong><?php // echo $nm_servidor;?></strong></h2>
+                            <p><strong><?php // echo $cp_servidor;?></strong></p>
+                            <p><strong><?php // echo $ad_servidor;?></strong></p>-->
                             <h2><strong><?php echo "";?></strong></h2>
                             <p><strong><?php  echo "";?></strong></p>
                             <p><strong><?php  echo "";?></strong></p>
@@ -474,6 +490,8 @@
         
         <script type="text/javascript">
             body_sizer_controle();
+            display_system_version();
+            
             // Função "overlay" extraída do arquivo "overlay.js"
             //overlay_home();
 //                        $('.overlay-button').click(function(){

@@ -922,10 +922,14 @@ function gravar_permissao_ulo(cliente, unidade, usuario, permissao) {
     var administrar_portal = "0";
     var lancar_eventos     = "0";
     var finalizar_eventos  = "0";
+    var lancar_chprofessores    = "0";
+    var finalizar_chprofessores = "0";
 
     if ( $('#administrar_portal').is(":checked") ) administrar_portal = $('#administrar_portal').val();
     if ( $('#lancar_eventos').is(":checked") ) lancar_eventos = $('#lancar_eventos').val();
     if ( $('#finalizar_eventos').is(":checked") ) finalizar_eventos = $('#finalizar_eventos').val();
+    if ( $('#lancar_ch_professores').is(":checked") ) lancar_chprofessores = $('#lancar_ch_professores').val();
+    if ( $('#finalizar_ch_professores').is(":checked") ) finalizar_chprofessores = $('#finalizar_ch_professores').val();
 
     // Verifica se exite tabela para exibição nos dados na página atual,
     // e caso não exista, construí-la.
@@ -963,6 +967,8 @@ function gravar_permissao_ulo(cliente, unidade, usuario, permissao) {
         + "<input type='hidden' id='administrar_portal_" + referencia + "' value='" + administrar_portal + "'>"
         + "<input type='hidden' id='lancar_eventos_"     + referencia + "' value='" + lancar_eventos + "'>"
         + "<input type='hidden' id='finalizar_eventos_"  + referencia + "' value='" + finalizar_eventos + "'>"
+        + "<input type='hidden' id='lancar_ch_professores_"     + referencia + "' value='" + lancar_chprofessores + "'>"
+        + "<input type='hidden' id='finalizar_ch_professores_"  + referencia + "' value='" + finalizar_chprofessores + "'>"
         + "<input type='hidden' id='situacao_"      + referencia + "' value='" + $('#situacao').val() + "'>";
     
     var icon_ed = "<button id='editar_usuario_"  + referencia + "' class='btn btn-round btn-primary' title='Editar Registro'  onclick='editarUsuario(this.id)'><i class='glyph-icon icon-edit'></i></button>";

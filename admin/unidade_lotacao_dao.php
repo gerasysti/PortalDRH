@@ -66,8 +66,8 @@
                             . "from REMUN_UNID_LOTACAO u    "
                             . "where (u.id_cliente = {$to}) "
                             . "  and (upper(u.descricao) like upper('%{$ps}%')) "
-                            . "order by             "
-                            . "    u.descricao      ";
+                            . "order by              "
+                            . "    u.descricao       ";
                         
                         $res = $pdo->query($sql);
                         while (($obj = $res->fetch(PDO::FETCH_OBJ)) !== false) {

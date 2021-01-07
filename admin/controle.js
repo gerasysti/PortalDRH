@@ -28,6 +28,16 @@ function overlay_home() {
     $('body').append(loader);
 }
 
+function display_system_version() {
+    var str = "";
+    
+    str += "<b>Versão</b> 2.0.0<br>";
+    str += "<strong>Copyright &copy; 2020 GeraSys TI Soluções.</strong> &nbsp;&nbsp;<br>";
+    str += "Todos os direitos reservados. &nbsp;&nbsp;";
+    
+    $('#system_version').html(str);
+}
+
 function home_controle() {
     var str = "";
 

@@ -107,6 +107,7 @@ where (s.id_cliente = 15019)
        . "from REMUN_UNID_LOTACAO u "
        . "  left join ADM_USUARIO_UNID_LOTACAO g on (g.id_cliente = u.id_cliente and g.id_unid_lotacao = u.id_lotacao and g.id_usuario = {$usuario['id']}) "
        . "where (u.id_cliente = {$usuario['cliente']}) "
+       . "  and (u.ativa      = 'S') "
        . "order by "
        . "    u.descricao ";
 

@@ -304,6 +304,7 @@
                             . "from REMUN_UNID_LOTACAO u "
                             . "  left join ADM_USUARIO_UNID_LOTACAO p on (p.id_cliente = u.id_cliente and p.id_unid_lotacao = u.id_lotacao and p.id_usuario = {$id_usuario}) "
                             . "where (u.id_cliente = {$id_cliente}) "
+                            . "  and (u.ativa = 'S') "
                             . "order by        "
                             . "    u.descricao ";
                                 
@@ -778,101 +779,122 @@
                             $pdo = $cnf->db('', '');
                             $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
                             
-                            if ($op === "inserir_usuario") {
-                                $dao = Dao::getInstancia();
-                                $id = $dao->getCountID("ADM_USUARIO", "ID");
-                                $stm = $pdo->prepare(
-                                      "Insert Into ADM_USUARIO ("
-                                    . "    id         "
-                                    . "  , id_cliente "
-                                    . "  , nome       "
-                                    . "  , e_mail     "
-                                    . "  , senha      "
-                                    . "  , exe_ano    "
-                                    . "  , situacao   "
-                                    . "  , administrar_portal "
-                                    . "  , lancar_eventos     "
-                                    . "  , finalizar_eventos  "
-                                    . "  , lancar_ch_professores    "
-                                    . "  , finalizar_ch_professores "
-                                    . ") values ("
-                                    . "    :id         "
-                                    . "  , :id_cliente "
-                                    . "  , :nome       "
-                                    . "  , :email      "
-                                    . "  , :senha      "
-                                    . "  , extract(year from current_date) "
-                                    . "  , :situacao   "
-                                    . "  , :administrar_portal "
-                                    . "  , :lancar_eventos     "
-                                    . "  , :finalizar_eventos  "
-                                    . "  , :lancar_ch_professores    "
-                                    . "  , :finalizar_ch_professores "
-                                    . ")");
-                                $stm->execute(array(
-                                    ':id'         => $id,
-                                    ':id_cliente' => $id_cliente,
-                                    ':nome'       => $nome,
-                                    ':email'      => $email,
-                                    ':senha'      => hashSenhaUser($senha),
-                                    ':situacao'   => $situacao,
-                                    ':administrar_portal' => $administrar_portal,
-                                    ':lancar_eventos'     => $lancar_eventos,
-                                    ':finalizar_eventos'  => $finalizar_eventos,
-                                    ':lancar_ch_professores'    => $lancar_ch_professores,
-                                    ':finalizar_ch_professores' => $finalizar_ch_professores
-                                ));
-                            } else
-                            if ($op === "editar_usuario") {
-                                $stm = $pdo->prepare(
-                                      "Update ADM_USUARIO u Set "
-                                    . "    u.nome       = :nome "
-                                    . "  , u.e_mail     = :email "
-                                    . "  , u.situacao   = :situacao "
-                                    . "  , u.administrar_portal = :administrar_portal "
-                                    . "  , u.lancar_eventos     = :lancar_eventos     "
-                                    . "  , u.finalizar_eventos  = :finalizar_eventos  "
-                                    . "  , u.lancar_ch_professores    = :lancar_ch_professores    "
-                                    . "  , u.finalizar_ch_professores = :finalizar_ch_professores "
-                                    . "  , u.id_cliente = :id_cliente "
-                                    . "where u.id = :id   ");
-                                $stm->execute(array(
-                                    ':nome'       => $nome,
-                                    ':email'      => $email,
-                                    ':situacao'   => $situacao,
-                                    ':administrar_portal' => $administrar_portal,
-                                    ':lancar_eventos'     => $lancar_eventos,
-                                    ':finalizar_eventos'  => $finalizar_eventos,
-                                    ':lancar_ch_professores'    => $lancar_ch_professores,
-                                    ':finalizar_ch_professores' => $finalizar_ch_professores,
-                                    ':id_cliente' => $id_cliente,
-                                    ':id'         => $id
-                                ));
-                                
-                                if (($senha !== "") && ($senha === $senha_confirme)) {
+                            // Verificar se e-mail já existe...
+                            $sql =
+                                  "Select       "
+                                . "    u.id     "
+                                . "  , u.nome   "
+                                . "  , coalesce(u.id_cliente, 0) as cliente_id"
+                                . "  , c.nome       as cliente "
+                                . "from ADM_USUARIO u       "
+                                . "  left join ADM_CLIENTE c on (c.id = u.id_cliente) "
+                                . "where (u.id <> {$id}) "
+                                . "  and (u.e_mail = '{$email}') ";
+                            
+                            $res  = $pdo->query($sql);
+                            if (($obj = $res->fetch(PDO::FETCH_OBJ)) !== false) {
+                                if ((int)$obj->cliente_id === 0) {
+                                    echo "E-mail já cadastrado para o usuário <strong>{$obj->nome}</strong>!";
+                                } else {
+                                    echo "E-mail já cadastrado para o usuário <strong>{$obj->nome}</strong> e associado ao cliente <strong>{$obj->cliente}</strong>.";
+                                }
+                            } else {
+                                if ($op === "inserir_usuario") {
+                                    $dao = Dao::getInstancia();
+                                    $id = $dao->getCountID("ADM_USUARIO", "ID");
+                                    $stm = $pdo->prepare(
+                                          "Insert Into ADM_USUARIO ("
+                                        . "    id         "
+                                        . "  , id_cliente "
+                                        . "  , nome       "
+                                        . "  , e_mail     "
+                                        . "  , senha      "
+                                        . "  , exe_ano    "
+                                        . "  , situacao   "
+                                        . "  , administrar_portal "
+                                        . "  , lancar_eventos     "
+                                        . "  , finalizar_eventos  "
+                                        . "  , lancar_ch_professores    "
+                                        . "  , finalizar_ch_professores "
+                                        . ") values ("
+                                        . "    :id         "
+                                        . "  , :id_cliente "
+                                        . "  , :nome       "
+                                        . "  , :email      "
+                                        . "  , :senha      "
+                                        . "  , extract(year from current_date) "
+                                        . "  , :situacao   "
+                                        . "  , :administrar_portal "
+                                        . "  , :lancar_eventos     "
+                                        . "  , :finalizar_eventos  "
+                                        . "  , :lancar_ch_professores    "
+                                        . "  , :finalizar_ch_professores "
+                                        . ")");
+                                    $stm->execute(array(
+                                        ':id'         => $id,
+                                        ':id_cliente' => $id_cliente,
+                                        ':nome'       => $nome,
+                                        ':email'      => $email,
+                                        ':senha'      => hashSenhaUser($senha),
+                                        ':situacao'   => $situacao,
+                                        ':administrar_portal' => $administrar_portal,
+                                        ':lancar_eventos'     => $lancar_eventos,
+                                        ':finalizar_eventos'  => $finalizar_eventos,
+                                        ':lancar_ch_professores'    => $lancar_ch_professores,
+                                        ':finalizar_ch_professores' => $finalizar_ch_professores
+                                    ));
+                                } else
+                                if ($op === "editar_usuario") {
                                     $stm = $pdo->prepare(
                                           "Update ADM_USUARIO u Set "
-                                        . "    u.senha = :senha "
+                                        . "    u.nome       = :nome "
+                                        . "  , u.e_mail     = :email "
+                                        . "  , u.situacao   = :situacao "
+                                        . "  , u.administrar_portal = :administrar_portal "
+                                        . "  , u.lancar_eventos     = :lancar_eventos     "
+                                        . "  , u.finalizar_eventos  = :finalizar_eventos  "
+                                        . "  , u.lancar_ch_professores    = :lancar_ch_professores    "
+                                        . "  , u.finalizar_ch_professores = :finalizar_ch_professores "
+                                        . "  , u.id_cliente = :id_cliente "
                                         . "where u.id = :id   ");
                                     $stm->execute(array(
-                                        ':senha' => hashSenhaUser($senha),
-                                        ':id'    => $id
+                                        ':nome'       => $nome,
+                                        ':email'      => $email,
+                                        ':situacao'   => $situacao,
+                                        ':administrar_portal' => $administrar_portal,
+                                        ':lancar_eventos'     => $lancar_eventos,
+                                        ':finalizar_eventos'  => $finalizar_eventos,
+                                        ':lancar_ch_professores'    => $lancar_ch_professores,
+                                        ':finalizar_ch_professores' => $finalizar_ch_professores,
+                                        ':id_cliente' => $id_cliente,
+                                        ':id'         => $id
                                     ));
+
+                                    if (($senha !== "") && ($senha === $senha_confirme)) {
+                                        $stm = $pdo->prepare(
+                                              "Update ADM_USUARIO u Set "
+                                            . "    u.senha = :senha "
+                                            . "where u.id = :id   ");
+                                        $stm->execute(array(
+                                            ':senha' => hashSenhaUser($senha),
+                                            ':id'    => $id
+                                        ));
+                                    }
                                 }
+
+                                $pdo->commit();
+
+                                $registros = array('form' => array());
+
+                                $registros['form'][0]['id']    = str_pad(intval($id), 3, "0", STR_PAD_LEFT);
+                                $registros['form'][0]['nome']  = $nome;
+                                $registros['form'][0]['email'] = $email;
+
+                                $json = json_encode($registros);
+                                file_put_contents($file, $json);
+
+                                echo "OK";
                             }
-                            
-                            $pdo->commit();
-                            
-                            $registros = array('form' => array());
-
-                            $registros['form'][0]['id']    = str_pad(intval($id), 3, "0", STR_PAD_LEFT);
-                            $registros['form'][0]['nome']  = $nome;
-                            $registros['form'][0]['email'] = $email;
-
-                            $json = json_encode($registros);
-                            file_put_contents($file, $json);
-                            
-                            echo "OK";
                         }
                         
                     } catch (Exception $ex) {
