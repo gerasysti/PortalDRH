@@ -61,6 +61,7 @@
                         $tabela .= "            <th>Município</th>";
                         $tabela .= "            <th>UF</th>";
                         $tabela .= "            <th data-orderable='false' style='text-align: right;'>Servidores</th>";
+                        $tabela .= "            <th data-orderable='false' style='text-align: right;'>Usuários</th>";
                         $tabela .= "            <th data-orderable='false' style='text-align: left;'>Atualização</th>";
                         $tabela .= "            <th class='numeric' data-orderable='false' style='text-align: center;'></th>";
                         $tabela .= "        </tr>";
@@ -100,6 +101,7 @@
                             . "  , coalesce(c.situacao, 0)   as situacao   "
                             . "  , coalesce(f.funcoes, 0)    as funcoes    "
                             . "  , coalesce(s.servidores, 0) as servidores "
+                            . "  , coalesce(u.usuarios, 0)   as usuarios "
                             . "from ADM_CLIENTE c "
                             . "  left join ( "
                             . "    Select "
@@ -117,8 +119,17 @@
                             . "    group by "
                             . "      cs.id_cliente "
                             . "  ) s on (s.id_cliente = c.id) "
+                            . "  left join ( "
+                            . "    Select "
+                            . "        uc.id_cliente "
+                            . "      , count(uc.id) as usuarios "
+                            . "    from ADM_USUARIO uc "
+                            . "    where (uc.situacao = 1) "
+                            . "    group by "
+                            . "      uc.id_cliente "
+                            . "  ) u on (u.id_cliente = c.id) "
                             . "where (c.id > 0)   ";
-
+                        //echo $sql . "<br><br><br>";
                         if ($cliente !== 0) $sql .= "  and (c.id = {$cliente}) " ;
                         
                         switch ($to) {
@@ -162,6 +173,8 @@
                             $funcoes     = (!empty($obj->funcoes)?$obj->funcoes:"0");
                             $servidores  = number_format($obj->servidores, 0, ',' , '.');
                             $servidoresX = (!empty($obj->servidores)?$obj->servidores:"0");
+                            $usuarios  = number_format($obj->usuarios, 0, ',' , '.');
+                            $usuariosX = (!empty($obj->usuarios)?$obj->usuarios:"0");
                             
                             $atualizacao = (!empty($obj->atualizacao)?date('d/m/Y H:i:s', strtotime($obj->atualizacao)):"&nbsp;");
                             $situacao    = $obj->situacao;
@@ -191,6 +204,7 @@
                                 . "<input type='hidden' id='margem_consignavel_{$id}' value='{$margem_consignavel}'>"
                                 . "<input type='hidden' id='funcoes_{$id}' value='{$funcoes}'>"
                                 . "<input type='hidden' id='servidores_{$id}' value='{$servidoresX}'>"
+                                . "<input type='hidden' id='usuarios_{$id}' value='{$usuariosX}'>"
                                 . "<input type='hidden' id='atualizacao_{$id}' value='{$atualizacao}'>"
                                 . "<input type='hidden' id='situacao_{$id}' value='{$situacao}'>";
                             
@@ -214,6 +228,7 @@
                             $tabela .= "        <td>{$municipio_nome}</td>";
                             $tabela .= "        <td style='text-align: center;'>{$municipio_uf}</td>";
                             $tabela .= "        <td style='text-align: right;'>{$servidores}</td>";
+                            $tabela .= "        <td style='text-align: right;'>{$usuarios}</td>";
                             $tabela .= "        <td style='text-align: left;'>{$atualizacao}</td>";
                             $tabela .= "        <td style='text-align: center;'>{$icon_ed}&nbsp;{$icon_ex}{$input}</td>";
                             $tabela .= "    </tr>";
@@ -505,6 +520,7 @@
                         $id = preg_replace("/[^0-9]/", "", trim(filter_input(INPUT_POST, 'id')));
                         $fn = preg_replace("/[^0-9]/", "", trim(filter_input(INPUT_POST, 'fn')));
                         $sv = preg_replace("/[^0-9]/", "", trim(filter_input(INPUT_POST, 'sv')));
+                        $su = preg_replace("/[^0-9]/", "", trim(filter_input(INPUT_POST, 'su')));
                         $hs = trim(filter_input(INPUT_POST, 'hs'));
                         
                         if ($hs !== $hash) {
@@ -515,6 +531,9 @@
                         } else 
                         if (intval($sv) !== 0) {
                             echo "Cliente possui servidores cadastrados!";
+                        } else 
+                        if (intval($su) !== 0) {
+                            echo "Cliente possui usuários cadastrados!";
                         } else 
                         if ((intval($cliente) !== 0) && (intval($cliente) === intval($id))) {
                             echo "Auto exclusão não permitida!";

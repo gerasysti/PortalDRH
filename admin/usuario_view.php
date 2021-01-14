@@ -39,16 +39,16 @@
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
     $sql = 
-         "Select "
-        ."    u.id "
-        ."  , u.nome "
-        ."  , u.cnpj "
-        ."  , u.municipio_nome "
-        ."  , u.municipio_uf "
-        ."  , trim(coalesce(u.titulo_portal, u.nome)) as titulo_portal "
-        ."from ADM_CLIENTE u "
-        ."order by "
-        ."    trim(coalesce(u.titulo_portal, u.nome))";
+          "Select     "
+        . "    c.id   "
+        . "  , c.nome "
+        . "  , c.cnpj "
+        . "  , c.municipio_nome "
+        . "  , c.municipio_uf   "
+        . "  , c.titulo_portal  "
+        . "from VW_CLIENTES c   "
+        . "order by "
+        . "    c.titulo_portal ";
 
     $res = $pdo->query($sql);
     while (($obj = $res->fetch(PDO::FETCH_OBJ)) !== false) {

@@ -1,11 +1,6 @@
 <!DOCTYPE html>
 <?php
-/* 
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- * 
- * Simple Tour (Ajuda Interativa) :
+/* Simple Tour (Ajuda Interativa) :
  * 
  * https://alvaroveliz.github.io/aSimpleTour/index.html
  * http://codesells.com/TourTip
@@ -22,6 +17,16 @@
     session_start();
     
     $id = md5(date('d/m/Y'));
+    
+    // Manter nesta variável a função que será chamada para montar os dados da versão atual do sistema...
+    // Esta função estará no arquivo "controle.js"
+    $version_function = "display_system_version_v202()";
+    
+    // Manter nesta variável a informação da versão anterior do sistema...
+    $version_info =
+          "Versão <b>2.0.1</b><br>"
+        . "Copyright &copy; 2020 <strong>Gerasys TI / M Cruz Consultoria.</strong><br>"
+        . "Todos os direitos reservados. &nbsp;&nbsp;&nbsp;";
     
     if (isset($_REQUEST['id'])) {
         if ($id !== trim($_REQUEST['id'])) {
@@ -243,10 +248,8 @@
                         <i class="glyph-icon icon-arrows-alt"></i>
                     </a>
                     -->
-                    <div class="pull-left" id="system_version">
-                        <b>Versão</b> 1.0.0<br>
-                        <strong>Copyright &copy; 2020 GeraSys TI.</strong><br>
-                        Todos os direitos reservados. &nbsp;&nbsp;&nbsp;
+                    <div class="pull-left" id="system_version" style="color: #FFFFFF;">
+                        <?php echo $version_info;?>
                     </div>
                     
                     <a href="javascript:void(0);" class="header-btn" id="toor-btn" title="Ajuda">
@@ -351,16 +354,6 @@
                             </a>
                         </li>
                     </ul><!-- #sidebar-menu -->
-                
-                    <!--
-                    <div class="bottom-right">
-                        <div class="pull-right hidden-xs">
-                          <b>Versão</b> 1.0.0
-                        </div>
-                        <strong>Copyright &copy; 2020 <a href='www.gerasysti.com.br' target="_blank">GeraSys TI.</a></strong> 
-                        Todos os direitos reservados.
-                    </div>
-                    -->
                 </div>
             </div>
 
@@ -490,7 +483,6 @@
         
         <script type="text/javascript">
             body_sizer_controle();
-            display_system_version();
             
             // Função "overlay" extraída do arquivo "overlay.js"
             //overlay_home();
@@ -612,6 +604,8 @@
                     $.aSimpleTour(tour);
                 });
             });            
+            
+            <?php echo $version_function;?>;
         </script>
         
     </body>

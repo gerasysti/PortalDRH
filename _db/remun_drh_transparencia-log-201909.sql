@@ -799,3 +799,63 @@ U.NOME.
 At line 6, column 16.
 
 */
+
+
+/*------ GERASYS.TI 13/01/2021 20:22:51 --------*/
+
+create view view_clientes (
+    id
+  , nome
+  , cnpj
+  , municipio_nome
+  , municipio_uf
+  , titulo_portal
+)
+as
+Select
+    u.id
+  , u.nome
+  , u.cnpj
+  , u.municipio_nome
+  , u.municipio_uf
+  , trim(coalesce(nullif(trim(u.titulo_portal), ''), u.nome)) as titulo_portal
+from ADM_CLIENTE u
+order by
+    6
+
+;
+
+GRANT ALL ON VIEW_CLIENTES TO "PUBLIC";
+
+
+
+/*------ GERASYS.TI 13/01/2021 20:26:15 --------*/
+
+CREATE VIEW VW_CLIENTES(
+    ID,
+    NOME,
+    CNPJ,
+    MUNICIPIO_NOME,
+    MUNICIPIO_UF,
+    TITULO_PORTAL)
+AS
+Select
+    u.id
+  , u.nome
+  , u.cnpj
+  , u.municipio_nome
+  , u.municipio_uf
+  , trim(coalesce(nullif(trim(u.titulo_portal), ''), u.nome)) as titulo_portal
+from ADM_CLIENTE u
+order by
+    6
+;
+
+GRANT ALL ON VW_CLIENTES TO "PUBLIC";
+
+
+
+/*------ GERASYS.TI 13/01/2021 20:26:26 --------*/
+
+DROP VIEW VIEW_CLIENTES;
+

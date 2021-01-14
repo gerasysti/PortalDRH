@@ -52,12 +52,13 @@ function configurarTabelaCliente(){
             null, // 3. Município
             null, // 4. UF
             null, // 5. Servidores
-            null, // 6. Atualização
-            { "width": "120px" }  // 7. Controles
+            null, // 6. Usuários
+            { "width": "175px" }, // 7. Atualização
+            { "width": "120px" }  // 8. Controles
         ],
         "columnDefs": [
-            {"orderable": false, "targets": 6}, 
-            {"orderable": false, "targets": 7}  
+            {"orderable": false, "targets": 7}, 
+            {"orderable": false, "targets": 8}  
         ],
         "order": [[1, 'asc']], // "order": [] <-- Ordenação indefinida
         "language": {
@@ -285,6 +286,7 @@ function excluirCliente(id) {
                     'id' : $('#id_' + id_cliente).val(),
                     'fn' : $('#funcoes_' + id_cliente).val(),
                     'sv' : $('#servidores_' + id_cliente).val(),
+                    'su' : $('#usuarios_' + id_cliente).val(),
                     'id_cliente' : $('#id_cliente_' + id_cliente).val()
                 };
 

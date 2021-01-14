@@ -92,7 +92,7 @@
             <url>admin/controle.php</url>
             <bookmark id="13">
                 <name/>
-                <line>217</line>
+                <line>222</line>
                 <key/>
             </bookmark>
         </file>
@@ -112,12 +112,8 @@
     </editor-bookmarks>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/Isaque/Documents/Projetos/web/drh/admin/usuario_view.php</file>
-            <file>file:/C:/Users/Isaque/Documents/Projetos/web/drh/admin/usuario_controller.js</file>
-            <file>file:/C:/Users/Isaque/Documents/Projetos/web/drh/admin/usuario_dao.php</file>
             <file>file:/C:/Users/Isaque/Documents/Projetos/web/drh/admin/controle.js</file>
             <file>file:/C:/Users/Isaque/Documents/Projetos/web/drh/admin/controle.php</file>
-            <file>file:/C:/Users/Isaque/Documents/Projetos/web/drh/admin/lancar_chprofessores_view.php</file>
         </group>
     </open-files>
 </project-private>
