@@ -803,165 +803,178 @@
                         
                         if ($hs !== $hash) {
                             echo "Acesso Inválido";
-                        } else 
-                        // Lançar Quantidade    
-                        if ($tipo_lancamento === 0) { 
-                            $quant = str_replace(",", ".", str_replace(".", "", $quant));
-                            $quant = floatval('0' . $quant);
-                            if ($obs === "") { $obs = null; }
+                        } else {
+                            $sql = 
+                                  "Select                "
+                                . "    s.id_servidor     "
+                                . "from REMUN_SERVIDOR s "
+                                . "where (s.id_cliente  = {$id_cliente})  "
+                                . "  and (s.id_servidor = {$id_servidor}) ";
+                                
+                            $res = $pdo->query($sql);
+                            if (($obj = $res->fetch(PDO::FETCH_OBJ)) === false) {
+                                echo "Servidor <strong>{$id_servidor}</strong> não cadastrado!<br>Solicite a sincronização do cadastro de servidores à entidade.";
+                            } else {
+                                // Lançar Quantidade    
+                                if ($tipo_lancamento === 0) { 
+                                    $quant = str_replace(",", ".", str_replace(".", "", $quant));
+                                    $quant = floatval('0' . $quant);
+                                    if ($obs === "") { $obs = null; }
 
-                            $stm = $pdo->prepare(
-                                  "Execute procedure SET_REMUN_EVENTO_SERVIDOR ( "
-                                . "    :ano_mes         "
-                                . "  , :id_cliente      "
-                                . "  , :id_unid_gestora "
-                                . "  , :id_unid_orcament"
-                                . "  , :id_evento       "
-                                . "  , :id_servidor     "
-                                . "  , :tipo_lanc       "
-                                . "  , :quant           "
-                                . "  , :valor           "
-                                . "  , :obs             "
-                                . ")");
-                            $stm->execute(array(
-                                  ':ano_mes'          => $ano_mes
-                                , ':id_cliente'       => $id_cliente
-                                , ':id_unid_gestora'  => $id_unid_gestora
-                                , ':id_unid_orcament' => $id_unid_orcament
-                                , ':id_evento'        => $id_evento
-                                , ':id_servidor'      => $id_servidor
-                                , ':tipo_lanc'        => $tipo_lancamento
-                                , ':quant'            => $quant
-                                , ':valor'            => null
-                                , ':obs'              => $obs
-                            ));
-                            $pdo->commit();
-                        } else 
-                        // Lançar Valor (R$)
-                        if ($tipo_lancamento === 1) {
-                            $valor = str_replace(",", ".", str_replace(".", "", $valor));
-                            $valor = floatval('0' . $valor);
-                            if ($obs === "") { $obs = null; }
+                                    $stm = $pdo->prepare(
+                                          "Execute procedure SET_REMUN_EVENTO_SERVIDOR ( "
+                                        . "    :ano_mes         "
+                                        . "  , :id_cliente      "
+                                        . "  , :id_unid_gestora "
+                                        . "  , :id_unid_orcament"
+                                        . "  , :id_evento       "
+                                        . "  , :id_servidor     "
+                                        . "  , :tipo_lanc       "
+                                        . "  , :quant           "
+                                        . "  , :valor           "
+                                        . "  , :obs             "
+                                        . ")");
+                                    $stm->execute(array(
+                                          ':ano_mes'          => $ano_mes
+                                        , ':id_cliente'       => $id_cliente
+                                        , ':id_unid_gestora'  => $id_unid_gestora
+                                        , ':id_unid_orcament' => $id_unid_orcament
+                                        , ':id_evento'        => $id_evento
+                                        , ':id_servidor'      => $id_servidor
+                                        , ':tipo_lanc'        => $tipo_lancamento
+                                        , ':quant'            => $quant
+                                        , ':valor'            => null
+                                        , ':obs'              => $obs
+                                    ));
+                                    $pdo->commit();
+                                } else 
+                                // Lançar Valor (R$)
+                                if ($tipo_lancamento === 1) {
+                                    $valor = str_replace(",", ".", str_replace(".", "", $valor));
+                                    $valor = floatval('0' . $valor);
+                                    if ($obs === "") { $obs = null; }
 
-                            $stm = $pdo->prepare(
-                                  "Execute procedure SET_REMUN_EVENTO_SERVIDOR ( "
-                                . "    :ano_mes         "
-                                . "  , :id_cliente      "
-                                . "  , :id_unid_gestora "
-                                . "  , :id_unid_orcament"
-                                . "  , :id_evento       "
-                                . "  , :id_servidor     "
-                                . "  , :tipo_lanc       "
-                                . "  , :quant           "
-                                . "  , :valor           "
-                                . "  , :obs             "
-                                . ")");
-                            $stm->execute(array(
-                                  ':ano_mes'          => $ano_mes
-                                , ':id_cliente'       => $id_cliente
-                                , ':id_unid_gestora'  => $id_unid_gestora
-                                , ':id_unid_orcament' => $id_unid_orcament
-                                , ':id_evento'        => $id_evento
-                                , ':id_servidor'      => $id_servidor
-                                , ':tipo_lanc'        => $tipo_lancamento
-                                , ':quant'            => null
-                                , ':valor'            => $valor
-                                , ':obs'              => $obs
-                            ));
-                            $pdo->commit();
-                        } else 
-                        // Lançar Quantidade e Valor (R$)
-                        if ($tipo_lancamento === 2) {
-                            $quant = str_replace(",", ".", str_replace(".", "", $quant));
-                            $quant = floatval('0' . $quant);
-                            
-                            $valor = str_replace(",", ".", str_replace(".", "", $valor));
-                            $valor = floatval('0' . $valor);
-                            
-                            if ($obs === "") { $obs = null; }
+                                    $stm = $pdo->prepare(
+                                          "Execute procedure SET_REMUN_EVENTO_SERVIDOR ( "
+                                        . "    :ano_mes         "
+                                        . "  , :id_cliente      "
+                                        . "  , :id_unid_gestora "
+                                        . "  , :id_unid_orcament"
+                                        . "  , :id_evento       "
+                                        . "  , :id_servidor     "
+                                        . "  , :tipo_lanc       "
+                                        . "  , :quant           "
+                                        . "  , :valor           "
+                                        . "  , :obs             "
+                                        . ")");
+                                    $stm->execute(array(
+                                          ':ano_mes'          => $ano_mes
+                                        , ':id_cliente'       => $id_cliente
+                                        , ':id_unid_gestora'  => $id_unid_gestora
+                                        , ':id_unid_orcament' => $id_unid_orcament
+                                        , ':id_evento'        => $id_evento
+                                        , ':id_servidor'      => $id_servidor
+                                        , ':tipo_lanc'        => $tipo_lancamento
+                                        , ':quant'            => null
+                                        , ':valor'            => $valor
+                                        , ':obs'              => $obs
+                                    ));
+                                    $pdo->commit();
+                                } else 
+                                // Lançar Quantidade e Valor (R$)
+                                if ($tipo_lancamento === 2) {
+                                    $quant = str_replace(",", ".", str_replace(".", "", $quant));
+                                    $quant = floatval('0' . $quant);
 
-                            $stm = $pdo->prepare(
-                                  "Execute procedure SET_REMUN_EVENTO_SERVIDOR ( "
-                                . "    :ano_mes         "
-                                . "  , :id_cliente      "
-                                . "  , :id_unid_gestora "
-                                . "  , :id_unid_orcament"
-                                . "  , :id_evento       "
-                                . "  , :id_servidor     "
-                                . "  , :tipo_lanc       "
-                                . "  , :quant           "
-                                . "  , :valor           "
-                                . "  , :obs             "
-                                . ")");
-                            $stm->execute(array(
-                                  ':ano_mes'          => $ano_mes
-                                , ':id_cliente'       => $id_cliente
-                                , ':id_unid_gestora'  => $id_unid_gestora
-                                , ':id_unid_orcament' => $id_unid_orcament
-                                , ':id_evento'        => $id_evento
-                                , ':id_servidor'      => $id_servidor
-                                , ':tipo_lanc'        => $tipo_lancamento
-                                , ':quant'            => $quant
-                                , ':valor'            => $valor
-                                , ':obs'              => $obs
-                            ));
-                            $pdo->commit();
+                                    $valor = str_replace(",", ".", str_replace(".", "", $valor));
+                                    $valor = floatval('0' . $valor);
+
+                                    if ($obs === "") { $obs = null; }
+
+                                    $stm = $pdo->prepare(
+                                          "Execute procedure SET_REMUN_EVENTO_SERVIDOR ( "
+                                        . "    :ano_mes         "
+                                        . "  , :id_cliente      "
+                                        . "  , :id_unid_gestora "
+                                        . "  , :id_unid_orcament"
+                                        . "  , :id_evento       "
+                                        . "  , :id_servidor     "
+                                        . "  , :tipo_lanc       "
+                                        . "  , :quant           "
+                                        . "  , :valor           "
+                                        . "  , :obs             "
+                                        . ")");
+                                    $stm->execute(array(
+                                          ':ano_mes'          => $ano_mes
+                                        , ':id_cliente'       => $id_cliente
+                                        , ':id_unid_gestora'  => $id_unid_gestora
+                                        , ':id_unid_orcament' => $id_unid_orcament
+                                        , ':id_evento'        => $id_evento
+                                        , ':id_servidor'      => $id_servidor
+                                        , ':tipo_lanc'        => $tipo_lancamento
+                                        , ':quant'            => $quant
+                                        , ':valor'            => $valor
+                                        , ':obs'              => $obs
+                                    ));
+                                    $pdo->commit();
+                                }
+
+                                // Fechar conexão PDO
+                                unset($pdo);
+
+                                $referencia = $controle . "_" . $sequencia;
+                                $servidor   = getRegistroServidor($id_cliente, $id_servidor);
+
+                                $style = "padding-left: 1px; padding-right: 1px; padding-top: 1px; padding-bottom: 1px; ";
+                                $input = 
+                                      "<input type='hidden' id='controle_{$referencia}' value='{$controle}'>"
+                                    . "<input type='hidden' id='sequencia_{$referencia}' value='{$sequencia}'>"
+                                    . "<input type='hidden' id='id_cliente_{$referencia}' value='{$id_cliente}'>"
+                                    . "<input type='hidden' id='id_unid_gestora_{$referencia}' value='{$id_unid_gestora}'>"
+                                    . "<input type='hidden' id='id_unid_orcament_{$referencia}' value='{$id_unid_orcament}'>"
+                                    . "<input type='hidden' id='id_evento_{$referencia}' value='{$id_evento}'>"
+                                    . "<input type='hidden' id='ano_mes_{$referencia}' value='{$ano_mes}'>"
+                                    . "<input type='hidden' id='id_servidor_{$referencia}' value='{$id_servidor}'>";
+
+                                $qt_readonly  = ($situacao !== 0?"readonly":($tipo_lancamento === 1?"readonly":""));
+                                $vl_readonly  = ($situacao !== 0?"readonly":($tipo_lancamento === 0?"readonly":""));
+
+                                $qt_proximo = "proximo_campo"; // ((int)$obj->situacao !== 0?"":((int)$tipo_lancamento === 0?"proximo_campo":""));
+                                $vl_proximo = "proximo_campo"; // ((int)$obj->situacao !== 0?"":((int)$tipo_lancamento === 1?"proximo_campo":""));
+
+                                $quant_out = 
+                                      "<input type='text' class='form-control text lg-text {$qt_proximo}' maxlength='10' id='quant_{$referencia}' onchange='salvar_lancamento_servidor(this.id, 0)' "
+                                    . "value='" . (($quant !== null) && ($quant !== '')?number_format($quant, 0, ',' , '.'):"0") . "' "
+                                    . "style='text-align: right; margin: 0px; border: 0; background-color:transparent; width: 100%; height: 50px;' {$qt_readonly}>";
+                                $valor_out = 
+                                      "<input type='text' class='form-control text lg-text {$vl_proximo}' maxlength='10' id='valor_{$referencia}' onchange='salvar_lancamento_servidor(this.id, 0)' "
+                                    . "value='" . (($valor !== null) && ($valor !== '')?number_format($valor, 2, ',' , '.'):"0,00") . "' "
+                                    . "style='text-align: right; margin: 0px; border: 0; background-color:transparent; width: 100%; height: 50px;' {$vl_readonly}>";
+                                $icon_ex = "<button id='excluir_servidor_lancamento_{$referencia}' class='btn btn-sm btn-round btn-primary excluir_servidor' title='Excluir Registro' onclick='excluirLancamentoServidor(this.id)' style='{$style}'><i class='glyph-icon icon-trash'></i></button>";
+
+                                $tr_table  = "    <tr class='custom-font-size-10' id='linha_servidor_{$referencia}'>";
+                                $tr_table .= "        <td style='text-align: center;'>{$sequencia}</td>";
+                                $tr_table .= "        <td style='text-align: center;'>" . str_pad($id_servidor, 7, "0", STR_PAD_LEFT) . "</td>";
+                                $tr_table .= "        <td>{$servidor->nome}</td>";
+                                $tr_table .= "        <td>{$servidor->cargo_funcao}</td>";
+                                $tr_table .= "        <td style='text-align: right; margin: 0px; padding: 0px;'>{$quant_out}</td>";
+                                $tr_table .= "        <td style='text-align: right; margin: 0px; padding: 0px;'>{$valor_out}</td>";
+                                $tr_table .= "        <td style='text-align: center;' style='{$style}'>{$icon_ex}{$input}</td>";
+                                $tr_table .= "    </tr>";
+
+                                $registros = array('form' => array());
+                                $registros['form'][0]['referencia']  = $referencia;
+                                $registros['form'][0]['controle']    = $controle;
+                                $registros['form'][0]['sequencia']   = $sequencia;
+                                $registros['form'][0]['id_servidor'] = $id_servidor;
+                                $registros['form'][0]['table_tr']    = $tr_table;
+
+                                $json = json_encode($registros);
+                                file_put_contents($file, $json);
+
+                                echo "OK";
+                            }
                         }
-
-                        // Fechar conexão PDO
-                        unset($pdo);
-
-                        $referencia = $controle . "_" . $sequencia;
-                        $servidor   = getRegistroServidor($id_cliente, $id_servidor);
-
-                        $style = "padding-left: 1px; padding-right: 1px; padding-top: 1px; padding-bottom: 1px; ";
-                        $input = 
-                              "<input type='hidden' id='controle_{$referencia}' value='{$controle}'>"
-                            . "<input type='hidden' id='sequencia_{$referencia}' value='{$sequencia}'>"
-                            . "<input type='hidden' id='id_cliente_{$referencia}' value='{$id_cliente}'>"
-                            . "<input type='hidden' id='id_unid_gestora_{$referencia}' value='{$id_unid_gestora}'>"
-                            . "<input type='hidden' id='id_unid_orcament_{$referencia}' value='{$id_unid_orcament}'>"
-                            . "<input type='hidden' id='id_evento_{$referencia}' value='{$id_evento}'>"
-                            . "<input type='hidden' id='ano_mes_{$referencia}' value='{$ano_mes}'>"
-                            . "<input type='hidden' id='id_servidor_{$referencia}' value='{$id_servidor}'>";
-
-                        $qt_readonly  = ($situacao !== 0?"readonly":($tipo_lancamento === 1?"readonly":""));
-                        $vl_readonly  = ($situacao !== 0?"readonly":($tipo_lancamento === 0?"readonly":""));
-
-                        $qt_proximo = "proximo_campo"; // ((int)$obj->situacao !== 0?"":((int)$tipo_lancamento === 0?"proximo_campo":""));
-                        $vl_proximo = "proximo_campo"; // ((int)$obj->situacao !== 0?"":((int)$tipo_lancamento === 1?"proximo_campo":""));
-
-                        $quant_out = 
-                              "<input type='text' class='form-control text lg-text {$qt_proximo}' maxlength='10' id='quant_{$referencia}' onchange='salvar_lancamento_servidor(this.id, 0)' "
-                            . "value='" . (($quant !== null) && ($quant !== '')?number_format($quant, 0, ',' , '.'):"0") . "' "
-                            . "style='text-align: right; margin: 0px; border: 0; background-color:transparent; width: 100%; height: 50px;' {$qt_readonly}>";
-                        $valor_out = 
-                              "<input type='text' class='form-control text lg-text {$vl_proximo}' maxlength='10' id='valor_{$referencia}' onchange='salvar_lancamento_servidor(this.id, 0)' "
-                            . "value='" . (($valor !== null) && ($valor !== '')?number_format($valor, 2, ',' , '.'):"0,00") . "' "
-                            . "style='text-align: right; margin: 0px; border: 0; background-color:transparent; width: 100%; height: 50px;' {$vl_readonly}>";
-                        $icon_ex = "<button id='excluir_servidor_lancamento_{$referencia}' class='btn btn-sm btn-round btn-primary excluir_servidor' title='Excluir Registro' onclick='excluirLancamentoServidor(this.id)' style='{$style}'><i class='glyph-icon icon-trash'></i></button>";
-
-                        $tr_table  = "    <tr class='custom-font-size-10' id='linha_servidor_{$referencia}'>";
-                        $tr_table .= "        <td style='text-align: center;'>{$sequencia}</td>";
-                        $tr_table .= "        <td style='text-align: center;'>" . str_pad($id_servidor, 7, "0", STR_PAD_LEFT) . "</td>";
-                        $tr_table .= "        <td>{$servidor->nome}</td>";
-                        $tr_table .= "        <td>{$servidor->cargo_funcao}</td>";
-                        $tr_table .= "        <td style='text-align: right; margin: 0px; padding: 0px;'>{$quant_out}</td>";
-                        $tr_table .= "        <td style='text-align: right; margin: 0px; padding: 0px;'>{$valor_out}</td>";
-                        $tr_table .= "        <td style='text-align: center;' style='{$style}'>{$icon_ex}{$input}</td>";
-                        $tr_table .= "    </tr>";
-                        
-                        $registros = array('form' => array());
-                        $registros['form'][0]['referencia']  = $referencia;
-                        $registros['form'][0]['controle']    = $controle;
-                        $registros['form'][0]['sequencia']   = $sequencia;
-                        $registros['form'][0]['id_servidor'] = $id_servidor;
-                        $registros['form'][0]['table_tr']    = $tr_table;
-
-                        $json = json_encode($registros);
-                        file_put_contents($file, $json);
-                        
-                        echo "OK";
                     } catch (Exception $ex) {
                         echo $ex . "<br><br>" . $ex->getMessage();
                     }

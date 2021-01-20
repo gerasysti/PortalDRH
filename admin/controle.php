@@ -23,8 +23,9 @@
     $version_function = "display_system_version_v202()";
     
     // Manter nesta variável a informação da versão anterior do sistema...
+    $version_id   = "2.0.1";
     $version_info =
-          "Versão <b>2.0.1</b><br>"
+          "Versão <b>{$version_id}</b><br>"
         . "Copyright &copy; 2020 <strong>Gerasys TI / M Cruz Consultoria.</strong><br>"
         . "Todos os direitos reservados. &nbsp;&nbsp;&nbsp;";
     
@@ -218,6 +219,7 @@
         <div id="page-wrapper">
             <div id="page-header" class="bg-gradient-9">
                 <div id="mobile-navigation">
+                    <input type="hidden" id="id_versao"   value="<?php echo $version_id;?>">
                     <input type="hidden" id="id_sessao"   value="<?php echo 'id_' . $_SESSION['acesso']['id'];?>">
                     <input type="hidden" id="lg_sessao"   value="<?php echo 'lg_' . $_SESSION['acesso']['us']?>">
                     <input type="hidden" id="administrar" value="<?php echo ((int)$usuario['cliente'] === 0?"1":"0");?>">

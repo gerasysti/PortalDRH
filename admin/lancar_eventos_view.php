@@ -769,8 +769,10 @@
                                 var id_servidor = parseFloat("0" + $('#id_servidor').val());
                                 if (id_servidor > 0) {
                                     var id_cliente = parseInt("0" + $('#id_cliente').val());
-                                    var id_unid_gestora = parseInt("0" + $('#id_unid_gestora').val());
+                                    var id_unid_gestora  = parseInt("0" + $('#id_unid_gestora').val());
+                                    var id_unid_orcament = parseInt("0" + $('#id_unid_orcament').val());
                                     carregar_registro_servidor(id_cliente, id_servidor, id_unid_gestora, function (data) {
+                                        // Validando Unidade Gestora
                                         if ( id_unid_gestora !== parseInt("0" + data.form[0].unid_gest) ) {
                                             $('#id_servidor').val("");
                                             $('#nm_servidor').val("");
@@ -783,6 +785,20 @@
                                                 "<li>Sub-unidade Orçamentária : <strong>" + data.form[0].subunidade_orcamentaria + "</strong></li>" + 
                                                 "<li>Cargo/Função : <strong>" + data.form[0].cargo_funcao + "</strong></li></ul>");
                                         } else
+                                        // Validando Unidade Orçamentária
+                                        if ( id_unid_orcament !== parseInt("0" + data.form[0].unid_orca) ) {
+                                            $('#id_servidor').val("");
+                                            $('#nm_servidor').val("");
+                                            $('#dt_admissao').val("");
+                                            $('#cargo_funcao').val("");
+                                            mensagem_alerta(
+                                                "Servidor(a) <strong>" + data.form[0].nome + "</strong> não pertence a esta Unidade Orçamentária!<br><br><ul>" + 
+                                                "<li>Unidade Gestora : <strong>" + data.form[0].unidade_gestora + "</strong></li>" + 
+                                                "<li>Unidade Orçamentária : <strong>" + data.form[0].unidade_orcamentaria + "</strong></li>" + 
+                                                "<li>Sub-unidade Orçamentária : <strong>" + data.form[0].subunidade_orcamentaria + "</strong></li>" + 
+                                                "<li>Cargo/Função : <strong>" + data.form[0].cargo_funcao + "</strong></li></ul>");
+                                        } else
+                                        // Validando situação do servidor
                                         if ( parseInt("0" + data.form[0].status) === 3 ) {
                                             $('#nm_servidor').val("");
                                             $('#dt_admissao').val("");
@@ -837,7 +853,7 @@
                                             "sortDescending": ": ativar para classificação descendente na coluna"
                                         },
                                         "info": "Exibindo _PAGE_ / _PAGES_",
-                                        "infoEmpty": "Sem dados para exibição",
+                                        "infoEmpty": "Não há servidores na Unidade Gestora / Unidade Orçamentária",
                                         "infoFiltered":   "(Filtrado a partir de _MAX_ registros)",
                                         "zeroRecords": "Sem registro(s) para exibição",
                                         "lengthMenu": "Exibindo _MENU_ registro(s)",
@@ -862,7 +878,8 @@
                                 'id' : hash[1],
                                 'us' : email[1],
                                 'to' : $('#cliente').val(),
-                                'ug' : $('#id_unid_gestora').val()
+                                'ug' : $('#id_unid_gestora').val(),
+                                'uo' : $('#id_unid_orcament').val()
                             };
 
                             if (parseInt(params.to) === 0) {

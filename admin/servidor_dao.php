@@ -160,6 +160,7 @@
                         $us = strip_tags( trim(filter_input(INPUT_POST, 'us')) );
                         $to = strip_tags( trim(filter_input(INPUT_POST, 'to')) );
                         $ug = strip_tags( trim(filter_input(INPUT_POST, 'ug')) );
+                        $uo = strip_tags( trim(filter_input(INPUT_POST, 'uo')) );
                         
                         // Gerar cabeçalho de campos da Consulta em página
                         $tabela  = "<a id='ancora_datatable-responsive'></a>";
@@ -196,7 +197,8 @@
                             . "  left join REMUN_SUBUNID_ORCAMENT b on (b.id_cliente = s.id_cliente and b.id = s.id_sub_unid_orcam) "
                             . "  left join REMUN_UNID_LOTACAO l on (l.id_cliente = s.id_cliente and l.id_lotacao = s.id_unid_lotacao) "
                             . "where (s.id_cliente = {$to}) "
-                            . "  and (s.id_unid_gestora = {$ug}) "
+                            . "  and (s.id_unid_gestora  = {$ug}) "
+                            . "  and (s.id_unid_orcament = {$uo}) "
                             //. "  and (s.situacao = 1)   "
                             . "  and (s.status <> '3') " // STATUS: '1' - Ativo, '2' - Afastado temporariamente, '3' - Desativado
                             . "order by   "
@@ -433,6 +435,7 @@
                                 $dt_admissao   = (!empty($obj->dt_admissao)?date('d/m/Y', strtotime($obj->dt_admissao) ):"");
                                 $dt_nascimento = (!empty($obj->dt_nascimento)?date('d/m/Y', strtotime($obj->dt_nascimento) ):"");
                                 $unid_gest  = (!empty($obj->id_unid_gestora)?$obj->id_unid_gestora:"0");
+                                $unid_orca  = (!empty($obj->id_unid_orcament)?$obj->id_unid_orcament:"0");
                                 $unid_lota  = (!empty($obj->id_unid_lotacao)?$obj->id_unid_lotacao:"0");
                                 $cargo_atual  = (!empty($obj->id_cargo_atual)?$obj->id_cargo_atual:"0");
                                 $situacao     = intval("0" . $obj->situacao);
@@ -452,6 +455,7 @@
                                 $registros['form'][0]['dt_admissao']      = $dt_admissao;
                                 $registros['form'][0]['dt_nascimento']    = $dt_nascimento;
                                 $registros['form'][0]['unid_gest']        = $unid_gest;
+                                $registros['form'][0]['unid_orca']        = $unid_orca;
                                 $registros['form'][0]['unid_lota']        = $unid_lota;
                                 $registros['form'][0]['cargo_atual']      = $cargo_atual;
                                 $registros['form'][0]['situacao']         = $situacao;
