@@ -74,6 +74,7 @@
                             . "  , coalesce(g.descricao, '* UG NÃO INFORMADA')           as undade_gestora "
                             . "  , coalesce(l.descricao, '* LOTAÇÃO NÃO INFORMADA')      as undade_lotacao "
                             . "  , coalesce(f.descricao, '* CARGO/FUNÇÃO NÃO INFORMADO') as cargo_funcao   "
+                            . "  , coalesce(nullif(trim(f.tipo_sal), ''), '1')           as tipo_salario   "
                             . "from REMUN_SERVIDOR s "
                             . "  inner join ADM_USUARIO_UNID_GESTORA x on (x.id_cliente = s.id_cliente and x.id_unid_gestora = s.id_unid_gestora and x.id_usuario = {$user_id} and x.acesso = 1) "
                             . "  inner join ADM_USUARIO_UNID_LOTACAO y on (y.id_cliente = s.id_cliente and y.id_unid_lotacao = s.id_unid_lotacao and y.id_usuario = {$user_id} and y.acesso = 1) "
@@ -103,8 +104,9 @@
                             $pis_pasep  = (!empty($obj->pis_pasep)?$obj->pis_pasep:"&nbsp;");
                             $unid_gest  = (!empty($obj->id_unid_gestora)?$obj->id_unid_gestora:"0");
                             $unid_lota  = (!empty($obj->id_unid_lotacao)?$obj->id_unid_lotacao:"0");
-                            $cargo_atual = (!empty($obj->id_cargo_atual)?$obj->id_cargo_atual:"0");
-                            $situacao    = intval("0" . $obj->situacao);
+                            $cargo_atual  = (!empty($obj->id_cargo_atual)?$obj->id_cargo_atual:"0");
+                            $tipo_salario = (!empty($obj->tipo_salario)?$obj->tipo_salario:"0");
+                            $situacao     = intval("0" . $obj->situacao);
                             
                             $style = "padding-left: 1px; padding-right: 1px; padding-top: 1px; padding-bottom: 1px; ";
                             $input = 
@@ -120,6 +122,7 @@
                                 . "<input type='hidden' id='id_unid_gestora_{$referencia}' value='{$unid_gest}'>"
                                 . "<input type='hidden' id='id_unid_lotacao_{$referencia}' value='{$unid_lota}'>"
                                 . "<input type='hidden' id='id_cargo_atual_{$referencia}' value='{$cargo_atual}'>"
+                                . "<input type='hidden' id='id_tipo_salario_{$referencia}' value='{$tipo_salario}'>"
                                 . "<input type='hidden' id='situacao_{$referencia}' value='{$situacao}'>";
                             
                             $icon_ed = "<button id='editar_servidor_{$referencia}'  class='btn btn-round btn-primary' title='Editar Registro'  onclick='editarServidor(this.id)'  style='{$style}'><i class='glyph-icon icon-edit'></i></button>";
@@ -188,6 +191,7 @@
                             . "  , coalesce(b.descricao, '* SUB. UO. NÃO INFORMADA')     as subundade_orcamentaria "
                             . "  , coalesce(l.descricao, '* LOTAÇÃO NÃO INFORMADA')      as undade_lotacao "
                             . "  , coalesce(f.descricao, '* CARGO/FUNÇÃO NÃO INFORMADO') as cargo_funcao   "
+                            . "  , coalesce(nullif(trim(f.tipo_sal), ''), '1')           as tipo_salario   "
                             . "from REMUN_SERVIDOR s "
                             . "  inner join REMUN_CARGO_FUNCAO f on (f.id_cliente = s.id_cliente and f.id_cargo = s.id_cargo_atual) "
                             . "  left join ADM_USUARIO_UNID_GESTORA x on (x.id_cliente = s.id_cliente and x.id_unid_gestora = s.id_unid_gestora and x.id_usuario = {$user_id} and x.acesso = 1) "
@@ -221,6 +225,7 @@
                             $unid_lota  = (!empty($obj->id_unid_lotacao)?$obj->id_unid_lotacao:"0");
                             $cargo_funcao = (!empty($obj->cargo_funcao)?$obj->cargo_funcao:"&nbsp;");
                             $cargo_atual  = (!empty($obj->id_cargo_atual)?$obj->id_cargo_atual:"0");
+                            $tipo_salario = (!empty($obj->tipo_salario)?$obj->tipo_salario:"0");
                             $subundade_orcamentaria = (!empty($obj->subundade_orcamentaria)?$obj->subundade_orcamentaria:"&nbsp;");
                             $situacao     = intval("0" . $obj->situacao);
                             
@@ -240,6 +245,7 @@
                                 . "<input type='hidden' id='id_unid_lotacao_{$referencia}' value='{$unid_lota}'>"
                                 . "<input type='hidden' id='id_cargo_atual_{$referencia}' value='{$cargo_atual}'>"
                                 . "<input type='hidden' id='cargo_funcao_{$referencia}' value='{$cargo_funcao}'>"
+                                . "<input type='hidden' id='id_tipo_salario_{$referencia}' value='{$tipo_salario}'>"
                                 . "<input type='hidden' id='subundade_orcamentaria_{$referencia}' value='{$subundade_orcamentaria}'>"
                                 . "<input type='hidden' id='situacao_{$referencia}' value='{$situacao}'>";
                             
@@ -301,6 +307,7 @@
                             . "  , coalesce(g.descricao, '* UG NÃO INFORMADA')           as undade_gestora "
                             . "  , coalesce(l.descricao, '* LOTAÇÃO NÃO INFORMADA')      as undade_lotacao "
                             . "  , coalesce(f.descricao, '* CARGO/FUNÇÃO NÃO INFORMADO') as cargo_funcao   "
+                            . "  , coalesce(nullif(trim(f.tipo_sal), ''), '0')           as tipo_salario   "
                             . "from REMUN_SERVIDOR s "
                             . "  inner join REMUN_CARGO_FUNCAO f on (f.id_cliente = s.id_cliente and f.id_cargo = s.id_cargo_atual) "
                             . "  left join ADM_USUARIO_UNID_GESTORA x on (x.id_cliente = s.id_cliente and x.id_unid_gestora = s.id_unid_gestora and x.id_usuario = {$user_id} and x.acesso = 1) "
@@ -330,6 +337,7 @@
                             $unid_lota  = (!empty($obj->id_unid_lotacao)?$obj->id_unid_lotacao:"0");
                             $cargo_funcao = (!empty($obj->cargo_funcao)?$obj->cargo_funcao:"&nbsp;");
                             $cargo_atual  = (!empty($obj->id_cargo_atual)?$obj->id_cargo_atual:"0");
+                            $tipo_salario = (!empty($obj->tipo_salario)?$obj->tipo_salario:"0");
                             $situacao     = intval("0" . $obj->situacao);
                             $status       = intval("0" . $obj->status);
                             
@@ -348,6 +356,7 @@
                                 . "<input type='hidden' id='id_unid_lotacao_{$referencia}' value='{$unid_lota}'>"
                                 . "<input type='hidden' id='id_cargo_atual_{$referencia}' value='{$cargo_atual}'>"
                                 . "<input type='hidden' id='cargo_funcao_{$referencia}' value='{$cargo_funcao}'>"
+                                . "<input type='hidden' id='id_tipo_salario_{$referencia}' value='{$tipo_salario}'>"
                                 . "<input type='hidden' id='situacao_{$referencia}' value='{$situacao}'>"
                                 . "<input type='hidden' id='status_{$referencia}' value='{$status}'>";
                             
@@ -458,6 +467,7 @@
                                 $registros['form'][0]['unid_orca']        = $unid_orca;
                                 $registros['form'][0]['unid_lota']        = $unid_lota;
                                 $registros['form'][0]['cargo_atual']      = $cargo_atual;
+                                $registros['form'][0]['tipo_salario']     = $obj->tipo_salario; // 1 - Normal, 2 - Hora/aula
                                 $registros['form'][0]['situacao']         = $situacao;
                                 $registros['form'][0]['status']           = $status;
                                 $registros['form'][0]['status_descricao'] = $status_descricao;
@@ -466,7 +476,6 @@
                                 $registros['form'][0]['subunidade_orcamentaria'] = $obj->subunidade_orcamentaria;
                                 $registros['form'][0]['unidade_lotacao'] = $obj->unidade_lotacao;
                                 $registros['form'][0]['cargo_funcao']    = $obj->cargo_funcao;
-                                $registros['form'][0]['tipo_salario']    = $obj->tipo_salario; // 1 - Normal, 2 - Hora/aula
                                 
                                 $json = json_encode($registros);
                                 file_put_contents($file, $json);

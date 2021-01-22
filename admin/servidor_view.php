@@ -248,7 +248,7 @@
                                             
                                             <div class="col-sm-4 padding-field">
                                                 <div class="input-group">
-                                                    <input type="text" class="form-control text lg-text" id="pesquisa" value=""/>
+                                                    <input type="text" class="form-control text lg-text" id="pesquisa" value="" placeholder="Caso necessário, informe o Nome ou CPF do Servidor ..."/>
                                                     <div class="input-group-addon" style="padding: 0px; padding-left : 4px;">
                                                         <button id="btn_consultar" class="btn ra-round btn-primary lg-text" onclick="consultarServidor('<?php echo 'id_' . $_SESSION['acesso']['id'];?>', '<?php echo 'lg_' . $_SESSION['acesso']['us']?>')" title="Executar Consulta"><i class="glyph-icon icon-search"></i></button>
                                                     </div>
@@ -387,8 +387,16 @@
                                                     </div>
                                                 </div>
                                                 <div class="form-group" style="margin: 2px;">
-                                                    <div class="col-sm-3 padding-field">&nbsp;</div>
-                                                    <div class="col-sm-6 padding-field">
+                                                    <label for="id_tipo_salario" class="col-sm-3 control-label padding-label">Tipo Salário</label>
+                                                    <div class="col-sm-5 padding-field">
+                                                        <select class="form-control chosen-select" id="id_tipo_salario" style="width: 100%;" disabled>
+                                                            <option value="0" class="optionChild">* NÃO INFORMADO</option>
+                                                            <option value="1" class="optionChild">Normal</option>
+                                                            <option value="2" class="optionChild">Hora/Aula</option>
+                                                        </select>
+                                                    </div>
+                                                    <div class="col-sm-1 padding-field">&nbsp;</div>
+                                                    <div class="col-sm-3 padding-field">
                                                         <div class="checkbox checkbox-primary">
                                                             <label>
                                                                 <input class="custom-checkbox" type="checkbox" name="sem_uso" id="ativo" value="1" disabled>

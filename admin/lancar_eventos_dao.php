@@ -525,7 +525,7 @@
                         if ($hs !== $hash) {
                             echo "Acesso Inválido";
                         } else {
-                            // Verificar se já existe lançamento mensal do evento para o Cliente/Unidade/Lotação/Competência
+                            // Verificar se já existe lançamento mensal do evento para o Cliente / UG / UO / Competência
                             $sql = 
                                   "Select "
                                 . "    mv.controle "
@@ -535,12 +535,12 @@
                                 . "from REMUN_EVENTO_AVULSO mv "
                                 . "  left join ADM_USUARIO us on (us.id = mv.usuario) "
                                 . "where (mv.id_cliente = {$id_cliente}) "
-                                . "  and (mv.ano_mes    = '{$ano_mes}')  "
                                 . "  and (mv.id_unid_gestora  = {$id_unid_gestora}) "
                                 . "  and (mv.id_unid_orcament = {$id_unid_orcament}) "
-                                . "  and (mv.id_evento        = {$id_evento}) "
-                                . "  and (mv.controle        <> {$controle})  "
-                                . "  and (mv.situacao        <> 2) ";
+                                . "  and (mv.ano_mes   = '{$ano_mes}')  "
+                                . "  and (mv.id_evento = {$id_evento}) "
+                                . "  and (mv.controle  <> {$controle})  "
+                                . "  and (mv.situacao  <> 2) ";
                             
                             $cnf = Configuracao::getInstancia();
                             $pdo = $cnf->db('', '');

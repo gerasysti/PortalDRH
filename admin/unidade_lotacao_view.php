@@ -162,7 +162,7 @@
                                             
                                             <div class="col-sm-4 padding-field">
                                                 <div class="input-group">
-                                                    <input type="text" class="form-control text lg-text" id="pesquisa" value=""/>
+                                                    <input type="text" class="form-control text lg-text" id="pesquisa" value="" placeholder="Caso necessário, informe a descrição da Unidade ..."/>
                                                     <div class="input-group-addon" style="padding: 0px; padding-left : 4px;">
                                                         <button id="btn_consultar" class="btn ra-round btn-primary lg-text" onclick="consultarUnidadeLotacao('<?php echo 'id_' . $_SESSION['acesso']['id'];?>', '<?php echo 'lg_' . $_SESSION['acesso']['us']?>')" title="Executar Consulta"><i class="glyph-icon icon-search"></i></button>
                                                     </div>

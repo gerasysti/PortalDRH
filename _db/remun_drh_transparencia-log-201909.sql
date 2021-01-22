@@ -859,3 +859,323 @@ GRANT ALL ON VW_CLIENTES TO "PUBLIC";
 
 DROP VIEW VIEW_CLIENTES;
 
+
+
+
+/*------ GERASYS.TI 22/01/2021 15:10:58 --------*/
+
+SET TERM ^ ;
+
+CREATE OR ALTER procedure SP_ATUALIZA_TAB_CARGO (
+    PE_ANO_MES char(6),
+    PE_ID_CLIENTE integer,
+    PE_ID_CARGO integer,
+    PE_DESCRICAO varchar(50),
+    PE_TIPO_TCM char(2),
+    PE_QTD_VAGAS integer,
+    PE_NUM_ATO_CRIACAO varchar(11),
+    PE_DT_ATO_CRIACAO date,
+    PE_VENCTO_BASE numeric(15,4),
+    PE_TIPO_SAL char(1),
+    PE_BASE_CALC integer,
+    PE_FORMA_CALC_SAL char(1),
+    PE_DESCR_TIPO_TCM varchar(80),
+    PE_QTD_REF smallint,
+    PE_VAL_REF00 numeric(15,4),
+    PE_VAL_REF01 numeric(15,4),
+    PE_VAL_REF02 numeric(15,4),
+    PE_VAL_REF03 numeric(15,4),
+    PE_VAL_REF04 numeric(15,4),
+    PE_VAL_REF05 numeric(15,4),
+    PE_VAL_REF06 numeric(15,4),
+    PE_VAL_REF07 numeric(15,4),
+    PE_VAL_REF08 numeric(15,4),
+    PE_VAL_REF09 numeric(15,4),
+    PE_VAL_REF10 numeric(15,4),
+    PE_VAL_REF11 numeric(15,4),
+    PE_VAL_REF12 numeric(15,4),
+    PE_VAL_REF13 numeric(15,4),
+    PE_VAL_REF14 numeric(15,4),
+    PE_VAL_REF15 numeric(15,4))
+as
+begin
+    UPDATE OR INSERT INTO REMUN_CARGO_FUNCAO (
+        id_cliente
+      , id_cargo
+      , descricao
+      , tipo_tcm
+      , qtd_vagas
+      , num_ato_criacao
+      , dt_ato_criacao
+      , vencto_base
+      , tipo_sal
+      , base_calc
+      , forma_calc_sal
+      , descr_tipo_tcm
+      , qtd_ref
+    ) values (
+        :pe_id_cliente
+      , :pe_id_cargo
+      , :pe_descricao
+      , :pe_tipo_tcm
+      , :pe_qtd_vagas
+      , :pe_num_ato_criacao
+      , :pe_dt_ato_criacao
+      , :pe_vencto_base
+      , :pe_tipo_sal
+      , :pe_base_calc
+      , :pe_forma_calc_sal
+      , :pe_descr_tipo_tcm
+      , :pe_qtd_ref
+    ) MATCHING (
+        id_cliente
+      , id_cargo);
+
+/*
+   update remun_cargo_funcao set
+      DESCRICAO        = :pe_descricao,
+      TIPO_TCM         = :pe_tipo_tcm,
+      QTD_VAGAS        = :pe_qtd_vagas,
+      NUM_ATO_CRIACAO  = :pe_num_ato_criacao,
+      DT_ATO_CRIACAO   = :pe_dt_ato_criacao,
+      VENCTO_BASE      = :pe_vencto_base,
+      TIPO_SAL         = :pe_tipo_sal,
+      BASE_CALC        = :pe_base_calc,
+      FORMA_CALC_SAL   = :pe_forma_calc_sal,
+      DESCR_TIPO_TCM   = :pe_descr_tipo_tcm,
+      QTD_REF          = :pe_qtd_ref
+   where
+      (id_cliente = :pe_id_cliente) and
+      (id_cargo   = :pe_id_cargo);
+   if (row_count = 0) then
+   begin
+      insert into remun_cargo_funcao(ID_CLIENTE, ID_CARGO, DESCRICAO,
+         TIPO_TCM, QTD_VAGAS, NUM_ATO_CRIACAO, DT_ATO_CRIACAO,
+         VENCTO_BASE, TIPO_SAL, BASE_CALC, FORMA_CALC_SAL,
+         DESCR_TIPO_TCM, QTD_REF)
+      values(:pe_id_cliente, :pe_id_cargo, :pe_descricao, :pe_tipo_tcm,
+         :pe_qtd_vagas, :pe_num_ato_criacao, :pe_dt_ato_criacao,
+         :pe_vencto_base, :pe_tipo_sal, :pe_base_calc, :pe_forma_calc_sal,
+         :pe_descr_tipo_tcm, :pe_qtd_ref);
+   end
+*/
+   if (pe_val_ref00 = '0') then
+      pe_val_ref00 = Null;
+   if (pe_val_ref01 = '0') then
+      pe_val_ref01 = Null;
+   if (pe_val_ref02 = '0') then
+      pe_val_ref02 = Null;
+   if (pe_val_ref03 = '0') then
+      pe_val_ref03 = Null;
+   if (pe_val_ref04 = '0') then
+      pe_val_ref04 = Null;
+   if (pe_val_ref05 = '0') then
+      pe_val_ref05 = Null;
+   if (pe_val_ref06 = '0') then
+      pe_val_ref06 = Null;
+   if (pe_val_ref07 = '0') then
+      pe_val_ref07 = Null;
+   if (pe_val_ref08 = '0') then
+      pe_val_ref08 = Null;
+   if (pe_val_ref09 = '0') then
+      pe_val_ref09 = Null;
+   if (pe_val_ref10 = '0') then
+      pe_val_ref10 = Null;
+   if (pe_val_ref11 = '0') then
+      pe_val_ref11 = Null;
+   if (pe_val_ref12 = '0') then
+      pe_val_ref12 = Null;
+   if (pe_val_ref13 = '0') then
+      pe_val_ref13 = Null;
+   if (pe_val_ref14 = '0') then
+      pe_val_ref14 = Null;
+   if (pe_val_ref15 = '0') then
+      pe_val_ref15 = Null;
+
+   update remun_cargo_ref set
+      VAL_REF00 = :pe_val_ref00, VAL_REF01 = :pe_val_ref01,
+      VAL_REF02 = :pe_val_ref02, VAL_REF03 = :pe_val_ref03,
+      VAL_REF04 = :pe_val_ref04, VAL_REF05 = :pe_val_ref05,
+      VAL_REF06 = :pe_val_ref06, VAL_REF07 = :pe_val_ref07,
+      VAL_REF08 = :pe_val_ref08, VAL_REF09 = :pe_val_ref09,
+      VAL_REF10 = :pe_val_ref10, VAL_REF11 = :pe_val_ref11,
+      VAL_REF12 = :pe_val_ref12, VAL_REF13 = :pe_val_ref13,
+      VAL_REF14 = :pe_val_ref14, VAL_REF15 = :pe_val_ref15
+   where
+      (id_cliente = :pe_id_cliente) and
+      (ano_mes = :pe_ano_mes) and
+      (id_cargo = :pe_id_cargo);
+   if (row_count = 0) then
+   begin
+      insert into remun_cargo_ref(ID_CLIENTE, ANO_MES, ID_CARGO,
+         VAL_REF00, VAL_REF01, VAL_REF02, VAL_REF03, VAL_REF04,
+         VAL_REF05, VAL_REF06, VAL_REF07, VAL_REF08, VAL_REF09,
+         VAL_REF10, VAL_REF11, VAL_REF12, VAL_REF13, VAL_REF14,
+         VAL_REF15)
+      values(:pe_ID_CLIENTE, :pe_ANO_MES, :pe_ID_CARGO,
+         :pe_VAL_REF00, :pe_VAL_REF01, :pe_VAL_REF02, :pe_VAL_REF03, :pe_VAL_REF04,
+         :pe_VAL_REF05, :pe_VAL_REF06, :pe_VAL_REF07, :pe_VAL_REF08, :pe_VAL_REF09,
+         :pe_VAL_REF10, :pe_VAL_REF11, :pe_VAL_REF12, :pe_VAL_REF13, :pe_VAL_REF14,
+         :pe_VAL_REF15);
+   end
+
+end
+^
+
+SET TERM ; ^
+
+
+
+
+/*------ GERASYS.TI 22/01/2021 15:15:06 --------*/
+
+SET TERM ^ ;
+
+CREATE OR ALTER procedure SP_ATUALIZA_TAB_CARGO (
+    PE_ANO_MES char(6),
+    PE_ID_CLIENTE integer,
+    PE_ID_CARGO integer,
+    PE_DESCRICAO varchar(50),
+    PE_TIPO_TCM char(2),
+    PE_QTD_VAGAS integer,
+    PE_NUM_ATO_CRIACAO varchar(11),
+    PE_DT_ATO_CRIACAO date,
+    PE_VENCTO_BASE numeric(15,4),
+    PE_TIPO_SAL char(1),
+    PE_BASE_CALC integer,
+    PE_FORMA_CALC_SAL char(1),
+    PE_DESCR_TIPO_TCM varchar(80),
+    PE_QTD_REF smallint,
+    PE_VAL_REF00 numeric(15,4),
+    PE_VAL_REF01 numeric(15,4),
+    PE_VAL_REF02 numeric(15,4),
+    PE_VAL_REF03 numeric(15,4),
+    PE_VAL_REF04 numeric(15,4),
+    PE_VAL_REF05 numeric(15,4),
+    PE_VAL_REF06 numeric(15,4),
+    PE_VAL_REF07 numeric(15,4),
+    PE_VAL_REF08 numeric(15,4),
+    PE_VAL_REF09 numeric(15,4),
+    PE_VAL_REF10 numeric(15,4),
+    PE_VAL_REF11 numeric(15,4),
+    PE_VAL_REF12 numeric(15,4),
+    PE_VAL_REF13 numeric(15,4),
+    PE_VAL_REF14 numeric(15,4),
+    PE_VAL_REF15 numeric(15,4))
+as
+begin
+    UPDATE OR INSERT INTO REMUN_CARGO_FUNCAO (
+        id_cliente
+      , id_cargo
+      , descricao
+      , tipo_tcm
+      , qtd_vagas
+      , num_ato_criacao
+      , dt_ato_criacao
+      , vencto_base
+      , tipo_sal
+      , base_calc
+      , forma_calc_sal
+      , descr_tipo_tcm
+      , qtd_ref
+    ) values (
+        :pe_id_cliente
+      , :pe_id_cargo
+      , :pe_descricao
+      , :pe_tipo_tcm
+      , :pe_qtd_vagas
+      , :pe_num_ato_criacao
+      , :pe_dt_ato_criacao
+      , :pe_vencto_base
+      , :pe_tipo_sal
+      , :pe_base_calc
+      , :pe_forma_calc_sal
+      , :pe_descr_tipo_tcm
+      , :pe_qtd_ref
+    ) MATCHING (
+        id_cliente
+      , id_cargo);
+
+   if (pe_val_ref00 = '0') then
+      pe_val_ref00 = Null;
+   if (pe_val_ref01 = '0') then
+      pe_val_ref01 = Null;
+   if (pe_val_ref02 = '0') then
+      pe_val_ref02 = Null;
+   if (pe_val_ref03 = '0') then
+      pe_val_ref03 = Null;
+   if (pe_val_ref04 = '0') then
+      pe_val_ref04 = Null;
+   if (pe_val_ref05 = '0') then
+      pe_val_ref05 = Null;
+   if (pe_val_ref06 = '0') then
+      pe_val_ref06 = Null;
+   if (pe_val_ref07 = '0') then
+      pe_val_ref07 = Null;
+   if (pe_val_ref08 = '0') then
+      pe_val_ref08 = Null;
+   if (pe_val_ref09 = '0') then
+      pe_val_ref09 = Null;
+   if (pe_val_ref10 = '0') then
+      pe_val_ref10 = Null;
+   if (pe_val_ref11 = '0') then
+      pe_val_ref11 = Null;
+   if (pe_val_ref12 = '0') then
+      pe_val_ref12 = Null;
+   if (pe_val_ref13 = '0') then
+      pe_val_ref13 = Null;
+   if (pe_val_ref14 = '0') then
+      pe_val_ref14 = Null;
+   if (pe_val_ref15 = '0') then
+      pe_val_ref15 = Null;
+
+    UPDATE OR INSERT INTO REMUN_CARGO_REF (
+        id_cliente
+      , ano_mes
+      , id_cargo
+      , val_ref00
+      , val_ref01
+      , val_ref02
+      , val_ref03
+      , val_ref04
+      , val_ref05
+      , val_ref06
+      , val_ref07
+      , val_ref08
+      , val_ref09
+      , val_ref10
+      , val_ref11
+      , val_ref12
+      , val_ref13
+      , val_ref14
+      , val_ref15
+    ) values (
+        :pe_id_cliente
+      , :pe_ano_mes
+      , :pe_id_cargo
+      , :pe_val_ref00
+      , :pe_val_ref01
+      , :pe_val_ref02
+      , :pe_val_ref03
+      , :pe_val_ref04
+      , :pe_val_ref05
+      , :pe_val_ref06
+      , :pe_val_ref07
+      , :pe_val_ref08
+      , :pe_val_ref09
+      , :pe_val_ref10
+      , :pe_val_ref11
+      , :pe_val_ref12
+      , :pe_val_ref13
+      , :pe_val_ref14
+      , :pe_val_ref15
+    ) MATCHING (
+        id_cliente
+      , ano_mes
+      , id_cargo
+    );
+end
+^
+
+SET TERM ; ^
+

@@ -51,7 +51,7 @@ function configurarTabelaUsuario(){
             null, // 2. E-mail
             null, // 3. Cliente
             null, // 4. CNPJ
-            null, // 5. Último acesso
+            { "width": "175px" }, // 5. Último acesso
             null, // 6. Senha
             { "width": "120px" }  // 7. Controles
         ],

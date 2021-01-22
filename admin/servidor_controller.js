@@ -124,7 +124,8 @@ function editarServidor(id) {
     $('#id_cliente_cadastro').val( $('#id_cliente_' + id_servidor).val() );
     $('#id_unid_gestora').val( $('#id_unid_gestora_' + id_servidor).val() );
     $('#id_unid_lotacao').val( $('#id_unid_lotacao_' + id_servidor).val() );
-    $('#id_cargo_atual').val( $('#id_cargo_atual_' + id_servidor).val() );
+    $('#id_cargo_atual').val( $('#id_cargo_atual_'   + id_servidor).val() );
+    $('#id_tipo_salario').val( $('#id_tipo_salario_' + id_servidor).val() );
     $('#situacao').val( $('#situacao_' + id_servidor).val() );
     $('#ativo').prop('checked', ($('#situacao_' + id_servidor).val() === '1')); 
     
@@ -132,6 +133,7 @@ function editarServidor(id) {
     $('#id_unid_gestora').trigger('chosen:updated');
     $('#id_unid_lotacao').trigger('chosen:updated');
     $('#id_cargo_atual').trigger('chosen:updated');
+    $('#id_tipo_salario').trigger('chosen:updated');
     $('#situacao').trigger('chosen:updated');
     
     $('input[type="checkbox"].custom-checkbox').uniform();
