@@ -479,7 +479,7 @@
                         }
                         
                     } catch (Exception $ex) {
-                        echo $ex . "<br><br>" . $ex->getMessage();
+                        echo $ex . "<br><br>" . $ex->getMessage() . "<br><br> PK -> {$id}";
                     }
                 } break;
                 
