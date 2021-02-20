@@ -1,0 +1,23 @@
+.padding-label {
+    padding-left : 2px; 
+    padding-right: 10px;
+}
+
+.padding-field {
+    padding-left : 2px; 
+    padding-right: 2px;
+}
+
+.padding-field-3 {
+    padding-left : 3px; 
+    padding-right: 3px;
+}
+
+.padding-panel {
+    padding-left : 1px; 
+    padding-right: 1px;
+}
+
+.padding-panel-1 {
+    padding : 1px; 
+}
