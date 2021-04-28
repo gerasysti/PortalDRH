@@ -626,6 +626,7 @@ Usuário para teste:
                     ."  , case when coalesce(g.dados_ug_ccheque, 'N') = 'S' then g.cnpj else u.cnpj end as cnpj "
                     ."  , u.municipio_nome "
                     ."  , u.municipio_uf   "
+                    ."  , coalesce(u.exibe_cargo_origem, 0) as exibe_cargo_origem "
                     ."  , coalesce(u.margem_consignavel, 0) as margem_consignavel "
                     ."  , coalesce(nullif(trim(u.logo), ''), '../dist/img/brasoes/ssbv.png') as brasao "    
                     ."  , trim(coalesce(u.titulo_portal, u.nome)) as titulo_portal "
@@ -664,6 +665,7 @@ Usuário para teste:
                         $dados_cliente['MUNICIPIO_NOME']     = $obj->municipio_nome;
                         $dados_cliente['MUNICIPIO_UF']       = $obj->municipio_uf;
                         $dados_cliente['MARGEM_CONSIGNAVEL'] = $obj->margem_consignavel;
+                        $dados_cliente['EXIBE_CARGO_ORIGEM'] = $obj->exibe_cargo_origem;
                         $dados_cliente['EXIBIR_MATRICULA']   = "1";
                         
                         break;
@@ -832,7 +834,7 @@ Usuário para teste:
                     <td class="espacoCelula3"><span class="fonteTamanho5">ADMISSÃO</span><br><b><?php echo $dados['dt_admissao'];?></b></td>
                     
                     <!--COLUNA 4-->
-                    <?php if (trim($dados['desc_cargo_origem']) !== trim($dados['desc_cargo_atual'])): ?>
+                    <?php if ( (intval($dados_cliente['EXIBE_CARGO_ORIGEM']) === 1) && (trim($dados['desc_cargo_origem']) !== trim($dados['desc_cargo_atual'])) ): ?>
                     <td class="espacoCelula3" colspan="3"><span class="fonteTamanho5">CARGO/FUNÇÃO ORIGEM</span><br><b><?php echo $dados['id_cargo_origem'];?> - <?php echo $dados['desc_cargo_origem'];?></b></td>
                     <?php else:?>
                     <td class="espacoCelula3" colspan="3">&nbsp;</td>

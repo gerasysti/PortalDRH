@@ -493,6 +493,14 @@
                                                                 <div class="form-group">
                                                                     <div class="checkbox checkbox-primary">
                                                                         <label>
+                                                                            <input class="custom-checkbox" type="checkbox" name="exibe_cargo_origem" id="exibe_cargo_origem" value="1">
+                                                                            Exibir "cargo/função origem" no contra-cheque dos servidores
+                                                                        </label>
+                                                                    </div>
+                                                                </div>    
+                                                                <div class="form-group">
+                                                                    <div class="checkbox checkbox-primary">
+                                                                        <label>
                                                                             <input class="custom-checkbox" type="checkbox" name="margem_consignavel" id="margem_consignavel" value="1">
                                                                             Exibir margem consignável no Contra-cheque do Servidor
                                                                         </label>

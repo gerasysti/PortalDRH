@@ -94,6 +94,7 @@
                             . "  , c.logo "
                             . "  , c.brasao_nome "
                             . "  , trim(coalesce(c.exibe_lista, '0'))   as exibe_lista "
+                            . "  , coalesce(c.exibe_cargo_origem, 0)    as exibe_cargo_origem "
                             . "  , coalesce(c.enviar_senha_email, 0)    as enviar_senha_email "
                             . "  , trim(coalesce(c.contra_cheque, 'N')) as contra_cheque "
                             . "  , coalesce(c.margem_consignavel, 0)    as margem_consignavel "
@@ -166,6 +167,7 @@
                             $brasao_nome = (!empty($obj->brasao_nome)?$obj->brasao_nome:"&nbsp;");
                             
                             $exibe_lista        = (!empty($obj->exibe_lista)?$obj->exibe_lista:"0");
+                            $exibe_cargo_origem = (!empty($obj->exibe_cargo_origem)?$obj->exibe_cargo_origem:"0");
                             $enviar_senha_email = (!empty($obj->enviar_senha_email)?$obj->enviar_senha_email:"0");
                             $contra_cheque      = (!empty($obj->contra_cheque)?$obj->contra_cheque:"N");
                             $margem_consignavel = (!empty($obj->margem_consignavel)?$obj->margem_consignavel:"0");
@@ -199,6 +201,7 @@
                                 . "<input type='hidden' id='logo_{$id}' value='{$logo}'>"
                                 . "<input type='hidden' id='brasao_nome_{$id}' value='{$brasao_nome}'>"
                                 . "<input type='hidden' id='exibe_lista_{$id}' value='{$exibe_lista}'>"
+                                . "<input type='hidden' id='exibe_cargo_origem_{$id}' value='{$exibe_cargo_origem}'>"
                                 . "<input type='hidden' id='enviar_senha_email_{$id}' value='{$enviar_senha_email}'>"
                                 . "<input type='hidden' id='contra_cheque_{$id}' value='{$contra_cheque}'>"
                                 . "<input type='hidden' id='margem_consignavel_{$id}' value='{$margem_consignavel}'>"
@@ -275,6 +278,7 @@
                         $sub_titulo_portal = trim(filter_input(INPUT_POST, 'sub_titulo_portal'));
                         
                         $exibe_lista        = trim(filter_input(INPUT_POST, 'exibe_lista'));
+                        $exibe_cargo_origem = trim(filter_input(INPUT_POST, 'exibe_cargo_origem'));
                         $enviar_senha_email = trim(filter_input(INPUT_POST, 'enviar_senha_email'));
                         $contra_cheque      = trim(filter_input(INPUT_POST, 'contra_cheque'));
                         $margem_consignavel = trim(filter_input(INPUT_POST, 'margem_consignavel'));
@@ -326,6 +330,7 @@
                                     . "  , ender_cep          "
                                     . "  , tipo_orgao         "
                                     . "  , exibe_lista        "
+                                    . "  , exibe_cargo_origem "
                                     . "  , enviar_senha_email "
                                     . "  , brasao_nome        "
                                     . "  , contra_cheque      "
@@ -357,6 +362,7 @@
                                     . "  , :ender_cep          "
                                     . "  , :tipo_orgao         "
                                     . "  , :exibe_lista        "
+                                    . "  , :exibe_cargo_origem "
                                     . "  , :enviar_senha_email "
                                     . "  , null                " // brasao_nome
                                     . "  , :contra_cheque      "
@@ -389,6 +395,7 @@
                                     ':ender_cep'          => $ender_cep,
                                     ':tipo_orgao'         => $tipo_orgao,
                                     ':exibe_lista'        => $exibe_lista,
+                                    ':exibe_cargo_origem' => $exibe_cargo_origem,
                                     ':enviar_senha_email' => $enviar_senha_email,
                                     //':brasao_nome'        => $brasao_nome,
                                     ':contra_cheque'      => $contra_cheque,
@@ -423,6 +430,7 @@
                                     . "  , c.ender_cep          = :ender_cep          "
                                     . "  , c.tipo_orgao         = :tipo_orgao         "
                                     . "  , c.exibe_lista        = :exibe_lista        "
+                                    . "  , c.exibe_cargo_origem = :exibe_cargo_origem "
                                     . "  , c.enviar_senha_email = :enviar_senha_email "
                                     //. "  , c.brasao_nome        = :brasao_nome        "
                                     . "  , c.contra_cheque      = :contra_cheque      "
@@ -454,6 +462,7 @@
                                     ':ender_cep'          => $ender_cep,
                                     ':tipo_orgao'         => $tipo_orgao,
                                     ':exibe_lista'        => $exibe_lista,
+                                    ':exibe_cargo_origem' => $exibe_cargo_origem,
                                     ':enviar_senha_email' => $enviar_senha_email,
                                     //':brasao_nome'        => $brasao_nome,
                                     ':contra_cheque'      => $contra_cheque,

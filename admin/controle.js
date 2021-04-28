@@ -4,10 +4,10 @@
  * and open the template in the editor.
  */
 
-function display_system_version_v203() {
+function display_system_version_v204() {
     var str = "";
     
-    str += "Versão <b>2.0.3</b><br>";
+    str += "Versão <b>2.0.4</b><br>";
     str += "Copyright &copy; 2021 <strong>Gerasys TI / M Cruz Consultoria.</strong> &nbsp;&nbsp;<br>";
     str += "Todos os direitos reservados. &nbsp;&nbsp;";
     

@@ -20,13 +20,13 @@
     
     // Manter nesta variável a função que será chamada para montar os dados da versão atual do sistema...
     // Esta função estará no arquivo "controle.js"
-    $version_function = "display_system_version_v203()";
+    $version_function = "display_system_version_v204()";
     
     // Manter nesta variável a informação da versão anterior do sistema...
-    $version_id   = "2.0.2";
+    $version_id   = "2.0.3";
     $version_info =
           "Versão <b>{$version_id}</b><br>"
-        . "Copyright &copy; 2020 <strong>Gerasys TI / M Cruz Consultoria.</strong><br>"
+        . "Copyright &copy; 2021 <strong>Gerasys TI / M Cruz Consultoria.</strong><br>"
         . "Todos os direitos reservados. &nbsp;&nbsp;&nbsp;";
     
     if (isset($_REQUEST['id'])) {

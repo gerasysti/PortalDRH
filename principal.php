@@ -376,18 +376,19 @@
                                 <h3 class='title-hero'>Informações</h3>
                                 <div class='example-box-wrapper'>
                                     <div class='row'>
+                                        <!--
                                         <div class='col-md-4'>
                                             <div class='tile-box bg-default'>
                                                 <div class='tile-header'>
                                                     Cadastro de Servidores
                                                     <div class='float-right'>
-                                                        <!--<i class='glyph-icon icon-calendar'></i>-->
+                                                        <i class='glyph-icon icon-calendar'></i>
                                                     </div>
                                                 </div>
                                                 <div class='tile-content-wrapper'>
                                                     <i class='glyph-icon icon-edit'></i>
                                                     <div class='tile-content'>
-                                                        <span></span> <?php echo ($cadastro === null?'...':number_format($cadastro['qt_cadastro'], 0, ',', '.'));?>
+                                                        <span></span> <?php // echo ($cadastro === null?'...':number_format($cadastro['qt_cadastro'], 0, ',', '.'));?>
                                                     </div>
                                                 </div>
                                             </div>
@@ -398,18 +399,18 @@
                                                 <div class='tile-header'>
                                                     Servidores Ativos
                                                     <div class='float-right'>
-                                                        <!--<i class='glyph-icon icon-calendar'></i>-->
+                                                        <i class='glyph-icon icon-calendar'></i>
                                                     </div>
                                                 </div>
                                                 <div class='tile-content-wrapper'>
                                                     <i class='glyph-icon icon-users'></i>
                                                     <div class='tile-content'>
-                                                        <span></span> <?php echo ($cadastro === null?'...':number_format($cadastro['qt_servidores'], 0, ',', '.'));?>
+                                                        <span></span> <?php // echo ($cadastro === null?'...':number_format($cadastro['qt_servidores'], 0, ',', '.'));?>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
-
+                                        -->
                                         <div class='col-md-4'>
                                             <div class='tile-box bg-aqua'>
                                                 <div class='tile-header'>

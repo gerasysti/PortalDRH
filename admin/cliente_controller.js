@@ -173,6 +173,7 @@ function editarCliente(id) {
     $('#logo_upload').val("");
     
     $('#exibe_lista').prop("checked",        ($('#exibe_lista_' + id_cliente).val() === "1")).uniform();
+    $('#exibe_cargo_origem').prop("checked", ($('#exibe_cargo_origem_' + id_cliente).val() === "1")).uniform();
     $('#enviar_senha_email').prop("checked", ($('#enviar_senha_email_' + id_cliente).val() === "1")).uniform();
     $('#contra_cheque').prop("checked",      ($('#contra_cheque_' + id_cliente).val() === "S")).uniform();
     $('#margem_consignavel').prop("checked", ($('#margem_consignavel_' + id_cliente).val() === "1")).uniform();
@@ -239,6 +240,7 @@ function inserirCliente(id, us) {
         $('#logo_upload').val("");
 
         $('#exibe_lista').prop("checked", false);
+        $('#exibe_cargo_origem').prop("checked", false);
         $('#enviar_senha_email').prop("checked", false);
         $('#contra_cheque').prop("checked", false);
         $('#margem_consignavel').prop("checked", false);
@@ -351,6 +353,7 @@ function salvarCliente() {
             'titulo_portal'      : $('#titulo_portal').val().trim(),
             'sub_titulo_portal'  : $('#sub_titulo_portal').val().trim(),
             'exibe_lista'        : '0',
+            'exibe_cargo_origem' : '0',
             'enviar_senha_email' : '0',
             'contra_cheque'      : 'N',
             'margem_consignavel' : '0',
@@ -361,6 +364,7 @@ function salvarCliente() {
         // mensagem_confirmar( JSON.stringify(params) );
         
         if ( $('#exibe_lista').is(":checked") ) params.exibe_lista = $('#exibe_lista').val();
+        if ( $('#exibe_cargo_origem').is(":checked") ) params.exibe_cargo_origem = $('#exibe_cargo_origem').val();
         if ( $('#enviar_senha_email').is(":checked") ) params.enviar_senha_email = $('#enviar_senha_email').val();
         if ( $('#contra_cheque').is(":checked") ) params.contra_cheque = $('#contra_cheque').val();
         if ( $('#margem_consignavel').is(":checked") ) params.margem_consignavel = $('#margem_consignavel').val();
@@ -442,6 +446,7 @@ function salvarCliente() {
 //                            $('#logo_' + params.id).val( params.logo );
 //                            $('#brasao_nome_' + params.id).val( params.brasao_nome );
                             $('#exibe_lista_' + params.id).val( params.exibe_lista );
+                            $('#exibe_cargo_origem_' + params.id).val( params.exibe_cargo_origem );
                             $('#enviar_senha_email_' + params.id).val( params.enviar_senha_email );
                             $('#contra_cheque_' + params.id).val( params.contra_cheque );
                             $('#margem_consignavel_' + params.id).val( params.margem_consignavel );
